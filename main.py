@@ -9,6 +9,7 @@ import inspect
 import uuid
 import sublime, sublime_plugin
 import pickle
+import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 variable_mapping = {}
@@ -21,17 +22,28 @@ def evalCode(code, save=True, globals=None, locals=None):
 
     result_var_name = ""
     result = None
+    error = None
 
     try:
         result = eval(code, globals, locals)
     except SyntaxError as e:
         try:
             exec(code, globals, locals)
-        except Exception as e:
+        except Exception as err:
             traceback.print_exc()
-    except Exception as e:
+            error = {
+                "message": err.message if hasattr(err, "message") else str(err),
+                "code": err.errno if hasattr(err, "errno") else None,
+                "type": type(err).__name__
+            }
+    except Exception as err:
         print(code)
         traceback.print_exc()
+        error = {
+            "message": err.message if hasattr(err, "message") else str(err),
+            "code": err.errno if hasattr(err, "errno") else None,
+            "type": type(err).__name__
+        }
 
     if save:
         result_var_name = str(uuid.uuid4())
@@ -41,7 +53,8 @@ def evalCode(code, save=True, globals=None, locals=None):
         "var": "",
         "mapTo": result_var_name,
         "code": code,
-        "value": json.loads(json.dumps(result, cls=ObjectEncoder))
+        "value": json.loads(json.dumps(result, cls=ObjectEncoder)),
+        "error": error
     }
 
 def freeMemory(vars_mapped):
@@ -106,6 +119,10 @@ class S(BaseHTTPRequestHandler):
         dispatcher["yes_no_cancel_dialog"] = lambda string, yes_title, no_title: sublime.yes_no_cancel_dialog(string, yes_title, no_title)
         dispatcher["load_resource"] = lambda name: sublime.load_resource(name)
         dispatcher["load_binary_resource"] = lambda name: sublime.load_binary_resource(name).decode('utf-8')
+        dispatcher["find_resources"] = lambda pattern: sublime.find_resources(pattern)
+        dispatcher["encode_value"] = lambda value, pretty: sublime.encode_value(value, pretty)
+        dispatcher["decode_value"] = lambda string: sublime.decode_value(string)
+        dispatcher["expand_variables"] = lambda value, variables: sublime.expand_variables(value, variables)
 
         dispatcher["freeMemory"] = freeMemory
         dispatcher["evalCode"] = lambda code, save: evalCode(code, save)

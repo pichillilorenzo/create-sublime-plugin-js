@@ -85,4 +85,13 @@ for (let textCommand in textCommands) {
 let server = jayson.server(JsonRpcMethods);
 server.http().listen(3001);
 
-sublime.load_binary_resource("Packages/Default/Main.sublime-menu").then((result) => {console.log(result)})
+//sublime.load_resource("Packages/Default/Main.sublime-menu").then((result) => {console.log(result)})
+//sublime.load_binary_resource("Packages/Default/Main.sublime-menu").then((result) => {console.log(result)})
+//sublime.find_resources('*').then((result) => {console.log(result)})
+//sublime.Region(0,34).then((region) => {sublime.encode_value(region).then((result) => {console.log(result)})})
+//sublime.encode_value({ region: 0 }).then((result) => {console.log(result)})
+//sublime.decode_value('{"region": 0}').then((result) => {console.log(result)})
+// sublime.load_resource("Packages/Default/Main.sublime-menu").then(async (resource) => {
+//   let result = await sublime.expand_variables("First char: ${char}", {"char": resource[0]})
+//   console.log(result)
+// })
