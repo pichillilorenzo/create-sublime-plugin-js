@@ -1,32 +1,32 @@
 // @flow
 
-const jayson = require('jayson')
-const client = jayson.client.http('http://localhost:9200')
-
-const sublime = require('./lib/sublime.js'),
-      TextCommand = require('./lib/textCommand.js')
+const jayson = require('jayson'),
+      sublime = require('./lib/sublime.js'),
+      TextCommand = require('./lib/TextCommand.js')
 
 let textCommands = require('./lib/textCommandList.js')
 
 
 class testCommand extends TextCommand {
 
-  async run (edit, args, kwargs, step) {
+  async run (edit, args, step) {
+    console.log(args)
 
     let view = await this.view(step)
+    console.log(view)
 
     let region = await sublime.Region(0, 10)
 
-    sublime.set_timeout(async (httpTempServer, cbStep) => {
-      result = await view.substr(region, cbStep)
-      console.log(result)
-      httpTempServer.close()
-    }, 3000)
+    // sublime.set_timeout(async (httpTempServer, cbStep) => {
+    //   await region.a(4)
+    //   let result = await view.substr(region, cbStep)
+    //   console.log(result)
+    //   httpTempServer.close()
+    // }, 3000)
 
-    await region.a(step, 8)
+    // await region.a(2)
 
     // let result = await view.insert(edit, 0, 'asd', step)
-
     // console.log(result)
 
     // result = await view.is_dirty(step)
@@ -55,6 +55,15 @@ class testCommand extends TextCommand {
     let result = await view.substr(region, step)
     console.log(result)
 
+    result = await sublime.Region(0,34)
+    console.log(result)
+    console.log(await result.a())
+    await result.a(5)
+    await result.b(10)
+    console.log(result)
+    console.log(await result.size())
+    console.log(await result.empty())
+
     //await this.freeMemory(step)
 
   }
@@ -70,8 +79,8 @@ for (let textCommand in textCommands) {
     }
 
     try {
-      textCommands[textCommand]._init(args[0], args[1], args[2], args[3])
-      await textCommands[textCommand].run(args[1], args[2], args[3], step) 
+      textCommands[textCommand]._init(args[0])
+      await textCommands[textCommand].run(args[1], args[2].value, step) 
     } catch(e) {
       console.log(e);
     }
@@ -85,13 +94,41 @@ for (let textCommand in textCommands) {
 let server = jayson.server(JsonRpcMethods);
 server.http().listen(3001);
 
-//sublime.load_resource("Packages/Default/Main.sublime-menu").then((result) => {console.log(result)})
-//sublime.load_binary_resource("Packages/Default/Main.sublime-menu").then((result) => {console.log(result)})
-//sublime.find_resources('*').then((result) => {console.log(result)})
-//sublime.Region(0,34).then((region) => {sublime.encode_value(region).then((result) => {console.log(result)})})
-//sublime.encode_value({ region: 0 }).then((result) => {console.log(result)})
-//sublime.decode_value('{"region": 0}').then((result) => {console.log(result)})
-// sublime.load_resource("Packages/Default/Main.sublime-menu").then(async (resource) => {
-//   let result = await sublime.expand_variables("First char: ${char}", {"char": resource[0]})
-//   console.log(result)
-// })
+async function main() {
+  try {
+    let result = null
+    // result = await sublime.error_message("Error")
+    // console.log(result)
+    // result = await sublime.message_dialog("Message Dialog")
+    // console.log(result)
+    // result = await sublime.ok_cancel_dialog("Message Dialog", "OK")
+    // console.log(result)
+    // result = await sublime.yes_no_cancel_dialog("Message Dialog", "YES", "NO")
+    // console.log(result)
+    result = await sublime.load_resource("Packages/Default/Main.sublime-menu")
+    console.log(result)
+    result = await sublime.load_binary_resource("Packages/Default/Main.sublime-menu")
+    console.log(result)
+    result = await sublime.find_resources('*')
+    console.log(result)
+    result = await sublime.Region(0, 34)
+    console.log(result)
+    console.log(await result.a())
+    await result.a(5)
+    await result.b(10)
+    console.log(result)
+    console.log(await result.size())
+    console.log(await result.empty())
+    result = await sublime.encode_value({ region: 0 })
+    console.log(result)
+    result = await sublime.decode_value('{"region": 0}')
+    console.log(result)
+    result = await sublime.expand_variables("Hello ${name}", {"name": 'Lorenzo'})
+    console.log(result)
+  } catch(e) {
+    // statements
+    console.log(e);
+  }
+}
+
+main()

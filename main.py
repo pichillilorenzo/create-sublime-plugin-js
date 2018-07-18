@@ -57,14 +57,37 @@ def evalCode(code, save=True, globals=None, locals=None):
         "error": error
     }
 
+def tryCommand(callback):
+    result = None
+    error = None
+
+    try:
+        result = callback()
+    except Exception as err:
+        traceback.print_exc()
+        error = {
+            "message": err.message if hasattr(err, "message") else str(err),
+            "code": err.errno if hasattr(err, "errno") else None,
+            "type": type(err).__name__
+        }
+
+    return {
+        "var": "",
+        "mapTo": "",
+        "code": "",
+        "value": json.loads(json.dumps(result, cls=ObjectEncoder)),
+        "error": error
+    }
+
 def freeMemory(vars_mapped):
     global variable_mapping
-
+    print(variable_mapping)
     for var_mapped in vars_mapped:
         if "mapTo" in var_mapped and var_mapped["mapTo"]:
             del variable_mapping[var_mapped["mapTo"]]
         elif "self" in var_mapped and var_mapped["self"]["mapTo"]:
             del variable_mapping[var_mapped["self"]["mapTo"]]
+    print(variable_mapping)
 
 def timeout(port):
 
@@ -106,24 +129,26 @@ class S(BaseHTTPRequestHandler):
 
         global variable_mapping
 
-        content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
-        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        content_length = int(self.headers['Content-Length']) # Gets the size of data
+        post_data = self.rfile.read(content_length) # Gets the data itself
 
         self._set_response()
- 
-        dispatcher["set_timeout"] = lambda port, delay: sublime.set_timeout(lambda: timeout(port), delay)
-        dispatcher["set_timeout_async"] = lambda port, delay: sublime.set_timeout_async(lambda: timeout(port), delay)
-        dispatcher["error_message"] = lambda string: sublime.error_message(string)
-        dispatcher["message_dialog"] = lambda string: sublime.message_dialog(string)
-        dispatcher["ok_cancel_dialog"] = lambda string, ok_title: sublime.ok_cancel_dialog(string, ok_title)
-        dispatcher["yes_no_cancel_dialog"] = lambda string, yes_title, no_title: sublime.yes_no_cancel_dialog(string, yes_title, no_title)
-        dispatcher["load_resource"] = lambda name: sublime.load_resource(name)
-        dispatcher["load_binary_resource"] = lambda name: sublime.load_binary_resource(name).decode('utf-8')
-        dispatcher["find_resources"] = lambda pattern: sublime.find_resources(pattern)
-        dispatcher["encode_value"] = lambda value, pretty: sublime.encode_value(value, pretty)
-        dispatcher["decode_value"] = lambda string: sublime.decode_value(string)
-        dispatcher["expand_variables"] = lambda value, variables: sublime.expand_variables(value, variables)
+    
+        # sublime methods
+        dispatcher["set_timeout"] = lambda port, delay: tryCommand(lambda: sublime.set_timeout(lambda: timeout(port), delay))
+        dispatcher["set_timeout_async"] = lambda port, delay: tryCommand(lambda: sublime.set_timeout_async(lambda: timeout(port), delay))
+        dispatcher["error_message"] = lambda string: tryCommand(lambda: sublime.error_message(string))
+        dispatcher["message_dialog"] = lambda string: tryCommand(lambda: sublime.message_dialog(string))
+        dispatcher["ok_cancel_dialog"] = lambda string, ok_title: tryCommand(lambda: sublime.ok_cancel_dialog(string, ok_title))
+        dispatcher["yes_no_cancel_dialog"] = lambda string, yes_title, no_title: tryCommand(lambda: sublime.yes_no_cancel_dialog(string, yes_title, no_title))
+        dispatcher["load_resource"] = lambda name: tryCommand(lambda: sublime.load_resource(name))
+        dispatcher["load_binary_resource"] = lambda name: tryCommand(lambda: sublime.load_binary_resource(name).decode('utf-8'))
+        dispatcher["find_resources"] = lambda pattern: tryCommand(lambda: sublime.find_resources(pattern))
+        dispatcher["encode_value"] = lambda value, pretty: tryCommand(lambda: sublime.encode_value(value, pretty))
+        dispatcher["decode_value"] = lambda string: tryCommand(lambda: sublime.decode_value(string))
+        dispatcher["expand_variables"] = lambda value, variables: tryCommand(lambda: sublime.expand_variables(value, variables))
 
+        # sublime utils
         dispatcher["freeMemory"] = freeMemory
         dispatcher["evalCode"] = lambda code, save: evalCode(code, save)
 
@@ -132,7 +157,11 @@ class S(BaseHTTPRequestHandler):
         try:
             self.wfile.write(response.json.encode('utf-8'))
         except TypeError as e:
+            # decode
             self.wfile.write(response.json.decode('utf-8'))
+
+    def log_message(self, format, *args):
+        return
 
 
 class ThreadedHTTPServer(object):
@@ -172,7 +201,7 @@ class ObjectEncoder(json.JSONEncoder):
         return obj
 
 class testCommand(sublime_plugin.TextCommand):
-    def run(self, edit, *args, **kwargs):
+    def run(self, edit, **args):
         global variable_mapping
 
         self_var_name = str(uuid.uuid4())
@@ -207,26 +236,16 @@ class testCommand(sublime_plugin.TextCommand):
             "value": json.loads(json.dumps(args, cls=ObjectEncoder))
         }
 
-        kwargs_var_name = str(uuid.uuid4())
-        variable_mapping[kwargs_var_name] = kwargs
-
-        kwargs_var_map = {
-            "var": "kwargs",
-            "mapTo": kwargs_var_name,
-            "code": "",
-            "value": json.loads(json.dumps(kwargs, cls=ObjectEncoder))
-        }
-
         payload = {
             "method": "testCommand",
-            "params": [self_var_map, edit_var_map, args_var_map, kwargs_var_map],
+            "params": [self_var_map, edit_var_map, args_var_map],
             "jsonrpc": "2.0",
             "id": 0,
         }
 
         response = requests.post(url, data=json.dumps(payload), headers=headers).json()
 
-        variable_created += [self_var_map, edit_var_map, args_var_map, kwargs_var_map]
+        variable_created += [self_var_map, edit_var_map, args_var_map]
 
         while "result" in response and not "end_cb_step" in response["result"]:
 
