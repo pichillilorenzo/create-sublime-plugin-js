@@ -1,24 +1,42 @@
 import threading
+import subprocess
 import socketserver
 import http
 import requests
 import traceback
 import json, logging
-from jsonrpc import JSONRPCResponseManager, dispatcher
+from .jsonrpc import JSONRPCResponseManager, dispatcher
 import inspect
 import uuid
 import sublime, sublime_plugin
-import pickle
 import sys
+import os
+import codecs
+import shutil
+import tarfile
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-variable_mapping = {}
+PACKAGE_PATH = os.path.dirname(os.path.abspath(__file__))
+PACKAGE_NAME = os.path.basename(PACKAGE_PATH)
+SUBLIME_PACKAGES_PATH = os.path.dirname(PACKAGE_PATH)
+NODE_VERSION = 'v10.7.0'
+NODE_PATH = 'node'
+if sublime.platform() == 'osx':
+  NODE_PATH = os.path.join(PACKAGE_PATH, 'node', 'node-' + NODE_VERSION + '-darwin-' + sublime.arch(), 'bin', 'node' )
+elif sublime.platform() == 'windows':
+  NODE_PATH = os.path.join(PACKAGE_PATH, 'node', 'node-' + NODE_VERSION + '-win-' + sublime.arch(), 'node.exe' )
+else:
+  NODE_PATH = os.path.join(PACKAGE_PATH, 'node', 'node-' + NODE_VERSION + '-' + sublime.platform() + '-' + sublime.arch(), 'bin', 'node' )
 
-url = "http://localhost:3001/jsonrpc"
-headers = {'content-type': 'application/json'}
+NODE_SERVER_PATH = os.path.join(PACKAGE_PATH, 'index.js')
+
+URL_NODE_SERVER = ""
+HEADERS_NODE_SERVER = {'content-type': 'application/json'}
+
+VARIABLE_MAPPING = {}
 
 def evalCode(code, save=True, globals=None, locals=None):
-    global variable_mapping
+    global VARIABLE_MAPPING
 
     result_var_name = ""
     result = None
@@ -47,7 +65,7 @@ def evalCode(code, save=True, globals=None, locals=None):
 
     if save:
         result_var_name = str(uuid.uuid4())
-        variable_mapping[result_var_name] = result
+        VARIABLE_MAPPING[result_var_name] = result
 
     return {
         "var": "",
@@ -80,27 +98,40 @@ def tryCommand(callback):
     }
 
 def freeMemory(vars_mapped):
-    global variable_mapping
-    print(variable_mapping)
+    global VARIABLE_MAPPING
+    print(VARIABLE_MAPPING)
     for var_mapped in vars_mapped:
         if "mapTo" in var_mapped and var_mapped["mapTo"]:
-            del variable_mapping[var_mapped["mapTo"]]
+            del VARIABLE_MAPPING[var_mapped["mapTo"]]
         elif "self" in var_mapped and var_mapped["self"]["mapTo"]:
-            del variable_mapping[var_mapped["self"]["mapTo"]]
-    print(variable_mapping)
+            del VARIABLE_MAPPING[var_mapped["self"]["mapTo"]]
+    print(VARIABLE_MAPPING)
 
-def timeout(port):
+def callback(port, *args):
 
     variable_created = []
 
+    args_var_map = None
+
+    if len(args) > 0:
+      args_var_name = str(uuid.uuid4())
+      VARIABLE_MAPPING[args_var_name] = args
+
+      args_var_map = {
+          "var": "args",
+          "mapTo": args_var_name,
+          "code": "",
+          "value": json.loads(json.dumps(args, cls=ObjectEncoder))
+      }
+
     payload = {
-        "method": "timeout",
-        "params": [],
+        "method": "callback",
+        "params": [args_var_map] if len(args) > 0 else [],
         "jsonrpc": "2.0",
         "id": 0,
     }
 
-    response = requests.post("http://localhost:" + str(port) + "/jsonrpc", data=json.dumps(payload), headers=headers).json()
+    response = requests.post("http://localhost:" + str(port) + "/jsonrpc", data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
 
     while "result" in response and not "end_cb_step" in response["result"]:
 
@@ -114,12 +145,12 @@ def timeout(port):
             "id": 0,
         }
 
-        response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload), headers=headers).json()
+        response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
     
     if "error" in response:
         print(response)
 
-class S(BaseHTTPRequestHandler):
+class JSONRPCRequestHandler(BaseHTTPRequestHandler):
     def _set_response(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
@@ -127,7 +158,7 @@ class S(BaseHTTPRequestHandler):
 
     def do_POST(self): 
 
-        global variable_mapping
+        global VARIABLE_MAPPING
 
         content_length = int(self.headers['Content-Length']) # Gets the size of data
         post_data = self.rfile.read(content_length) # Gets the data itself
@@ -135,8 +166,8 @@ class S(BaseHTTPRequestHandler):
         self._set_response()
     
         # sublime methods
-        dispatcher["set_timeout"] = lambda port, delay: tryCommand(lambda: sublime.set_timeout(lambda: timeout(port), delay))
-        dispatcher["set_timeout_async"] = lambda port, delay: tryCommand(lambda: sublime.set_timeout_async(lambda: timeout(port), delay))
+        dispatcher["set_timeout"] = lambda port, delay: tryCommand(lambda: sublime.set_timeout(lambda: callback(port), delay))
+        dispatcher["set_timeout_async"] = lambda port, delay: tryCommand(lambda: sublime.set_timeout_async(lambda: callback(port), delay))
         dispatcher["error_message"] = lambda string: tryCommand(lambda: sublime.error_message(string))
         dispatcher["message_dialog"] = lambda string: tryCommand(lambda: sublime.message_dialog(string))
         dispatcher["ok_cancel_dialog"] = lambda string, ok_title: tryCommand(lambda: sublime.ok_cancel_dialog(string, ok_title))
@@ -147,6 +178,7 @@ class S(BaseHTTPRequestHandler):
         dispatcher["encode_value"] = lambda value, pretty: tryCommand(lambda: sublime.encode_value(value, pretty))
         dispatcher["decode_value"] = lambda string: tryCommand(lambda: sublime.decode_value(string))
         dispatcher["expand_variables"] = lambda value, variables: tryCommand(lambda: sublime.expand_variables(value, variables))
+        dispatcher["load_settings"] = lambda basename: tryCommand(lambda: sublime.load_settings(basename))
 
         # sublime utils
         dispatcher["freeMemory"] = freeMemory
@@ -165,17 +197,50 @@ class S(BaseHTTPRequestHandler):
 
 
 class ThreadedHTTPServer(object):
-    def __init__(self, host, port, handler):
-        self.server = socketserver.TCPServer((host, port), handler)
+    def __init__(self, handler):
+        self.server = socketserver.TCPServer(('', 0), handler)
+        self.nodeServer = None
+
+        with open(os.path.join(PACKAGE_PATH, 'sublime_port.txt'), 'w+') as file:
+            file.write(str(self.server.socket.getsockname()[1]))
+
         self.server_thread = threading.Thread(target=self.server.serve_forever)
         self.server_thread.daemon = True
 
     def start(self):
         self.server_thread.start()
+        threading.Thread(target=self.startNodeServer, daemon=True).start()
 
     def stop(self):
-        self.server.shutdown()
-        self.server.server_close()
+        if self.nodeServer and not self.nodeServer.poll():
+            self.nodeServer.terminate()
+        self.nodeServer = None
+        
+        if self.server:
+            self.server.shutdown()
+            self.server.server_close()
+        self.server = None
+
+    def startNodeServer(self):
+        global URL_NODE_SERVER
+
+        self.nodeServer = subprocess.Popen([NODE_PATH, NODE_SERVER_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        nodePort = codecs.decode(self.nodeServer.stdout.readline(), "utf-8", "ignore").strip()
+        if not nodePort.isdigit():
+            print('ERROR: Wrong Node Server port')
+            print(nodePort)
+            for line in self.nodeServer.stdout:
+                line = codecs.decode(line, "utf-8", "ignore").replace("\n", "")
+                print(line)
+            print('Shutting down the JSONRPC Server...')
+            self.stop()
+            return
+        URL_NODE_SERVER = "http://localhost:" + nodePort + "/jsonrpc"
+        
+        while self.nodeServer:
+            line = self.nodeServer.stdout.readline()
+            line = "Node server: " + codecs.decode(line, "utf-8", "ignore").replace("\n", "")
+            print(line)
 
 class ObjectEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -202,10 +267,14 @@ class ObjectEncoder(json.JSONEncoder):
 
 class testCommand(sublime_plugin.TextCommand):
     def run(self, edit, **args):
-        global variable_mapping
+
+        if not URL_NODE_SERVER:
+            return
+
+        global VARIABLE_MAPPING
 
         self_var_name = str(uuid.uuid4())
-        variable_mapping[self_var_name] = self
+        VARIABLE_MAPPING[self_var_name] = self
 
         variable_created = []
 
@@ -217,7 +286,7 @@ class testCommand(sublime_plugin.TextCommand):
         }
 
         edit_var_name = str(uuid.uuid4())
-        variable_mapping[edit_var_name] = edit
+        VARIABLE_MAPPING[edit_var_name] = edit
 
         edit_var_map = {
             "var": "edit",
@@ -227,7 +296,7 @@ class testCommand(sublime_plugin.TextCommand):
         }
 
         args_var_name = str(uuid.uuid4())
-        variable_mapping[args_var_name] = args
+        VARIABLE_MAPPING[args_var_name] = args
 
         args_var_map = {
             "var": "args",
@@ -243,7 +312,7 @@ class testCommand(sublime_plugin.TextCommand):
             "id": 0,
         }
 
-        response = requests.post(url, data=json.dumps(payload), headers=headers).json()
+        response = requests.post(URL_NODE_SERVER, data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
 
         variable_created += [self_var_map, edit_var_map, args_var_map]
 
@@ -259,7 +328,7 @@ class testCommand(sublime_plugin.TextCommand):
                 "id": 0,
             }
 
-            response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload), headers=headers).json()
+            response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
         
         if "error" in response:
             print(response)
@@ -274,5 +343,5 @@ server = None
 def plugin_loaded():
     global server
     # Start the threaded server
-    server = ThreadedHTTPServer("localhost", 9200, S)
+    server = ThreadedHTTPServer(JSONRPCRequestHandler)
     server.start()

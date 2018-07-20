@@ -19,12 +19,19 @@ type JSMappedVariable = {
 }
 
 type Region = JSMappedVariable & {
-  a: (StepObject, ?number) => Promise<>,
-  b: (StepObject, ?number) => Promise<>,
-  xpos: (StepObject, ?number) => Promise<>
+  a: (?number) => Promise<?number>,
+  b: (?number) => Promise<?number>,
+  xpos: (?number) => Promise<?number>,
+  begin: () => Promise<number>,
+  end: () => Promise<number>,
+  size: () => Promise<number>,
+  empty: () => Promise<boolean>
 }
 
 type View = JSMappedVariable & {
+}
+
+type Settings = JSMappedVariable & {
 }
 
 type StepObject = {

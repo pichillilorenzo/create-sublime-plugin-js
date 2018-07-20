@@ -1,5 +1,6 @@
 [ignore]
 <PROJECT_ROOT>/.je-project-settings/.*
+<PROJECT_ROOT>/node/.*
 
 [include]
 
