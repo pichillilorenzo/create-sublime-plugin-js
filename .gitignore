@@ -62,3 +62,5 @@ typings/
 
 .je-project-settings/
 .history/
+node_port.txt
+sublime_port.txt
