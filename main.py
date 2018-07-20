@@ -14,19 +14,104 @@ import os
 import codecs
 import shutil
 import tarfile
+import zipfile
+import urllib
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PACKAGE_PATH = os.path.dirname(os.path.abspath(__file__))
 PACKAGE_NAME = os.path.basename(PACKAGE_PATH)
 SUBLIME_PACKAGES_PATH = os.path.dirname(PACKAGE_PATH)
 NODE_VERSION = 'v10.7.0'
-NODE_PATH = 'node'
-if sublime.platform() == 'osx':
-  NODE_PATH = os.path.join(PACKAGE_PATH, 'node', 'node-' + NODE_VERSION + '-darwin-' + sublime.arch(), 'bin', 'node' )
-elif sublime.platform() == 'windows':
-  NODE_PATH = os.path.join(PACKAGE_PATH, 'node', 'node-' + NODE_VERSION + '-win-' + sublime.arch(), 'node.exe' )
-else:
-  NODE_PATH = os.path.join(PACKAGE_PATH, 'node', 'node-' + NODE_VERSION + '-' + sublime.platform() + '-' + sublime.arch(), 'bin', 'node' )
+NODE_PATH = os.path.join( PACKAGE_PATH, 'node', 'node.exe' if sublime.platform() == "windows" else os.path.join('bin', 'node') )
+NPM_PATH = os.path.join( PACKAGE_PATH, 'node', 'npm' if sublime.platform() == "windows" else os.path.join('bin', 'npm') )
+
+def check_thread_is_alive(thread_name) :
+  for thread in threading.enumerate() :
+    if thread.getName() == thread_name and thread.is_alive() :
+      return True
+  return False
+
+def create_and_start_thread(target, thread_name, args=[]) :
+  if not check_thread_is_alive(thread_name) :
+    thread = threading.Thread(target=target, name=thread_name, args=args)
+    thread.setDaemon(True)
+    thread.start()
+    return thread
+  return None
+
+def downloadNodeJS():
+  print('install nodejs and npm')
+  nodeDirPath = os.path.join(PACKAGE_PATH, 'node')
+  nodeModules = os.path.join(PACKAGE_PATH, 'node_modules')
+
+  if os.path.exists(nodeDirPath):
+    print('remove ' + nodeDirPath)
+    if sublime.platform() == "windows":
+      os.system('rmdir /S /Q \"{}\"'.format(nodeDirPath))
+    else:
+      shutil.rmtree(nodeDirPath)
+
+  if os.path.exists(nodeModules):
+    print('remove ' + nodeModules)
+    if sublime.platform() == "windows":
+      os.system('rmdir /S /Q \"{}\"'.format(nodeModules))
+    else:
+      shutil.rmtree(nodeModules)
+
+  print('create' + nodeDirPath)
+  os.mkdir(nodeDirPath)
+
+  nodeUrl = 'https://nodejs.org/dist/' + NODE_VERSION + '/node-' + NODE_VERSION + '-'
+  exstension = '.tar.gz'
+
+  if sublime.platform() == 'osx':
+    nodeUrl += 'darwin-'
+  elif sublime.platform() == 'windows':
+    nodeUrl += 'win-'
+    exstension = '.zip'
+  else:
+    nodeUrl += sublime.platform() + '-'
+
+  nodeUrl += sublime.arch() + exstension
+  nodeZippedFile = os.path.join(nodeDirPath, nodeUrl.split('/')[-1])
+
+  print('download nodejs and npm')
+  request = urllib.request.Request(nodeUrl)
+  request.add_header('User-agent', r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1')
+  with urllib.request.urlopen(request) as response :
+    with open(nodeZippedFile, 'wb') as file :
+      shutil.copyfileobj(response, file)
+
+  print('unzip nodejs and npm')
+  if sublime.platform() == 'windows':
+    # windows
+    with zipfile.ZipFile(nodeZippedFile) as zf:
+      for info in zf.infolist():
+        bufsiz = 16 * 2048
+        with zf.open(info) as fin, open(nodeDirPath, 'w') as fout:
+          while True:
+            buf = fin.read(bufsiz)
+            if not buf:
+              break
+            fout.write(buf)
+  else:
+    with tarfile.open(nodeZippedFile, "r:gz") as tar :
+      for member in tar.getmembers() :
+        member.name = os.sep.join(member.name.split(os.sep)[1:])
+        tar.extract(member, nodeDirPath)
+
+  print('completed')
+
+  print('remove ' + nodeZippedFile)
+  os.remove(nodeZippedFile)
+
+def installPackageJsonDependencies():
+  owd = os.getcwd()
+  os.chdir(PACKAGE_PATH)
+  print('install package.json dependencies')
+  output = subprocess.check_output([NODE_PATH, NPM_PATH, 'install'], stderr=subprocess.STDOUT)
+  print(codecs.decode(output, "utf-8", "ignore").strip())
+  os.chdir(owd)
 
 NODE_SERVER_PATH = os.path.join(PACKAGE_PATH, 'index.js')
 
@@ -236,7 +321,7 @@ class ThreadedHTTPServer(object):
             self.stop()
             return
         URL_NODE_SERVER = "http://localhost:" + nodePort + "/jsonrpc"
-        
+
         while self.nodeServer:
             line = self.nodeServer.stdout.readline()
             line = "Node server: " + codecs.decode(line, "utf-8", "ignore").replace("\n", "")
@@ -333,15 +418,35 @@ class testCommand(sublime_plugin.TextCommand):
         if "error" in response:
             print(response)
 
+def start():
+  global server
+
+  if not os.path.exists(NODE_PATH):
+    # download nodejs and npm
+    try:
+      downloadNodeJS()
+    except Exception as e:
+      sublime.error_message('Can\'t download nodejs and npm for the "' + PACKAGE_NAME + '" plugin!\nError:' + str(e))
+      return
+
+  if not os.path.exists(os.path.join(PACKAGE_PATH, 'node_modules')):
+    # install package.json dependencies
+    try:
+      installPackageJsonDependencies()
+    except Exception as e:
+      sublime.error_message('Can\'t install package.json dependencies of the "' + PACKAGE_NAME + '" plugin!\nError:' + str(e))
+      return
+
+  # Start the threaded server
+  server = ThreadedHTTPServer(JSONRPCRequestHandler)
+  server.start()
+
 def plugin_unloaded():
     global server
     if server:
-        server.stop()
+      server.stop()
 
 server = None
 
 def plugin_loaded():
-    global server
-    # Start the threaded server
-    server = ThreadedHTTPServer(JSONRPCRequestHandler)
-    server.start()
+  sublime.set_timeout_async(start)

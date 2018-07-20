@@ -60,6 +60,7 @@ typings/
 # next.js build output
 .next
 
+node/
 .je-project-settings/
 .history/
 node_port.txt
