@@ -25,14 +25,14 @@ NODE_VERSION = 'v10.7.0'
 NODE_PATH = os.path.join( PACKAGE_PATH, 'node', 'node.exe' if sublime.platform() == "windows" else os.path.join('bin', 'node') )
 NPM_PATH = os.path.join( PACKAGE_PATH, 'node', 'npm' if sublime.platform() == "windows" else os.path.join('bin', 'npm') )
 
-def check_thread_is_alive(thread_name) :
+def checkNamedThreadIsAlive(thread_name) :
   for thread in threading.enumerate() :
     if thread.getName() == thread_name and thread.is_alive() :
       return True
   return False
 
-def create_and_start_thread(target, thread_name, args=[]) :
-  if not check_thread_is_alive(thread_name) :
+def createStartNamedThread(target, thread_name, args=[]) :
+  if not checkNamedThreadIsAlive(thread_name) :
     thread = threading.Thread(target=target, name=thread_name, args=args)
     thread.setDaemon(True)
     thread.start()
@@ -121,76 +121,100 @@ HEADERS_NODE_SERVER = {'content-type': 'application/json'}
 VARIABLE_MAPPING = {}
 
 def evalCode(code, save=True, globals=None, locals=None):
-    global VARIABLE_MAPPING
+  global VARIABLE_MAPPING
 
-    result_var_name = ""
-    result = None
-    error = None
-
+  result_var_name = ""
+  result = None
+  error = None
+  value = None
+  
+  try:
+    result = eval(code, globals, locals)
+  except SyntaxError as e:
     try:
-        result = eval(code, globals, locals)
-    except SyntaxError as e:
-        try:
-            exec(code, globals, locals)
-        except Exception as err:
-            traceback.print_exc()
-            error = {
-                "message": err.message if hasattr(err, "message") else str(err),
-                "code": err.errno if hasattr(err, "errno") else None,
-                "type": type(err).__name__
-            }
+      exec(code, globals, locals)
     except Exception as err:
-        print(code)
-        traceback.print_exc()
-        error = {
-            "message": err.message if hasattr(err, "message") else str(err),
-            "code": err.errno if hasattr(err, "errno") else None,
-            "type": type(err).__name__
-        }
-
-    if save:
-        result_var_name = str(uuid.uuid4())
-        VARIABLE_MAPPING[result_var_name] = result
-
-    return {
-        "var": "",
-        "mapTo": result_var_name,
-        "code": code,
-        "value": json.loads(json.dumps(result, cls=ObjectEncoder)),
-        "error": error
+      traceback.print_exc()
+      error = {
+        "message": err.message if hasattr(err, "message") else str(err),
+        "code": err.errno if hasattr(err, "errno") else None,
+        "type": type(err).__name__
+      }
+  except Exception as err:
+    print(code)
+    traceback.print_exc()
+    error = {
+      "message": err.message if hasattr(err, "message") else str(err),
+      "code": err.errno if hasattr(err, "errno") else None,
+      "type": type(err).__name__
     }
+
+  if save:
+    result_var_name = str(uuid.uuid4())
+    VARIABLE_MAPPING[result_var_name] = result
+
+  if isinstance(result, list):
+    for i in range(0, len(result)):
+      r = result[i]
+      if isinstance(r, sublime.View) or isinstance(r, sublime.Window):
+        r_var_name = str(uuid.uuid4())
+        VARIABLE_MAPPING[r_var_name] = r
+        result[i] = {
+            "var": "",
+            "mapTo": r_var_name,
+            "code": "",
+            "value": r,
+            "error": None
+          }
+
+  try:
+    value = json.loads(json.dumps(result, cls=ObjectEncoder))
+  except Exception as err:
+    traceback.print_exc()
+    
+  return {
+    "var": "",
+    "mapTo": result_var_name,
+    "code": code,
+    "value": value,
+    "error": error
+  }
 
 def tryCommand(callback):
-    result = None
-    error = None
+  result = None
+  error = None
+  value = None
 
-    try:
-        result = callback()
-    except Exception as err:
-        traceback.print_exc()
-        error = {
-            "message": err.message if hasattr(err, "message") else str(err),
-            "code": err.errno if hasattr(err, "errno") else None,
-            "type": type(err).__name__
-        }
-
-    return {
-        "var": "",
-        "mapTo": "",
-        "code": "",
-        "value": json.loads(json.dumps(result, cls=ObjectEncoder)),
-        "error": error
+  try:
+    result = callback()
+  except Exception as err:
+    traceback.print_exc()
+    error = {
+      "message": err.message if hasattr(err, "message") else str(err),
+      "code": err.errno if hasattr(err, "errno") else None,
+      "type": type(err).__name__
     }
 
+  try:
+    value = json.loads(json.dumps(result, cls=ObjectEncoder))
+  except Exception as err:
+    traceback.print_exc()
+
+  return {
+    "var": "",
+    "mapTo": "",
+    "code": "",
+    "value": value,
+    "error": error
+  }
+
 def freeMemory(vars_mapped):
-    global VARIABLE_MAPPING
-    print(VARIABLE_MAPPING)
-    for var_mapped in vars_mapped:
-        if "mapTo" in var_mapped and var_mapped["mapTo"]:
-            del VARIABLE_MAPPING[var_mapped["mapTo"]]
-        elif "self" in var_mapped and var_mapped["self"]["mapTo"]:
-            del VARIABLE_MAPPING[var_mapped["self"]["mapTo"]]
-    print(VARIABLE_MAPPING)
+  global VARIABLE_MAPPING
+  for var_mapped in vars_mapped:
+    if "mapTo" in var_mapped and var_mapped["mapTo"] and var_mapped["mapTo"] in VARIABLE_MAPPING:
+      del VARIABLE_MAPPING[var_mapped["mapTo"]]
+    elif "self" in var_mapped and var_mapped["self"]["mapTo"] and var_mapped["self"]["mapTo"] in VARIABLE_MAPPING:
+      del VARIABLE_MAPPING[var_mapped["self"]["mapTo"]]
 
 def callback(port, *args):
 
@@ -264,6 +288,19 @@ class JSONRPCRequestHandler(BaseHTTPRequestHandler):
         dispatcher["decode_value"] = lambda string: tryCommand(lambda: sublime.decode_value(string))
         dispatcher["expand_variables"] = lambda value, variables: tryCommand(lambda: sublime.expand_variables(value, variables))
         dispatcher["load_settings"] = lambda basename: tryCommand(lambda: sublime.load_settings(basename))
+        dispatcher["packages_path"] = lambda: tryCommand(lambda: sublime.packages_path())
+        dispatcher["installed_packages_path"] = lambda: tryCommand(lambda: sublime.installed_packages_path())
+        dispatcher["cache_path"] = lambda: tryCommand(lambda: sublime.cache_path())
+        dispatcher["get_clipboard"] = lambda size_limit: tryCommand(lambda: sublime.get_clipboard(size_limit))
+        dispatcher["set_clipboard"] = lambda string: tryCommand(lambda: sublime.set_clipboard(string))
+        dispatcher["score_selector"] = lambda scope, selector: tryCommand(lambda: sublime.score_selector(scope, selector))
+        dispatcher["run_command"] = lambda string, args: tryCommand(lambda: sublime.run_command(string, args))
+        dispatcher["log_commands"] = lambda flag: tryCommand(lambda: sublime.log_commands(flag))
+        dispatcher["log_input"] = lambda flag: tryCommand(lambda: sublime.log_input(flag))
+        dispatcher["log_result_regex"] = lambda flag: tryCommand(lambda: sublime.log_result_regex(flag))
+        dispatcher["version"] = lambda: tryCommand(lambda: sublime.version())
+        dispatcher["platform"] = lambda: tryCommand(lambda: sublime.platform())
+        dispatcher["arch"] = lambda: tryCommand(lambda: sublime.arch())
 
         # sublime utils
         dispatcher["freeMemory"] = freeMemory
@@ -417,6 +454,11 @@ class testCommand(sublime_plugin.TextCommand):
         
         if "error" in response:
             print(response)
+
+class test2Command(sublime_plugin.TextCommand):
+  def run(self, edit, **args):
+    print(args)
+    print("ciao")
 
 def start():
   global server

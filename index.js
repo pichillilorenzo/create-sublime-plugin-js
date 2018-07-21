@@ -15,7 +15,8 @@ class testCommand extends TextCommand {
     console.log(args)
 
     let view = await this.view(step)
-    console.log(view)
+    // await view.run_command('test2', null, step)
+    // console.log(view)
 
     let region = await sublime.Region(0, 10)
 
@@ -119,8 +120,8 @@ async function main() {
     // console.log(result)
     // result = await sublime.expand_variables("Hello ${name}", {"name": 'Lorenzo'})
     // console.log(result)
-    let region = await sublime.Region(3, 10)
-    console.log(await region.begin())
+    // let region = await sublime.Region(3, 10)
+    // console.log(await region.begin())
     // let fixPathSettings = await sublime.load_settings("Preferences.sublime-settings")
     // await fixPathSettings.clear_on_change('fixpath-reload')
     // fixPathSettings.add_on_change('fixpath-reload', async () => {
@@ -128,6 +129,23 @@ async function main() {
     //   let region = await sublime.Region(3, 10)
     //   console.log(await region.begin())
     // })
+    // let windows = await sublime.windows()
+    // console.log(await (await windows[0].new_file()).id())
+    // console.log(await (await windows[0].open_file('/Users/lorenzo/Library/Application Support/Sublime Text 3/Packages/test1/node_port.txt', sublime.ENCODED_POSITION + ' | ' + sublime.TRANSIENT)).id())
+    // console.log(await (await sublime.active_window()).id())
+    // console.log(await sublime.packages_path())
+    // console.log(await sublime.installed_packages_path())
+    // console.log(await sublime.cache_path())
+    // console.log(await sublime.get_clipboard())
+    // console.log(await sublime.set_clipboard("asdasd"))
+    // console.log(await sublime.score_selector('script.js', 'script.js'))
+    // await sublime.run_command('show_about_window', {})
+    // await sublime.log_commands(true)
+    // await sublime.log_input(true)
+    // await sublime.log_result_regex(true)
+    // console.log(await sublime.version())
+    // console.log(await sublime.platform())
+    // console.log(await sublime.arch())
   } catch(e) {
     // statements
     console.log(e);

@@ -34,6 +34,12 @@ type View = JSMappedVariable & {
 type Settings = JSMappedVariable & {
 }
 
+type Window = JSMappedVariable & {
+}
+
+type Sheet = JSMappedVariable & {
+}
+
 type StepObject = {
   cb: (any, any) => void
 }
