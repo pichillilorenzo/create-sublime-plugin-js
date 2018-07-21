@@ -62,17 +62,17 @@ def downloadNodeJS():
   os.mkdir(nodeDirPath)
 
   nodeUrl = 'https://nodejs.org/dist/' + NODE_VERSION + '/node-' + NODE_VERSION + '-'
-  exstension = '.tar.gz'
+  extension = '.tar.gz'
 
   if sublime.platform() == 'osx':
     nodeUrl += 'darwin-'
   elif sublime.platform() == 'windows':
     nodeUrl += 'win-'
-    exstension = '.zip'
+    extension = '.zip'
   else:
     nodeUrl += sublime.platform() + '-'
 
-  nodeUrl += sublime.arch() + exstension
+  nodeUrl += sublime.arch() + extension
   nodeZippedFile = os.path.join(nodeDirPath, nodeUrl.split('/')[-1])
 
   print('download nodejs and npm')
