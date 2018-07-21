@@ -13,12 +13,14 @@ class testCommand extends TextCommand {
 
   async run (edit, args, step) {
     console.log(args)
+    console.log(this)
 
     let view = await this.view(step)
+    // console.log(await (await view.symbols(step))[0][0].begin())
     // await view.run_command('test2', null, step)
     // console.log(view)
 
-    let region = await sublime.Region(0, 10)
+    // let region = await sublime.Region(0, 10)
 
     // sublime.set_timeout(async (cbStep) => {
     //   await region.a(4)
@@ -51,17 +53,17 @@ class testCommand extends TextCommand {
     // }, 100)
 
 
-    let result = await view.substr(region, step)
-    console.log(result)
+    // let result = await view.substr(region, step)
+    // console.log(result)
 
-    result = await sublime.Region(0,34)
-    console.log(result)
-    console.log(await result.a())
-    await result.a(5)
-    await result.b(10)
-    console.log(result)
-    console.log(await result.size())
-    console.log(await result.empty())
+    // result = await sublime.Region(0,34)
+    // console.log(result)
+    // console.log(await result.a())
+    // await result.a(5)
+    // await result.b(10)
+    // console.log(result)
+    // console.log(await result.size())
+    // console.log(await result.empty())
 
     //await this.freeMemory(step)
 
@@ -91,7 +93,7 @@ for (let textCommand in textCommands) {
 }
 async function main() {
   try {
-    let result = null
+    // let result = null
     // result = await sublime.error_message("Error")
     // console.log(result)
     // result = await sublime.message_dialog("Message Dialog")
@@ -126,12 +128,12 @@ async function main() {
     // await fixPathSettings.clear_on_change('fixpath-reload')
     // fixPathSettings.add_on_change('fixpath-reload', async () => {
     //   console.log("asdasd")
-    //   let region = await sublime.Region(3, 10)
-    //   console.log(await region.begin())
+    //   let region2 = await sublime.Region(3, 10)
+    //   console.log(await region2.begin())
     // })
     // let windows = await sublime.windows()
     // console.log(await (await windows[0].new_file()).id())
-    // console.log(await (await windows[0].open_file('/Users/lorenzo/Library/Application Support/Sublime Text 3/Packages/test1/node_port.txt', sublime.ENCODED_POSITION + ' | ' + sublime.TRANSIENT)).id())
+    // console.log(await (await windows[0].open_file('/Users/lorenzo/Library/Application Support/Sublime Text 3/Packages/test1/node_port.txt', sublime.ENCODED_POSITION | sublime.TRANSIENT)).id())
     // console.log(await (await sublime.active_window()).id())
     // console.log(await sublime.packages_path())
     // console.log(await sublime.installed_packages_path())

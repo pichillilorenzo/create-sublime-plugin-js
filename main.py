@@ -21,6 +21,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 PACKAGE_PATH = os.path.dirname(os.path.abspath(__file__))
 PACKAGE_NAME = os.path.basename(PACKAGE_PATH)
 SUBLIME_PACKAGES_PATH = os.path.dirname(PACKAGE_PATH)
+
 NODE_VERSION = 'v10.7.0'
 NODE_PATH = os.path.join( PACKAGE_PATH, 'node', 'node.exe' if sublime.platform() == "windows" else os.path.join('bin', 'node') )
 NPM_PATH = os.path.join( PACKAGE_PATH, 'node', 'npm' if sublime.platform() == "windows" else os.path.join('bin', 'npm') )
@@ -123,7 +124,7 @@ VARIABLE_MAPPING = {}
 def evalCode(code, save=True, globals=None, locals=None):
   global VARIABLE_MAPPING
 
-  result_var_name = ""
+  # result_var_name = ""
   result = None
   error = None
   value = None
@@ -149,32 +150,37 @@ def evalCode(code, save=True, globals=None, locals=None):
       "type": type(err).__name__
     }
 
-  if save:
-    result_var_name = str(uuid.uuid4())
-    VARIABLE_MAPPING[result_var_name] = result
+  # if save:
+  #   result_var_name = str(uuid.uuid4())
+  #   VARIABLE_MAPPING[result_var_name] = result
 
-  if isinstance(result, list):
-    for i in range(0, len(result)):
-      r = result[i]
-      if isinstance(r, sublime.View) or isinstance(r, sublime.Window):
-        r_var_name = str(uuid.uuid4())
-        VARIABLE_MAPPING[r_var_name] = r
-        result[i] = {
-            "var": "",
-            "mapTo": r_var_name,
-            "code": "",
-            "value": r,
-            "error": None
-          }
+  # if isinstance(result, list):
+  #   for i in range(0, len(result)):
+  #     r = result[i]
+  #     if isinstance(r, sublime.View) or isinstance(r, sublime.Window):
+  #       r_var_name = str(uuid.uuid4())
+  #       VARIABLE_MAPPING[r_var_name] = r
+  #       result[i] = {
+  #           "mapTo": r_var_name,
+  #           "code": "",
+  #           "value": r,
+  #           "error": None
+  #         }
 
   try:
     value = json.loads(json.dumps(result, cls=ObjectEncoder))
   except Exception as err:
     traceback.print_exc()
-    
+
+  if isinstance(value, dict) and "mapTo" in value:
+    if not save and value["mapTo"] and value["mapTo"] in VARIABLE_MAPPING:
+      del VARIABLE_MAPPING[value["mapTo"]]
+    value["code"] = code
+    value["error"] = error
+    return value
+  
   return {
-    "var": "",
-    "mapTo": result_var_name,
+    "mapTo": "",
     "code": code,
     "value": value,
     "error": error
@@ -200,8 +206,14 @@ def tryCommand(callback):
   except Exception as err:
     traceback.print_exc()
 
+  if isinstance(value, dict) and "mapTo" in value:
+    if value["mapTo"] in VARIABLE_MAPPING:
+      del VARIABLE_MAPPING[value["mapTo"]]
+    value["value"] = None
+    value["error"] = error
+    return value
+  
   return {
-    "var": "",
     "mapTo": "",
     "code": "",
     "value": value,
@@ -218,34 +230,18 @@ def freeMemory(vars_mapped):
 
 def callback(port, *args):
 
-    variable_created = []
-
-    args_var_map = None
-
-    if len(args) > 0:
-      args_var_name = str(uuid.uuid4())
-      VARIABLE_MAPPING[args_var_name] = args
-
-      args_var_map = {
-          "var": "args",
-          "mapTo": args_var_name,
-          "code": "",
-          "value": json.loads(json.dumps(args, cls=ObjectEncoder))
-      }
-
     payload = {
         "method": "callback",
-        "params": [args_var_map] if len(args) > 0 else [],
+        "params": [args] if len(args) > 0 else [],
         "jsonrpc": "2.0",
         "id": 0,
     }
 
-    response = requests.post("http://localhost:" + str(port) + "/jsonrpc", data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
+    response = requests.post("http://localhost:" + str(port) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
 
     while "result" in response and not "end_cb_step" in response["result"]:
 
         result = evalCode(response["result"]["eval"], response["result"]["save"])
-        variable_created.append(result)
 
         payload = {
             "method": "step",
@@ -254,7 +250,7 @@ def callback(port, *args):
             "id": 0,
         }
 
-        response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
+        response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
     
     if "error" in response:
         print(response)
@@ -365,27 +361,54 @@ class ThreadedHTTPServer(object):
             print(line)
 
 class ObjectEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if hasattr(obj, "to_json"):
-            return self.default(obj.to_json())
-        elif hasattr(obj, "__dict__"):
-            d = dict(
-                (key, value)
-                for key, value in inspect.getmembers(obj)
-                if not key.startswith("__")
-                and not inspect.isabstract(value)
-                and not inspect.isbuiltin(value)
-                and not inspect.isfunction(value)
-                and not inspect.isgenerator(value)
-                and not inspect.isgeneratorfunction(value)
-                and not inspect.ismethod(value)
-                and not inspect.ismethoddescriptor(value)
-                and not inspect.isroutine(value)
-            )
-            return self.default(d)
-        elif type(obj) is sublime.Region:
-            return self.default(tuple(obj))
-        return obj
+  def default(self, obj):
+    if type(obj) in [sublime.Region,
+                     sublime.View,
+                     sublime.Window,
+                     sublime.Selection,
+                     sublime.Settings,
+                     sublime.Sheet,
+                     sublime.Phantom,
+                     sublime.PhantomSet,
+                     sublime.Edit] or \
+                     isinstance(obj, sublime_plugin.EventListener) or \
+                     isinstance(obj, sublime_plugin.ViewEventListener) or \
+                     isinstance(obj, sublime_plugin.ApplicationCommand) or \
+                     isinstance(obj, sublime_plugin.WindowCommand) or \
+                     isinstance(obj, sublime_plugin.TextCommand) or \
+                     isinstance(obj, sublime_plugin.TextInputHandler) or \
+                     isinstance(obj, sublime_plugin.ListInputHandler):
+
+      global VARIABLE_MAPPING
+      var_name = str(uuid.uuid4())
+      VARIABLE_MAPPING[var_name] = obj
+      result = {
+          "mapTo": var_name,
+          "code": "",
+          "value": None,
+          "error": None
+        }
+      return self.default(result)
+
+    elif hasattr(obj, "to_json"):
+      return self.default(obj.to_json())
+
+    elif hasattr(obj, "__dict__"):
+      d = dict(
+        (key, value)
+        for key, value in inspect.getmembers(obj)
+        if not key.startswith("__")
+        and not inspect.isabstract(value)
+        and not inspect.isbuiltin(value)
+        and not inspect.isfunction(value)
+        and not inspect.isgenerator(value)
+        and not inspect.isgeneratorfunction(value)
+        and not inspect.ismethod(value)
+        and not inspect.ismethoddescriptor(value)
+        and not inspect.isroutine(value)
+      )
+      return self.default(d)
+    return obj
 
 class testCommand(sublime_plugin.TextCommand):
     def run(self, edit, **args):
@@ -393,55 +416,18 @@ class testCommand(sublime_plugin.TextCommand):
         if not URL_NODE_SERVER:
             return
 
-        global VARIABLE_MAPPING
-
-        self_var_name = str(uuid.uuid4())
-        VARIABLE_MAPPING[self_var_name] = self
-
-        variable_created = []
-
-        self_var_map = {
-            "var": "self",
-            "mapTo": self_var_name,
-            "code": "",
-            "value": json.loads(json.dumps(self, cls=ObjectEncoder))
-        }
-
-        edit_var_name = str(uuid.uuid4())
-        VARIABLE_MAPPING[edit_var_name] = edit
-
-        edit_var_map = {
-            "var": "edit",
-            "mapTo": edit_var_name,
-            "code": "",
-            "value": json.loads(json.dumps(edit, cls=ObjectEncoder))
-        }
-
-        args_var_name = str(uuid.uuid4())
-        VARIABLE_MAPPING[args_var_name] = args
-
-        args_var_map = {
-            "var": "args",
-            "mapTo": args_var_name,
-            "code": "",
-            "value": json.loads(json.dumps(args, cls=ObjectEncoder))
-        }
-
         payload = {
             "method": "testCommand",
-            "params": [self_var_map, edit_var_map, args_var_map],
+            "params": [self, edit, args],
             "jsonrpc": "2.0",
             "id": 0,
         }
 
-        response = requests.post(URL_NODE_SERVER, data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
-
-        variable_created += [self_var_map, edit_var_map, args_var_map]
+        response = requests.post(URL_NODE_SERVER, data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
 
         while "result" in response and not "end_cb_step" in response["result"]:
 
-            result = evalCode(response["result"]["eval"], response["result"]["save"], locals = {"variable_created": variable_created})
-            variable_created.append(result)
+            result = evalCode(response["result"]["eval"], response["result"]["save"])
 
             payload = {
                 "method": "step",
@@ -450,7 +436,7 @@ class testCommand(sublime_plugin.TextCommand):
                 "id": 0,
             }
 
-            response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload), headers=HEADERS_NODE_SERVER).json()
+            response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
         
         if "error" in response:
             print(response)
