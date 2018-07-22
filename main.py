@@ -232,7 +232,7 @@ def callback(port, *args):
 
     payload = {
         "method": "callback",
-        "params": [args] if len(args) > 0 else [],
+        "params": args if len(args) > 0 else [],
         "jsonrpc": "2.0",
         "id": 0,
     }
@@ -291,6 +291,7 @@ class JSONRPCRequestHandler(BaseHTTPRequestHandler):
         dispatcher["set_clipboard"] = lambda string: tryCommand(lambda: sublime.set_clipboard(string))
         dispatcher["score_selector"] = lambda scope, selector: tryCommand(lambda: sublime.score_selector(scope, selector))
         dispatcher["run_command"] = lambda string, args: tryCommand(lambda: sublime.run_command(string, args))
+        dispatcher["get_macro"] = lambda: tryCommand(lambda: sublime.get_macro())
         dispatcher["log_commands"] = lambda flag: tryCommand(lambda: sublime.log_commands(flag))
         dispatcher["log_input"] = lambda flag: tryCommand(lambda: sublime.log_input(flag))
         dispatcher["log_result_regex"] = lambda flag: tryCommand(lambda: sublime.log_result_regex(flag))

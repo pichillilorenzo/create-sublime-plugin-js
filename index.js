@@ -16,6 +16,18 @@ class testCommand extends TextCommand {
     console.log(this)
 
     let view = await this.view(step)
+
+    // await view.show_popup("test <a href=\"yeah\">yeah</a>", 0, -1, 300, 400, 
+    //   async (href, step2) => {
+    //     console.log(href)
+    //     await view.update_popup("another test <a href=\"test\">test</a>", step2)
+    //     console.log(await view.is_popup_visible())
+    //   }, async (step2) => {
+    //     console.log("hide")
+    //   }, step)
+
+    // console.log(await view.style(step))
+    // console.log(await view.style_for_scope("script.js", step))
     // console.log(await (await view.symbols(step))[0][0].begin())
     // await view.run_command('test2', null, step)
     // console.log(view)
@@ -141,6 +153,7 @@ async function main() {
     // console.log(await sublime.get_clipboard())
     // console.log(await sublime.set_clipboard("asdasd"))
     // console.log(await sublime.score_selector('script.js', 'script.js'))
+    // console.log(await sublime.get_macro())
     // await sublime.run_command('show_about_window', {})
     // await sublime.log_commands(true)
     // await sublime.log_input(true)
