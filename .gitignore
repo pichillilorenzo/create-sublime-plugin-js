@@ -66,3 +66,8 @@ node/
 .history/
 node_port.txt
 sublime_port.txt
+
+# only for test
+src/
+Context.sublime-menu
+dependencies.json
