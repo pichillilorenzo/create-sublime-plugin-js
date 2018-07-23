@@ -1,10 +1,43 @@
 {
+  "name": "create-sublime-plugin-js",
+  "description": "",
+  "version": "0.1.0",
   "scripts": {},
+  "keywords": [
+  ],
   "dependencies": {
     "get-port": "^3.2.0",
-    "jayson": "^2.0.6"
+    "jayson": "^2.0.6",
+    "commander": "2.16.0"
   },
   "devDependencies": {
-    
+    "ava": "1.0.0-beta.6",
+    "coveralls": "^3.0.1",
+    "nyc": "^12.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pichillilorenzo/create-sublime-plugin-js"
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "author": {
+    "name": "Lorenzo Pichilli",
+    "email": "pichillilorenzo@gmail.com",
+    "url": "https://github.com/pichillilorenzo"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "bin": {
+    "deps-report": "lib/cli.js"
+  },
+  "main": "lib/index.js",
+  "ava": {
+    "files": [
+      "./tests/**/*.js"
+    ]
   }
 }
