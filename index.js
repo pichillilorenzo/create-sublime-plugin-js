@@ -4,148 +4,23 @@ const fs = require('fs'),
       path = require('path'),
       jayson = require('jayson'),
       getPort = require('get-port'),
-      sublime = require('./lib/sublime.js'),
-      TextCommand = require('./lib/TextCommand.js'),
-      WindowCommand = require('./lib/WindowCommand.js')
+      globby = require('globby')
 
-let textCommands = require('./lib/textCommandList.js')
-let windowCommands = require('./lib/windowCommandList.js')
+let textCommands = require('./jslib/textCommandList.js')
+let windowCommands = require('./jslib/windowCommandList.js')
 
-class testCommand extends TextCommand {
+const entries = globby.sync([
+  path.join(__dirname, 'src', 'commands', '*.js'),
+  path.join(__dirname, 'src', 'listeners', '*.js')
+])
 
-  async run (edit, args, step) {
-    // console.log(args)
-    // console.log(this)
-
-    let view = await this.view(step)
-    let sel = await view.sel()
-    let phantom = await sublime.Phantom(await sel.get(0, step), 'content <a href="asd">fgg</a>', sublime.LAYOUT_INLINE, (href) => {
-      console.log(href)
-    })
-
-    let phantom_set = await sublime.PhantomSet(view, 'phantomTestKey')
-    await phantom_set.update([phantom], step)
-
-    sublime.set_timeout_async(async (subStep) => {
-      await phantom_set.update([])
-    }, 2000)
-
-    // console.log(await sel.get(0, step))
-
-    // console.log(await sel.length(step))
-
-    // await view.show_popup("test <a href=\"yeah\">yeah</a>", 0, -1, 300, 400, 
-    //   async (href, step2) => {
-    //     console.log(href)
-    //     await view.update_popup("another test <a href=\"test\">test</a>", step2)
-    //     console.log(await view.is_popup_visible())
-    //   }, async (step2) => {
-    //     console.log("hide")
-    //   }, step)
-
-    // console.log(await view.style(step))
-    // console.log(await view.style_for_scope("script.js", step))
-    // console.log(await (await view.symbols(step))[0][0].begin())
-    // await view.run_command('test2', null, step)
-    // console.log(view)
-
-    // let region = await sublime.Region(40, 90)
-    // console.log(await (await region.cover(await sel.get(0, step))).begin())
-    // console.log(await (await region.intersection(await sublime.Region(70, 80))).begin())
-    // console.log(await region.intersects(await sublime.Region(30, 50)))
-    // console.log(await region.contains(await sublime.Region(70, 80)))
-
-    // sublime.set_timeout(async (cbStep) => {
-    //   await region.a(4)
-    //   let result2 = await view.substr(region, cbStep)
-    //   console.log(result2)
-    // }, 3000)
-
-    // await region.a(2)
-
-    // var result = await view.insert(edit, 0, 'asd', step)
-    // console.log(result)
-
-    // result = await view.is_dirty(step)
-
-    // sublime.set_timeout_async(async (cbStep) => {
-    //   result = await view.substr(region, cbStep)
-    //   console.log("a1")
-    //   console.log(result)
-
-    //   sublime.set_timeout_async(async (cbStep) => {
-    //     result = await view.set_scratch(true, cbStep)
-    //     console.log("a2")
-    //     console.log(result)
-    //     sublime.set_timeout_async(async (cbStep) => {
-    //       result = await view.is_dirty(cbStep)
-    //       console.log("a3")
-    //       console.log(result)
-    //     }, 0)
-    //   }, 0)
-    // }, 100)
-
-
-    // let result = await view.substr(region, step)
-    // console.log(result)
-
-    // result = await sublime.Region(0,34)
-    // console.log(result)
-    // console.log(await result.a())
-    // await result.a(5)
-    // await result.b(10)
-    // console.log(result)
-    // console.log(await result.size())
-    // console.log(await result.empty())
-
-    //await this.freeMemory(step)
-
-  }
+for (let entry of entries) {
+  /*
+  Load commands and listeners
+   */
+  // $Ignore
+  require(entry)
 }
-
-new testCommand()
-
-
-class test2Command extends WindowCommand {
-
-  async run (args, step) {
-    // console.log(args)
-    // console.log(this)
-
-    let w = await this.window(step)
-
-    // console.log(await w.new_file(step))
-    // console.log(await w.find_open_file('main.py', step))
-    // console.log(await w.active_sheet(step))
-    // console.log(await w.active_view(step))
-    // console.log(await w.folders(step))
-    // await w.show_quick_panel(['ads','asd'], (index, subStep) => {
-    //   console.log('on_done ' + index)
-    // }, 0, -1, (index, subStep) => {
-    //   console.log('on_navigation ' + index)
-    // }, step)
-    // await w.show_input_panel("caption", "initial_text", (input) => {
-    //   console.log("on_done " + input)
-    // }, (input) => {
-    //   console.log("on_change " + input)
-    // }, () => {
-    //   console.log("cancel")
-    // }, step)
-    // console.log(await w.create_output_panel("Test Output Panel", false, step))
-    // console.log(await w.find_output_panel("Test Output Panel", step))
-    // sublime.set_timeout_async(async (subStep) => {
-    //   await w.destroy_output_panel("Test Output Panel", subStep)
-    // }, 5000)
-    // console.log(await w.active_panel(step))
-    // console.log(await w.panels(step))
-    console.log(await w.extract_variables(step))
-    
-  }
-
-}
-
-new test2Command()
-
 
 let JsonRpcMethods = {}
 for (let textCommand in textCommands) {
@@ -165,7 +40,48 @@ for (let textCommand in textCommands) {
       "end_cb_step": "END"
     })
   }
+
+  JsonRpcMethods["is_enabled_" + textCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    let is_enabled = true
+
+    try {
+      textCommands[textCommand]._init(args[0])
+      is_enabled = await textCommands[textCommand].is_enabled(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END",
+      "is_enabled": is_enabled
+    })
+  }
+
+  JsonRpcMethods["is_visible_" + textCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    let is_visible = true
+
+    try {
+      textCommands[textCommand]._init(args[0])
+      is_visible = await textCommands[textCommand].is_visible(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END",
+      "is_visible": is_visible
+    })
+  }
 }
+
 for (let windowCommand in windowCommands) {
   JsonRpcMethods[windowCommand] = async (args, cbStep) => {
     let step = {
@@ -181,6 +97,46 @@ for (let windowCommand in windowCommands) {
 
     step.cb(null, {
       "end_cb_step": "END"
+    })
+  }
+
+  JsonRpcMethods["is_enabled_" + windowCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    let is_enabled = true
+
+    try {
+      windowCommands[windowCommand]._init(args[0])
+      is_enabled = await windowCommands[windowCommand].is_enabled(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END",
+      "is_enabled": is_enabled
+    })
+  }
+
+  JsonRpcMethods["is_visible_" + windowCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    let is_visible = true
+
+    try {
+      windowCommands[windowCommand]._init(args[0])
+      is_visible = await windowCommands[windowCommand].is_visible(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END",
+      "is_visible": is_visible
     })
   }
 }
@@ -259,6 +215,7 @@ getPort().then(port => {
   }
   fs.writeFileSync(path.join(__dirname, 'node_port.txt'), port , {flag: 'w+'})
   server.http().listen(port)
+  // Send to Sublime the port used by this server
   process.stdout.write(port + '\n')
   main()
 })

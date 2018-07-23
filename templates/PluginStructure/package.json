@@ -1,0 +1,27 @@
+{
+  "name": "sublime-plugin",
+  "description": "",
+  "version": "0.0.0",
+  "scripts": {},
+  "keywords": [],
+  "dependencies": {
+    "create-sublime-plugin-js": "latest"
+  },
+  "devDependencies": {
+
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "main": "index.js"
+}

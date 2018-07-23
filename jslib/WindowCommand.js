@@ -23,6 +23,14 @@ class WindowCommand {
 
   }
 
+  async is_enabled (args /*: Object*/, step /*: StepObject*/) /*: Promise<boolean>*/ {
+    return true
+  }
+
+  async is_visible (args /*: Object*/, step /*: StepObject*/) /*: Promise<boolean>*/ {
+    return true
+  }
+
   window (step /*: StepObject*/) /*: Promise<Window>*/ {
     return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].window`, true, step, ((result, resultObject) => {
       return new Window(resultObject)

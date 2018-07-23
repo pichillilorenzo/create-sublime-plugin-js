@@ -19,8 +19,16 @@ class TextCommand {
     this.self = s
   }
 
-  async run(edit /*: MappedVariable*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<any>*/ {
+  async run (edit /*: MappedVariable*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<any>*/ {
 
+  }
+
+  async is_enabled (args /*: Object*/, step /*: StepObject*/) /*: Promise<boolean>*/ {
+    return true
+  }
+
+  async is_visible (args /*: Object*/, step /*: StepObject*/) /*: Promise<boolean>*/ {
+    return true
   }
 
   view (step /*: StepObject*/) /*: Promise<View>*/ {

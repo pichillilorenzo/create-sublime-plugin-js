@@ -1,2 +1,7 @@
 toc:
   - sublime
+  - View
+  - Window
+  - Region
+  - Phantom
+  - PhantomSet
