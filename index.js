@@ -12,10 +12,15 @@ let textCommands = require('./lib/textCommandList.js')
 class testCommand extends TextCommand {
 
   async run (edit, args, step) {
-    console.log(args)
-    console.log(this)
+    // console.log(args)
+    // console.log(this)
 
     let view = await this.view(step)
+    let sel = await view.sel()
+
+    // console.log(await sel.get(0, step))
+
+    // console.log(await sel.length(step))
 
     // await view.show_popup("test <a href=\"yeah\">yeah</a>", 0, -1, 300, 400, 
     //   async (href, step2) => {
@@ -32,7 +37,11 @@ class testCommand extends TextCommand {
     // await view.run_command('test2', null, step)
     // console.log(view)
 
-    // let region = await sublime.Region(0, 10)
+    // let region = await sublime.Region(40, 90)
+    // console.log(await (await region.cover(await sel.get(0, step))).begin())
+    // console.log(await (await region.intersection(await sublime.Region(70, 80))).begin())
+    // console.log(await region.intersects(await sublime.Region(30, 50)))
+    // console.log(await region.contains(await sublime.Region(70, 80)))
 
     // sublime.set_timeout(async (cbStep) => {
     //   await region.a(4)

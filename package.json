@@ -1,7 +1,5 @@
 {
-  "scripts": {
-    
-  },
+  "scripts": {},
   "dependencies": {
     "get-port": "^3.2.0",
     "jayson": "^2.0.6"

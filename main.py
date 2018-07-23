@@ -124,7 +124,6 @@ VARIABLE_MAPPING = {}
 def evalCode(code, save=True, globals=None, locals=None):
   global VARIABLE_MAPPING
 
-  # result_var_name = ""
   result = None
   error = None
   value = None
@@ -150,23 +149,6 @@ def evalCode(code, save=True, globals=None, locals=None):
       "type": type(err).__name__
     }
 
-  # if save:
-  #   result_var_name = str(uuid.uuid4())
-  #   VARIABLE_MAPPING[result_var_name] = result
-
-  # if isinstance(result, list):
-  #   for i in range(0, len(result)):
-  #     r = result[i]
-  #     if isinstance(r, sublime.View) or isinstance(r, sublime.Window):
-  #       r_var_name = str(uuid.uuid4())
-  #       VARIABLE_MAPPING[r_var_name] = r
-  #       result[i] = {
-  #           "mapTo": r_var_name,
-  #           "code": "",
-  #           "value": r,
-  #           "error": None
-  #         }
-
   try:
     value = json.loads(json.dumps(result, cls=ObjectEncoder))
   except Exception as err:
@@ -175,6 +157,7 @@ def evalCode(code, save=True, globals=None, locals=None):
   if isinstance(value, dict) and "mapTo" in value:
     if not save and value["mapTo"] and value["mapTo"] in VARIABLE_MAPPING:
       del VARIABLE_MAPPING[value["mapTo"]]
+      value["mapTo"] = ''
     value["code"] = code
     value["error"] = error
     return value
@@ -411,41 +394,43 @@ class ObjectEncoder(json.JSONEncoder):
       return self.default(d)
     return obj
 
-class testCommand(sublime_plugin.TextCommand):
-    def run(self, edit, **args):
+class JSTextCommand():
 
-        if not URL_NODE_SERVER:
-            return
+  def run(self, edit, **args):
+
+    if not URL_NODE_SERVER:
+        return
+
+    payload = {
+        "method": type(self).__name__,
+        "params": [self, edit, args],
+        "jsonrpc": "2.0",
+        "id": 0,
+    }
+
+    response = requests.post(URL_NODE_SERVER, data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
+
+    while "result" in response and not "end_cb_step" in response["result"]:
+
+        result = evalCode(response["result"]["eval"], response["result"]["save"])
 
         payload = {
-            "method": "testCommand",
-            "params": [self, edit, args],
+            "method": "step",
+            "params": [result],
             "jsonrpc": "2.0",
             "id": 0,
         }
 
-        response = requests.post(URL_NODE_SERVER, data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
+        response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
+    
+    if "error" in response:
+        print(response)
 
-        while "result" in response and not "end_cb_step" in response["result"]:
+class testCommand(JSTextCommand, sublime_plugin.TextCommand):
 
-            result = evalCode(response["result"]["eval"], response["result"]["save"])
-
-            payload = {
-                "method": "step",
-                "params": [result],
-                "jsonrpc": "2.0",
-                "id": 0,
-            }
-
-            response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
-        
-        if "error" in response:
-            print(response)
-
-class test2Command(sublime_plugin.TextCommand):
   def run(self, edit, **args):
-    print(args)
-    print("ciao")
+    super(testCommand, self).run(edit, **args)
+
 
 def start():
   global server
