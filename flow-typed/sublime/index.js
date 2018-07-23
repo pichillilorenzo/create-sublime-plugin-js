@@ -40,6 +40,12 @@ type Window = JSMappedVariable & {
 type Sheet = JSMappedVariable & {
 }
 
+type Phantom = JSMappedVariable & {
+}
+
+type PhantomSet = JSMappedVariable & {
+}
+
 type StepObject = {
   cb: (any, any) => void
 }

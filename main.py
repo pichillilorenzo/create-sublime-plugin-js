@@ -127,7 +127,7 @@ def evalCode(code, save=True, globals=None, locals=None):
   result = None
   error = None
   value = None
-  
+
   try:
     result = eval(code, globals, locals)
   except SyntaxError as e:
@@ -161,7 +161,7 @@ def evalCode(code, save=True, globals=None, locals=None):
     value["code"] = code
     value["error"] = error
     return value
-  
+
   return {
     "mapTo": "",
     "code": code,
@@ -369,7 +369,7 @@ class ObjectEncoder(json.JSONEncoder):
       result = {
           "mapTo": var_name,
           "code": "",
-          "value": None,
+          "value": "SublimeObject",
           "error": None
         }
       return self.default(result)
@@ -426,14 +426,67 @@ class JSTextCommand():
     if "error" in response:
         print(response)
 
+class JSWindowCommand():
+
+  def run(self, **args):
+
+    if not URL_NODE_SERVER:
+        return
+
+    payload = {
+        "method": type(self).__name__,
+        "params": [self, args],
+        "jsonrpc": "2.0",
+        "id": 0,
+    }
+
+    response = requests.post(URL_NODE_SERVER, data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
+
+    while "result" in response and not "end_cb_step" in response["result"]:
+
+        result = evalCode(response["result"]["eval"], response["result"]["save"])
+
+        payload = {
+            "method": "step",
+            "params": [result],
+            "jsonrpc": "2.0",
+            "id": 0,
+        }
+
+        response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=HEADERS_NODE_SERVER).json()
+    
+    if "error" in response:
+        print(response)
+
 class testCommand(JSTextCommand, sublime_plugin.TextCommand):
 
   def run(self, edit, **args):
     super(testCommand, self).run(edit, **args)
 
+class test2Command(JSWindowCommand, sublime_plugin.WindowCommand):
+
+  def run(self, **args):
+    super(test2Command, self).run(**args)
+
 
 def start():
   global server
+
+  if os.path.exists(NODE_PATH):
+    output = ''
+    try:
+      output = subprocess.check_output([NODE_PATH, '-v'], stderr=subprocess.STDOUT)
+      output = codecs.decode(output, "utf-8", "ignore").strip()
+    except Exception as e:
+      sublime.error_message('Nodejs and npm is not working for the "' + PACKAGE_NAME + '" plugin!\nError:' + str(e))
+      
+    if NODE_VERSION != output:
+      print('Node version incorrect: ' + output)
+      print('Removing current node version')
+      if sublime.platform() == "windows":
+        os.system('rmdir /S /Q \"{}\"'.format(os.path.join( PACKAGE_PATH, 'node' )))
+      else:
+        shutil.rmtree(os.path.join( PACKAGE_PATH, 'node' ))
 
   if not os.path.exists(NODE_PATH):
     # download nodejs and npm
