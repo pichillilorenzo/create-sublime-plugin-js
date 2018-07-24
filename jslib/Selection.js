@@ -2,21 +2,18 @@
 
 const util = require('./util.js'),
       config = require('./config.js'),
-      Region = require('./Region.js')
+      Region = require('./Region.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * Maintains a set of Regions, ensuring that none overlap. The regions are kept in sorted order.
  *
  * **NOTE**: use [sublime.Selection()](#sublimeselection) to instantiate a selection.
  */
-class Selection {
+class Selection extends SublimeObject {
 
-  /*::
-  self: MappedVariable
-  */
-
-  constructor (s /*: MappedVariable*/) {
-    this.self = s
+  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
+    super(self, stepRequired, codeChainString)
   }
 
   /**

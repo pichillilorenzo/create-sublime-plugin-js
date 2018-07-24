@@ -5,28 +5,38 @@ const util = require('./util.js'),
       Settings = require('./Settings.js'),
       Window = require('./Window.js'),
       Region = require('./Region.js'),
-      Selection = require('./Selection.js')
+      Selection = require('./Selection.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * Represents a view ([sublime.View Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime.View)) into a text buffer. Note that multiple views may refer to the same buffer, but they have their own unique selection and geometry.
  *
  * **NOTE**: use [sublime.View()](#sublimeview) to instantiate a view.
  */
-class View {
+class View extends SublimeObject {
 
-  /*::
-  self: MappedVariable
-  */
-
-  constructor (s /*: MappedVariable*/) {
-    this.self = s
+  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
+    super(self, stepRequired, codeChainString)
   }
 
   /**
    * Returns a number that uniquely identifies this view.
    */
   id (step /*: ?StepObject*/) /*: Promise<number>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].id()`, false, step)
+
+    this.checkStep(step)
+
+    let completeCode = (this.self) ? `${config.variableMappingName}["${this.self.mapTo}"].id()` : ''
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.id()`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**

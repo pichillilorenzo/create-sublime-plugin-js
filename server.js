@@ -11,8 +11,8 @@ let windowCommands = require('./jslib/windowCommandList.js')
 let applicationCommands = require('./jslib/applicationCommandList.js')
 
 const entries = globby.sync([
-  path.join(__dirname, 'src', 'commands', '*.js'),
-  path.join(__dirname, 'src', 'listeners', '*.js')
+  path.join(__dirname, 'src', 'commands', '**', '*.js'),
+  path.join(__dirname, 'src', 'listeners', '**', '*.js')
 ])
 
 for (let entry of entries) {

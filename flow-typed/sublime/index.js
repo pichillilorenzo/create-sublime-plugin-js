@@ -14,39 +14,44 @@ type MappedVariable = {
   error: PythonError
 }
 
-type JSMappedVariable = {
-  self: MappedVariable
+type SublimeObject = {
+  self: MappedVariable | null,
+  codeChainString: string,
+  codeChainString: string,
+  stepRequired: boolean,
+  +wrapMethod: ({complete: string, pre: string, after: string}, Function, Function, boolean) => Promise<any> | any,
+  +isNull: (?StepObject) => Promise<boolean>,
+  +checkStep: (?StepObject) => void
 }
 
-type Region = JSMappedVariable & {
-  a: (?number) => Promise<?number>,
-  b: (?number) => Promise<?number>,
-  xpos: (?number) => Promise<?number>,
-  begin: () => Promise<number>,
-  end: () => Promise<number>,
-  size: () => Promise<number>,
-  empty: () => Promise<boolean>
+type Region = SublimeObject & {
+  +a: (?number) => Promise<?number>,
+  +b: (?number) => Promise<?number>,
+  +xpos: (?number) => Promise<?number>,
+  +begin: () => Promise<number>,
+  +end: () => Promise<number>,
+  +size: () => Promise<number>,
+  +empty: () => Promise<boolean>
 }
 
-type View = JSMappedVariable & {
+type View = SublimeObject & {
+  +id: (?StepObject) => Promise<number>
 }
 
-type Settings = JSMappedVariable & {
+type Settings = SublimeObject & {
 }
 
-type Window = JSMappedVariable & {
+type Window = SublimeObject & {
+  +active_view: (?StepObject) => Promise<View> | View
 }
 
-type Sheet = JSMappedVariable & {
+type Sheet = SublimeObject & {
 }
 
-type Phantom = JSMappedVariable & {
+type Phantom = SublimeObject & {
 }
 
-type PhantomSet = JSMappedVariable & {
-}
-
-type CommandInputHandler = JSMappedVariable & {
+type PhantomSet = SublimeObject & {
 }
 
 type StepObject = {

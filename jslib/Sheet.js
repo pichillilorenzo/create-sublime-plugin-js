@@ -3,21 +3,18 @@
 const util = require('./util.js'),
       config = require('./config.js'),
       Window = require('./Window.js'),
-      View = require('./View.js')
+      View = require('./View.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * Represents a content container, i.e. a tab, within a window. Sheets may contain a {@link View}, or an image preview.
  *
  * **NOTE**: use [sublime.Sheet()](#sublimesheet) to instantiate a sheet.
  */
-class Sheet {
+class Sheet extends SublimeObject {
 
-  /*::
-  self: MappedVariable
-  */
-
-  constructor (s /*: MappedVariable*/) {
-    this.self = s
+  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
+    super(self, stepRequired, codeChainString)
   }
 
   /**

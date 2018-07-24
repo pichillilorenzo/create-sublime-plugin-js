@@ -1,21 +1,18 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js')
+      config = require('./config.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * A collection that manages {@link Phantoms} and the process of adding them, updating them and removing them from the {@link View}.
  *
  * **NOTE**: use [sublime.PhantomSet()](#sublimephantomset) to instantiate a phantomset.
  */
-class PhantomSet {
+class PhantomSet extends SublimeObject {
 
-  /*::
-  self: MappedVariable
-  */
-
-  constructor (s /*: MappedVariable*/) {
-    this.self = s
+  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
+    super(self, stepRequired, codeChainString)
   }
 
   /**

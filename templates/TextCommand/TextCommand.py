@@ -1,6 +1,6 @@
 import sublime_plugin
 
-from ...pylib.JSTextCommand import JSTextCommand
+from ....pylib.JSTextCommand import JSTextCommand
 
 class $commandNameCommand(JSTextCommand, sublime_plugin.TextCommand):
 

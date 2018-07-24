@@ -61,7 +61,7 @@ class TextCommand {
 
   view (step /*: StepObject*/) /*: Promise<View>*/ {
     return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].view`, true, step, ((result, resultObject) => {
-      return new View(resultObject)
+      return new View(resultObject, true)
     }) )
   }
 

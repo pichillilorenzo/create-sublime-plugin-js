@@ -1,21 +1,18 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js')
+      config = require('./config.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * ([sublime.Settings Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime.Settings)).
  *
  * **NOTE**: use [sublime.Settings()](#sublimesettings) to instantiate a settings.
  */
-class Settings {
+class Settings extends SublimeObject {
 
-  /*::
-  self: MappedVariable
-  */
-
-  constructor (s /*: MappedVariable*/) {
-    this.self = s
+  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
+    super(self, stepRequired, codeChainString)
   }
 
   /**

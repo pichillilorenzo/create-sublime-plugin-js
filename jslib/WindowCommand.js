@@ -54,7 +54,7 @@ class WindowCommand {
 
   window (step /*: StepObject*/) /*: Promise<Window>*/ {
     return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].window`, true, step, ((result, resultObject) => {
-      return new Window(resultObject)
+      return new Window(resultObject, true)
     }) )
   }
 

@@ -1,6 +1,6 @@
 import sublime_plugin
 
-from ...pylib.JSApplicationCommand import JSApplicationCommand
+from ....pylib.JSApplicationCommand import JSApplicationCommand
 
 class $commandNameCommand(JSApplicationCommand, sublime_plugin.ApplicationCommand):
 
