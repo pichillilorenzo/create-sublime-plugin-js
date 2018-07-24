@@ -6,10 +6,8 @@ import codecs
 
 from .pylib import global_vars
 from .pylib import util
-from .pylib.JSTextCommand import JSTextCommand
-from .pylib.JSWindowCommand import JSWindowCommand
-from .pylib.ThreadedHTTPServer import ThreadedHTTPServer
 from .pylib.JSONRPCRequestHandler import JSONRPCRequestHandler
+from .pylib.ThreadedHTTPServer import ThreadedHTTPServer
 
 from .src.commands import *
 from .src.listeners import *

@@ -4,5 +4,5 @@ from ...pylib.JSApplicationCommand import JSApplicationCommand
 
 class $commandNameCommand(JSApplicationCommand, sublime_plugin.ApplicationCommand):
 
-  def run(self, edit, **args):
-    super($commandNameCommand, self).run(edit, **args)
+  def run(self, **args):
+    super($commandNameCommand, self).run(**args)

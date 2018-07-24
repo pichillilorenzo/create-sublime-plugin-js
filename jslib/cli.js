@@ -52,8 +52,10 @@ commander
   .option('-t, --type [type]', 'Type of command: TextCommand, WindowCommand or ApplicationCommand', 'TextCommand')
   .action((commandName, options) => {
 
-    if (!fs.existsSync(path.join('src', 'commands'))) {
-      console.log(`Error: Path ${path.join('src', 'commands')} doesn't exists.`)
+    let currAbsPath = path.resolve('.')
+    
+    if (!fs.existsSync(path.join(currAbsPath, 'src', 'commands'))) {
+      console.log(`Error: Path ${path.join(currAbsPath, 'src', 'commands')} doesn't exists.`)
       return
     }
 
@@ -67,8 +69,22 @@ commander
     let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.js')).toString().replace(/\$commandName/g, commandName)
     let pyCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.py')).toString().replace(/\$commandName/g, commandName)
 
-    fs.writeFileSync(path.join('src', 'commands', commandName + 'Command.js'), jsCode)
-    fs.writeFileSync(path.join('src', 'commands', commandName + 'Command.py'), pyCode)
+    fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command.js'), jsCode)
+    fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command.py'), pyCode)
+
+    const files = fs.readdirSync(path.join(currAbsPath, 'src', 'commands'))
+    let importFromPython = []
+    let exportAllPython = []
+    for (let file of files) {
+      let ext = path.extname(file)
+      let filename = path.basename(file, ext)
+      if (ext == '.py' && path.basename(file) != "__init__.py") {
+        importFromPython.push(`from .${filename} import ${filename}`)
+        exportAllPython.push(`"${filename}"`)
+      }
+    }
+
+    fs.writeFileSync(path.join('src', 'commands', '__init__.py'), `${importFromPython.join("\n")}\n\n__all__ = [${exportAllPython.join(",")}]`)
 
   })
 

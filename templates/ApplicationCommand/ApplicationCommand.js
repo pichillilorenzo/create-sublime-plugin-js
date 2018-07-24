@@ -1,5 +1,5 @@
-const ApplicationCommand = require('create-sublime-plugin-js/ApplicationCommand.js'),
-      sublime = require('create-sublime-plugin-js/sublime.js')
+const ApplicationCommand = require('create-sublime-plugin-js').ApplicationCommand,
+      sublime = require('create-sublime-plugin-js').sublime
 
 class $commandNameCommand extends ApplicationCommand {
 

@@ -1,23 +1,18 @@
 // @flow
 
-const util = require('./util.js'),
-      config = require('./config.js'),
-      windowCommands = require('./windowCommandList.js'),
-      Window = require('./Window.js')
+const applicationCommands = require('./applicationCommandList.js')
 
 /**
- * WindowCommands are instantiated once per window. The {@link Window} object may be retrieved via ```this.window()```.
- *
- * [sublime_plugin.WindowCommand Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.WindowCommand).
+ * [sublime_plugin.ApplicationCommand Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.ApplicationCommand).
  */
-class WindowCommand {
+class ApplicationCommand {
 
   /*::
   self: MappedVariable
   */
 
   constructor () {
-    windowCommands[this.constructor.name] = this
+    applicationCommands[this.constructor.name] = this
   }
 
   _init (s /*: MappedVariable*/) /*: void*/ {
@@ -46,18 +41,19 @@ class WindowCommand {
   }
 
   /**
+   * Returns ```true``` if a checkbox should be shown next to the menu item. The ```.sublime-menu``` file must have the checkbox attribute set to ```true``` for this to be used.
+   */
+  async is_checked (args /*: Object*/, step /*: StepObject*/) /*: Promise<boolean>*/ {
+    return true
+  }
+
+  /**
    * Returns a description of the command with the given arguments. Used in the menu, if no caption is provided. Return ```null``` to get the default description.
    */
   async description (args /*: Object*/, step /*: StepObject*/) /*: Promise<string | null>*/ {
     return null
   }
 
-  window (step /*: StepObject*/) /*: Promise<Window>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].window`, true, step, ((result, resultObject) => {
-      return new Window(resultObject)
-    }) )
-  }
-
 }
 
-module.exports = WindowCommand
+module.exports = ApplicationCommand

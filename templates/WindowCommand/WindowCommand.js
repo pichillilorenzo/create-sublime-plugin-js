@@ -1,5 +1,5 @@
-const WindowCommand = require('create-sublime-plugin-js/WindowCommand.js'),
-      sublime = require('create-sublime-plugin-js/sublime.js')
+const WindowCommand = require('create-sublime-plugin-js').WindowCommand,
+      sublime = require('create-sublime-plugin-js').sublime
 
 class $commandNameCommand extends WindowCommand {
 

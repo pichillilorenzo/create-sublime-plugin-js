@@ -4,5 +4,5 @@ from ...pylib.JSWindowCommand import JSWindowCommand
 
 class $commandNameCommand(JSWindowCommand, sublime_plugin.WindowCommand):
 
-  def run(self, edit, **args):
-    super($commandNameCommand, self).run(edit, **args)
+  def run(self, **args):
+    super($commandNameCommand, self).run(**args)

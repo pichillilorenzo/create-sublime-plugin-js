@@ -8,6 +8,7 @@ const fs = require('fs'),
 
 let textCommands = require('./jslib/textCommandList.js')
 let windowCommands = require('./jslib/windowCommandList.js')
+let applicationCommands = require('./jslib/applicationCommandList.js')
 
 const entries = globby.sync([
   path.join(__dirname, 'src', 'commands', '*.js'),
@@ -140,6 +141,66 @@ for (let windowCommand in windowCommands) {
     })
   }
 }
+
+for (let applicationCommand in applicationCommands) {
+  JsonRpcMethods[applicationCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    try {
+      applicationCommands[applicationCommand]._init(args[0])
+      await applicationCommands[applicationCommand].run(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END"
+    })
+  }
+
+  JsonRpcMethods["is_enabled_" + applicationCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    let is_enabled = true
+
+    try {
+      applicationCommands[applicationCommand]._init(args[0])
+      is_enabled = await applicationCommands[applicationCommand].is_enabled(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END",
+      "is_enabled": is_enabled
+    })
+  }
+
+  JsonRpcMethods["is_visible_" + applicationCommand] = async (args, cbStep) => {
+    let step = {
+      cb: cbStep
+    }
+
+    let is_visible = true
+
+    try {
+      applicationCommands[applicationCommand]._init(args[0])
+      is_visible = await applicationCommands[applicationCommand].is_visible(args[1].value, step) 
+    } catch(e) {
+      console.log(e);
+    }
+
+    step.cb(null, {
+      "end_cb_step": "END",
+      "is_visible": is_visible
+    })
+  }
+}
+
 
 async function main() {
   try {

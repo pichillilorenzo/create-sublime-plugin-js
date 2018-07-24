@@ -29,9 +29,6 @@
     "url": "https://github.com/pichillilorenzo/create-sublime-plugin-js"
   },
   "license": "MIT",
-  "files": [
-    "lib"
-  ],
   "author": {
     "name": "Lorenzo Pichilli",
     "email": "pichillilorenzo@gmail.com",
@@ -41,7 +38,7 @@
     "node": ">=8.0.0"
   },
   "bin": {
-    "deps-report": "lib/cli.js"
+    "create-sublime-plugin-js": "jslib/cli.js"
   },
   "main": "index.js",
   "ava": {

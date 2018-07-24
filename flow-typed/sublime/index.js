@@ -46,6 +46,9 @@ type Phantom = JSMappedVariable & {
 type PhantomSet = JSMappedVariable & {
 }
 
+type CommandInputHandler = JSMappedVariable & {
+}
+
 type StepObject = {
   cb: (any, any) => void
 }

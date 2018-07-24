@@ -1,5 +1,5 @@
-const TextCommand = require('create-sublime-plugin-js/TextCommand.js'),
-      sublime = require('create-sublime-plugin-js/sublime.js')
+const TextCommand = require('create-sublime-plugin-js').TextCommand,
+      sublime = require('create-sublime-plugin-js').sublime
 
 class $commandNameCommand extends TextCommand {
 
