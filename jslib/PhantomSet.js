@@ -1,7 +1,6 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       SublimeObject = require('./SublimeObject.js')
 
 /**
@@ -21,14 +20,29 @@ class PhantomSet extends SublimeObject {
    * The ```.region``` attribute of each existing phantom in the set will be updated. New phantoms will be added to the view and phantoms not in ```phantoms``` list will be deleted.
    */
   update (phantoms /*: Array<Phantom>*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
+    this.checkStep(step)
+
     let phantomsVariableArray = []
 
     for (let phantom of phantoms)
-      phantomsVariableArray.push(`${config.variableMappingName}["${phantom.self.mapTo}"]`)
+      phantomsVariableArray.push(`${phantom.getMapToCode()}`)
     
     let phantomsArray = '[' + phantomsVariableArray.join(',') + ']'
 
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].update(${phantomsArray})`, false, step)
+    let methodCode = `update(${phantomsArray})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 }
 

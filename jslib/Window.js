@@ -1,7 +1,6 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       View = require('./View.js'),
       Sheet = require('./Sheet.js'),
       SublimeObject = require('./SublimeObject.js')
@@ -24,11 +23,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.id()` : ''
+    let methodCode = `id()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.id()`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -42,11 +43,13 @@ class Window extends SublimeObject {
    */
   new_file (step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.new_file()` : ''
+    let methodCode = `new_file()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.new_file()`
+      after: `.${methodCode}`
     }, () => {
       return new View(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -68,11 +71,13 @@ class Window extends SublimeObject {
    */
   open_file (file_name /*: string*/, flags /*: number*/ = 0, step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.open_file("""${file_name}""", ${flags})` : ''
+    let methodCode = `open_file("""${file_name}""", ${flags})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.open_file("""${file_name}""", ${flags})`
+      after: `.${methodCode}`
     }, () => {
       return new View(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -90,11 +95,13 @@ class Window extends SublimeObject {
    */
   find_open_file (file_name /*: string*/, step /*: ?StepObject*/) /*: Promise<View | null> | View*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.find_open_file("""${file_name}""")` : ''
+    let methodCode = `find_open_file("""${file_name}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.find_open_file("""${file_name}""")`
+      after: `.${methodCode}`
     }, () => {
       return new View(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -115,11 +122,13 @@ class Window extends SublimeObject {
    */
   active_sheet (step /*: ?StepObject*/) /*: Promise<Sheet> | Sheet*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.active_sheet()` : ''
+    let methodCode = `active_sheet()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.active_sheet()`
+      after: `.${methodCode}`
     }, () => {
       return new Sheet(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -137,11 +146,13 @@ class Window extends SublimeObject {
    */
   active_view (step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.active_view()` : ''
+    let methodCode = `active_view()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.active_view()`
+      after: `.${methodCode}`
     }, () => {
       return new View(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -159,11 +170,13 @@ class Window extends SublimeObject {
    */
   active_sheet_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<Sheet> | Sheet*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.active_sheet_in_group(${group})` : ''
+    let methodCode = `active_sheet_in_group(${group})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.active_sheet_in_group(${group})`
+      after: `.${methodCode}`
     }, () => {
       return new Sheet(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -181,11 +194,13 @@ class Window extends SublimeObject {
    */
   active_view_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.active_view_in_group(${group})` : ''
+    let methodCode = `active_view_in_group(${group})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.active_view_in_group(${group})`
+      after: `.${methodCode}`
     }, () => {
       return new View(null, this.stepRequired, this.codeChainString)
     }, () => {
@@ -201,16 +216,17 @@ class Window extends SublimeObject {
   /**
    * Returns all open sheets in the window.
    */
-  sheets (step /*: ?StepObject*/) /*: Promise<Array<Sheet>> | Array<Sheet>*/ {
+  sheets (step /*: ?StepObject*/) /*: Promise<Array<Sheet>>*/ {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.sheets()` : ''
+    let methodCode = `sheets()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
     
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.sheets()`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let sheets = []
@@ -234,16 +250,17 @@ class Window extends SublimeObject {
   /**
    * Returns all open sheets in the given ```group```.
    */
-  sheets_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<Array<Sheet>> | Array<Sheet>*/ {
+  sheets_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<Array<Sheet>>*/ {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.sheets_in_group(${group})` : ''
+    let methodCode = `sheets_in_group(${group})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
     
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.sheets_in_group(${group})`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let sheets = []
@@ -267,16 +284,17 @@ class Window extends SublimeObject {
   /**
    * Returns all open views in the window.
    */
-  views (step /*: ?StepObject*/) /*: Promise<Array<View>> | Array<View>*/ {
+  views (step /*: ?StepObject*/) /*: Promise<Array<View>>*/ {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.views()` : ''
+    let methodCode = `views()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
     
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.views()`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let views = []
@@ -300,16 +318,17 @@ class Window extends SublimeObject {
   /**
    * Returns all open views in the given ```group```.
    */
-  views_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<Array<View>> | Array<View>*/ {
+  views_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<Array<View>>*/ {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.views_in_group(${group})` : ''
+    let methodCode = `views_in_group(${group})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
     
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.views_in_group(${group})`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let views = []
@@ -337,11 +356,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.num_groups()` : ''
+    let methodCode = `num_groups()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.num_groups()`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -357,11 +378,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.active_group()` : ''
+    let methodCode = `active_group()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.active_group()`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -377,11 +400,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.focus_group(${group})` : ''
+    let methodCode = `focus_group(${group})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.focus_group(${group})`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -397,11 +422,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.focus_sheet(${sheet.getPythonCode()})` : ''
+    let methodCode = `focus_sheet(${sheet.getPythonCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.focus_sheet(${sheet.getPythonCode()})`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -417,11 +444,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.focus_view(${view.getPythonCode()})` : ''
+    let methodCode = `focus_view(${view.getPythonCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.focus_view(${view.getPythonCode()})`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -437,11 +466,13 @@ class Window extends SublimeObject {
 
     this.checkStep(step)
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.get_sheet_index(${sheet.getPythonCode()})` : ''
+    let methodCode = `get_sheet_index(${sheet.getPythonCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
     return this.wrapMethod({
       complete: completeCode,
       pre: ``,
-      after: `.get_sheet_index(${sheet.getPythonCode()})`
+      after: `.${methodCode}`
     }, () => {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
@@ -454,145 +485,428 @@ class Window extends SublimeObject {
    * Moves the ```sheet``` to the given ```group``` and ```index```.
    */
   set_sheet_index (sheet /*: Sheet*/, group /*: number*/, index /*: number*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.set_sheet_index(${config.variableMappingName}["${sheet.self.mapTo}"], ${group}, ${index})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_sheet_index(${sheet.getPythonCode()}, ${group}, ${index})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the group, and index within the group of the ```view```. Returns ```[-1, -1]``` if not found.
    */
   get_view_index (view /*: View*/, step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.get_view_index(${config.variableMappingName}["${view.self.mapTo}"])`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `get_view_index(${view.getPythonCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Moves the ```view``` to the given ```group``` and ```index```.
    */
   set_view_index (view /*: View*/, group /*: number*/, index /*: number*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.set_view_index(${config.variableMappingName}["${view.self.mapTo}"], ${group}, ${index})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_view_index(${view.getPythonCode()}, ${group}, ${index})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Show a message in the status bar.
    */
   status_message (string /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.status_message("""${string}""")`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `status_message("""${string}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` if the menu is visible.
    */
   is_menu_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.is_menu_visible()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `is_menu_visible()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Controls if the menu is visible.
    */
   set_menu_visible (flag /*: boolean*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
     let flagBool = util.convertToPythonBool(flag)
-    return util.simpleEval(`${this.getMapToCode()}.set_menu_visible(${flagBool})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_menu_visible(${flagBool})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` if the sidebar will be shown when contents are available.
    */
   is_sidebar_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.is_sidebar_visible()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `is_sidebar_visible()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Sets the sidebar to be shown or hidden when contents are available.
    */
   set_sidebar_visible (flag /*: boolean*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
     let flagBool = util.convertToPythonBool(flag)
-    return util.simpleEval(`${this.getMapToCode()}.set_sidebar_visible(${flagBool})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_sidebar_visible(${flagBool})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` if tabs will be shown for open files.
    */
   get_tabs_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.get_tabs_visible()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `get_tabs_visible()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Controls if tabs will be shown for open files.
    */
   set_tabs_visible (flag /*: boolean*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
     let flagBool = util.convertToPythonBool(flag)
-    return util.simpleEval(`${this.getMapToCode()}.set_tabs_visible(${flagBool})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_tabs_visible(${flagBool})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` if the minimap is enabled.
    */
   is_minimap_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.is_minimap_visible()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `is_minimap_visible()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Controls the visibility of the minimap.
    */
   set_minimap_visible (flag /*: boolean*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
     let flagBool = util.convertToPythonBool(flag)
-    return util.simpleEval(`${this.getMapToCode()}.set_minimap_visible(${flagBool})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_minimap_visible(${flagBool})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` if the status bar will be shown.
    */
   is_status_bar_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.is_status_bar_visible()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `is_status_bar_visible()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Controls the visibility of the status bar.
    */
   set_status_bar_visible (flag /*: boolean*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
     let flagBool = util.convertToPythonBool(flag)
-    return util.simpleEval(`${this.getMapToCode()}.set_status_bar_visible(${flagBool})`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_status_bar_visible(${flagBool})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns a list of the currently open folders.
    */
   folders (step /*: ?StepObject*/) /*: Promise<Array<string>>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.folders()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `folders()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns name of the currently opened project file, if any.
    */
   project_file_name (step /*: ?StepObject*/) /*: Promise<string>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.project_file_name()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `project_file_name()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the project data associated with the current window. The data is in the same format as the contents of a ```.sublime-project``` file.
    */
   project_data (step /*: ?StepObject*/) /*: Promise<Object>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.project_data()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `project_data()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Updates the project data associated with the current window. If the window is associated with a ```.sublime-project``` file, the project file will be updated on disk, otherwise the window will store the data internally.
    */
   set_project_data (data /*: Object*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.set_project_data(json.loads("""${JSON.stringify(data)}"""))`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `set_project_data(json.loads("""${JSON.stringify(data)}"""))`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Runs the named {@link WindowCommand} with the (optional) given ```args```. This method is able to run any sort of command, dispatching the command via input focus.
    */
-  run_command (string /*: any*/, args /*: ?Object*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
-    let code = ''
+  run_command (string /*: any*/, args /*: Object | null*/ = null, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    if (args)
-      code = `${this.getMapToCode()}.run_command("""${string}""", json.loads("""${JSON.stringify(args)}"""))`
-    else
-      code = `${this.getMapToCode()}.run_command("""${string}""")`
+    this.checkStep(step)
 
-    return util.simpleEval(code, false, step)
+    let methodCode = `run_command("""${string}""", json.loads("""${JSON.stringify(args)}"""))`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
@@ -604,10 +918,11 @@ class Window extends SublimeObject {
    * 
    * ```on_highlighted```, if given, will be called every time the highlighted item in the quick panel is changed.
    */
-  show_quick_panel (items /*: Array<string>*/, on_done /*: (number, ?StepObject) => void*/, flags /*: ?number*/ = 0, selected_index /*: number*/ = -1, on_highlighted /*: ?(number, ?StepObject) => void*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+  show_quick_panel (items /*: Array<string>*/, on_done /*: (number, ?StepObject) => void*/, flags /*: number*/ = 0, selected_index /*: number*/ = -1, on_highlighted /*: ?(number, ?StepObject) => void*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
+    this.checkStep(step)
 
     let callbacks = []
-    let code = `${this.getMapToCode()}.show_quick_panel(json.loads("""${JSON.stringify(items)}"""), lambda index: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, index)), ${flags}, ${selected_index}`
 
     callbacks.push(async (httpTempServers, index, subStep) => {
       await on_done(index, subStep)
@@ -616,18 +931,24 @@ class Window extends SublimeObject {
         httpTempServer.close()
     })
 
-    if (on_highlighted != undefined) {
-      code += `, lambda index: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, index))`
-      callbacks.push(async (httpTempServers, index, subStep) => {
+    callbacks.push(async (httpTempServers, index, subStep) => {
+      if (on_highlighted)
         await on_highlighted(index, subStep)
-      })
-    }
-    else
-      code += ', None'
+    })
 
-    code += ')'
+    let methodCode = `show_quick_panel(json.loads("""${JSON.stringify(items)}"""), lambda index: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, index)), ${flags}, ${selected_index}, lambda index: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, index)))`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
 
-    return util.callbackPython(code, false, callbacks, step)
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.callbackPython(this.codeChainString, false, callbacks, step)
+    }, () => {
+      return util.callbackPython(completeCode, false, callbacks, step)
+    }, !!(step && this.self))
+
   }
 
   /**
@@ -635,11 +956,12 @@ class Window extends SublimeObject {
    */
   show_input_panel (caption /*: string*/, initial_text /*: string*/, on_done /*: ?(string, ?StepObject) => void*/, on_change /*: ?(string, ?StepObject) => void*/, on_cancel /*: ?(?StepObject) => void*/, step /*: ?StepObject*/) /*: Promise<View>*/ {
 
+    this.checkStep(step)
+
     let callbacks = []
-    let code = `${this.getMapToCode()}.show_input_panel("""${caption}""", """${initial_text}""", lambda userInput: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, userInput)), lambda userInput: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, userInput)), lambda: sublime.set_timeout_async(lambda: callback($PORT_TOKEN)))`
 
     callbacks.push(async (httpTempServers, userInput, subStep) => {
-      if (on_done != undefined)
+      if (on_done)
         await on_done(userInput, subStep)
       
       for (let httpTempServer of httpTempServers) 
@@ -647,19 +969,31 @@ class Window extends SublimeObject {
     })
 
     callbacks.push(async (httpTempServers, userInput, subStep) => {
-      if (on_change != undefined)
+      if (on_change)
         await on_change(userInput, subStep)
     })
 
     callbacks.push(async (httpTempServers, subStep) => {
-      if (on_cancel != undefined)
+      if (on_cancel)
         await on_cancel(subStep)
       
       for (let httpTempServer of httpTempServers) 
         httpTempServer.close()
     })
 
-    return util.callbackPython(code, true, callbacks, step)
+    let methodCode = `show_input_panel("""${caption}""", """${initial_text}""", lambda userInput: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, userInput)), lambda userInput: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, userInput)), lambda: sublime.set_timeout_async(lambda: callback($PORT_TOKEN)))`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.callbackPython(this.codeChainString, true, callbacks, step)
+    }, () => {
+      return util.callbackPython(completeCode, true, callbacks, step)
+    }, !!(step && this.self))
+
   }
 
   /**
@@ -667,58 +1001,164 @@ class Window extends SublimeObject {
    * 
    * The optional ```unlisted``` parameter is a boolean to control if the output panel should be listed in the panel switcher.
    */
-  create_output_panel (name /*: string*/, unlisted /*: ?boolean*/ = false, step /*: ?StepObject*/) /*: Promise<View>*/ {
+  create_output_panel (name /*: string*/, unlisted /*: ?boolean*/ = false, step /*: ?StepObject*/) /*: Promise<View> | View*/ {
+
     let unlistedBool = util.convertToPythonBool(unlisted)
-    return util.simpleEval(`${this.getMapToCode()}.create_output_panel("""${name}""", ${unlistedBool})`, true, step, (result, resultObject) => {
-      return new View(resultObject)
-    })
+
+    let methodCode = `create_output_panel("""${name}""", ${unlistedBool})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return new View(null, this.stepRequired, this.codeChainString)
+    }, () => {
+      this.checkStep(step)
+
+      return util.simpleEval(completeCode, true, step, (result, resultObject) => {
+        return new View(resultObject, this.stepRequired)
+      })
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the view associated with the named output panel, or ```null``` if the output panel does not exist.
    */
-  find_output_panel (name /*: string*/, step /*: ?StepObject*/) /*: Promise<View | null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.find_output_panel("""${name}""")`, true, step, (result, resultObject) => {
-      if (result == 'SublimeObject')
-        return new View(resultObject)
-      else
-        return null
-    })
+  find_output_panel (name /*: string*/, step /*: ?StepObject*/) /*: Promise<View | null> | View*/ {
+
+    let methodCode = `find_output_panel("""${name}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return new View(null, this.stepRequired, this.codeChainString)
+    }, () => {
+      this.checkStep(step)
+
+      return util.simpleEval(completeCode, true, step, (result, resultObject) => {
+        if (result == 'SublimeObject')
+          return new View(resultObject, this.stepRequired)
+        else
+          return null
+      })
+    }, !!(step && this.self))
+        
   }
 
   /**
    * Destroys the named output panel, hiding it if currently open.
    */
   destroy_output_panel (name /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.destroy_output_panel("""${name}""")`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `destroy_output_panel("""${name}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the name of the currently open panel, or ```null``` if no panel is open. Will return built-in panel names (e.g. ```"console"```, ```"find"```, etc) in addition to output panels.
    */
   active_panel (step /*: ?StepObject*/) /*: Promise<string | null>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.active_panel()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `active_panel()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns a list of the names of all panels that have not been marked as unlisted. Includes certain built-in panels in addition to output panels.
    */
   panels (step /*: ?StepObject*/) /*: Promise<Array<string>>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.panels()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `panels()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns all locations where the symbol is defined across files in the current project.
    */
   lookup_symbol_in_index (symbol /*: string*/, step /*: ?StepObject*/) /*: Promise<Array<[string, string, [number, number]]>>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.lookup_symbol_in_index("""${symbol}""")`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `lookup_symbol_in_index("""${symbol}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns all locations where the symbol is defined across open files.
    */
   lookup_symbol_in_open_files (symbol /*: string*/, step /*: ?StepObject*/) /*: Promise<Array<[string, string, [number, number]]>>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.lookup_symbol_in_open_files("""${symbol}""")`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `lookup_symbol_in_open_files("""${symbol}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
@@ -727,7 +1167,22 @@ class Window extends SublimeObject {
    * ```packages, platform, file, file_path, file_name, file_base_name, file_extension, folder, project, project_path, project_name, project_base_name, project_extension```. This dict is suitable for passing to ```sublime.expand_variables()```.
    */
   extract_variables (step /*: ?StepObject*/) /*: Promise<Object>*/ {
-    return util.simpleEval(`${this.getMapToCode()}.extract_variables()`, false, step)
+
+    this.checkStep(step)
+
+    let methodCode = `extract_variables()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
 }

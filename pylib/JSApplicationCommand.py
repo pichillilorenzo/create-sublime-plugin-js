@@ -5,7 +5,7 @@ class JSApplicationCommand():
   def run(self, **args):
 
     payload = {
-      "method": type(self).__name__,
+      "method": "run_" + type(self).__name__,
       "params": [self, args],
       "jsonrpc": "2.0",
       "id": 0,
@@ -38,3 +38,29 @@ class JSApplicationCommand():
     response = util.stepResponse(payload)
 
     return response["result"]["is_visible"] if response != None else True
+
+  def is_checked(self, **args):
+    
+    payload = {
+      "method": "is_checked_" + type(self).__name__,
+      "params": [self, args],
+      "jsonrpc": "2.0",
+      "id": 0,
+    }
+
+    response = util.stepResponse(payload)
+
+    return response["result"]["is_checked"] if response != None else True
+
+  def description(self, **args):
+
+    payload = {
+        "method": "description_" + type(self).__name__,
+        "params": [self, args],
+        "jsonrpc": "2.0",
+        "id": 0,
+    }
+
+    response = util.stepResponse(payload)
+
+    return response["result"]["description"] if response != None else None

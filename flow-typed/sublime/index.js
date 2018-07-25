@@ -21,7 +21,9 @@ type SublimeObject = {
   stepRequired: boolean,
   +wrapMethod: ({complete: string, pre: string, after: string}, Function, Function, boolean) => Promise<any> | any,
   +isNull: (?StepObject) => Promise<boolean>,
-  +checkStep: (?StepObject) => void
+  +checkStep: (?StepObject) => void,
+  +getMapToCode: () => string,
+  +getPythonCode: () => string
 }
 
 type Region = SublimeObject & {
@@ -36,6 +38,9 @@ type Region = SublimeObject & {
 
 type View = SublimeObject & {
   +id: (?StepObject) => Promise<number>
+}
+
+type Edit = SublimeObject & {
 }
 
 type Settings = SublimeObject & {

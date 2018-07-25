@@ -1,22 +1,19 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       windowCommands = require('./windowCommandList.js'),
-      Window = require('./Window.js')
+      Window = require('./Window.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * WindowCommands are instantiated once per window. The {@link Window} object may be retrieved via ```this.window()```.
  *
  * [sublime_plugin.WindowCommand Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.WindowCommand).
  */
-class WindowCommand {
-
-  /*::
-  self: MappedVariable
-  */
+class WindowCommand extends SublimeObject {
 
   constructor () {
+    super(null, true)
     windowCommands[this.constructor.name] = this
   }
 
@@ -52,10 +49,25 @@ class WindowCommand {
     return null
   }
 
-  window (step /*: StepObject*/) /*: Promise<Window>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].window`, true, step, ((result, resultObject) => {
-      return new Window(resultObject, true)
-    }) )
+  window (step /*: StepObject*/) /*: Promise<Window> | Window*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `window`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return new Window(null, true, this.codeChainString)
+    }, () => {
+      return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
+        return new Window(resultObject, this.stepRequired)
+      }) )
+    }, !!(step && this.self))
+
   }
 
 }

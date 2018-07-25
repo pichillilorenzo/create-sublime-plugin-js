@@ -1,21 +1,20 @@
 // @flow
 
-require('trace')
-
 const fs = require('fs'),
       path = require('path'),
       jayson = require('jayson'),
       getPort = require('get-port'),
       globby = require('globby'),
-      StepObject = require('./jslib/StepObject.js')
+      StepObject = require('./jslib/StepObject.js'),
+      sublime = require('./jslib/sublime.js')
 
 let textCommands = require('./jslib/textCommandList.js')
 let windowCommands = require('./jslib/windowCommandList.js')
 let applicationCommands = require('./jslib/applicationCommandList.js')
 
 const entries = globby.sync([
-  path.join(__dirname, 'src', 'commands', '**', '*.js'),
-  path.join(__dirname, 'src', 'listeners', '**', '*.js')
+  path.join(__dirname, 'src', 'commands', '**', '*Command.js'),
+  path.join(__dirname, 'src', 'listeners', '**', '*Listener.js')
 ])
 
 for (let entry of entries) {
@@ -27,172 +26,103 @@ for (let entry of entries) {
 }
 
 let JsonRpcMethods = {}
+
 for (let textCommand in textCommands) {
-  JsonRpcMethods[textCommand] = async (args, cbStep) => {
-    
-    let step = new StepObject(cbStep)
 
-    try {
-      textCommands[textCommand]._init(args[0])
-      await textCommands[textCommand].run(args[1], args[2].value, step) 
-    } catch(e) {
-      console.log(e);
+  let methods = ['run', 'is_enabled', 'is_visible', 'description', 'want_event']
+  let methodsDefaultValue = [null, true, true, null, false]
+
+  for(let i = 0, length1 = methods.length; i < length1; i++){
+    let method = methods[i]
+    let methodDefaultValue = methodsDefaultValue[i]
+
+    JsonRpcMethods[method + '_' + textCommand] = async (args, cbStep) => {
+      
+      let step = new StepObject(cbStep)
+      let result = methodDefaultValue
+
+      try {
+        textCommands[textCommand]._init(args[0])
+        result = await ( (method == 'run') ? 
+          textCommands[textCommand].run(sublime.Edit(args[1]), args[2].value, step) : 
+          textCommands[textCommand][method](args[1].value, step) )
+      } catch(e) {
+        console.log(e);
+      }
+
+      let data = {
+        "end_cb_step": "END"
+      }
+      data[method] = result
+
+      step.sendData(null, data)
     }
-
-    step.sendData(null, {
-      "end_cb_step": "END"
-    })
   }
 
-  JsonRpcMethods["is_enabled_" + textCommand] = async (args, cbStep) => {
-    
-    let step = new StepObject(cbStep)
-
-    let is_enabled = true
-
-    try {
-      textCommands[textCommand]._init(args[0])
-      is_enabled = await textCommands[textCommand].is_enabled(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
-    }
-
-    step.sendData(null, {
-      "end_cb_step": "END",
-      "is_enabled": is_enabled
-    })
-  }
-
-  JsonRpcMethods["is_visible_" + textCommand] = async (args, cbStep) => {
-    
-    let step = new StepObject(cbStep)
-
-    let is_visible = true
-
-    try {
-      textCommands[textCommand]._init(args[0])
-      is_visible = await textCommands[textCommand].is_visible(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
-    }
-
-    step.sendData(null, {
-      "end_cb_step": "END",
-      "is_visible": is_visible
-    })
-  }
 }
 
 for (let windowCommand in windowCommands) {
-  JsonRpcMethods[windowCommand] = async (args, cbStep) => {
 
-    let step = new StepObject(cbStep)
+  let methods = ['run', 'is_enabled', 'is_visible', 'description']
+  let methodsDefaultValue = [null, true, true, null]
 
-    try {
-      windowCommands[windowCommand]._init(args[0])
-      await windowCommands[windowCommand].run(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
+  for(let i = 0, length1 = methods.length; i < length1; i++){
+    let method = methods[i]
+    let methodDefaultValue = methodsDefaultValue[i]
+
+    JsonRpcMethods[method + '_' + windowCommand] = async (args, cbStep) => {
+      
+      let step = new StepObject(cbStep)
+      let result = methodDefaultValue
+
+      try {
+        windowCommands[windowCommand]._init(args[0])
+        result = await windowCommands[windowCommand][method](args[1].value, step)
+      } catch(e) {
+        console.log(e);
+      }
+
+      let data = {
+        "end_cb_step": "END"
+      }
+      data[method] = result
+
+      step.sendData(null, data)
     }
-
-    step.sendData(null, {
-      "end_cb_step": "END"
-    })
   }
 
-  JsonRpcMethods["is_enabled_" + windowCommand] = async (args, cbStep) => {
-
-    let step = new StepObject(cbStep)
-
-    let is_enabled = true
-
-    try {
-      windowCommands[windowCommand]._init(args[0])
-      is_enabled = await windowCommands[windowCommand].is_enabled(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
-    }
-
-    step.sendData(null, {
-      "end_cb_step": "END",
-      "is_enabled": is_enabled
-    })
-  }
-
-  JsonRpcMethods["is_visible_" + windowCommand] = async (args, cbStep) => {
-
-    let step = new StepObject(cbStep)
-
-    let is_visible = true
-
-    try {
-      windowCommands[windowCommand]._init(args[0])
-      is_visible = await windowCommands[windowCommand].is_visible(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
-    }
-
-    step.sendData(null, {
-      "end_cb_step": "END",
-      "is_visible": is_visible
-    })
-  }
 }
 
 for (let applicationCommand in applicationCommands) {
-  JsonRpcMethods[applicationCommand] = async (args, cbStep) => {
-    
-    let step = new StepObject(cbStep)
 
-    try {
-      applicationCommands[applicationCommand]._init(args[0])
-      await applicationCommands[applicationCommand].run(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
+  let methods = ['run', 'is_enabled', 'is_visible', 'is_checked', 'description']
+  let methodsDefaultValue = [null, true, true, true, null]
+
+  for(let i = 0, length1 = methods.length; i < length1; i++){
+    let method = methods[i]
+    let methodDefaultValue = methodsDefaultValue[i]
+
+    JsonRpcMethods[method + '_' + applicationCommand] = async (args, cbStep) => {
+      
+      let step = new StepObject(cbStep)
+      let result = methodDefaultValue
+
+      try {
+        applicationCommands[applicationCommand]._init(args[0])
+        result = await applicationCommands[applicationCommand][method](args[1].value, step)
+      } catch(e) {
+        console.log(e);
+      }
+
+      let data = {
+        "end_cb_step": "END"
+      }
+      data[method] = result
+
+      step.sendData(null, data)
     }
-
-    step.sendData(null, {
-      "end_cb_step": "END"
-    })
   }
 
-  JsonRpcMethods["is_enabled_" + applicationCommand] = async (args, cbStep) => {
-    
-    let step = new StepObject(cbStep)
-
-    let is_enabled = true
-
-    try {
-      applicationCommands[applicationCommand]._init(args[0])
-      is_enabled = await applicationCommands[applicationCommand].is_enabled(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
-    }
-
-    step.sendData(null, {
-      "end_cb_step": "END",
-      "is_enabled": is_enabled
-    })
-  }
-
-  JsonRpcMethods["is_visible_" + applicationCommand] = async (args, cbStep) => {
-    
-    let step = new StepObject(cbStep)
-
-    let is_visible = true
-
-    try {
-      applicationCommands[applicationCommand]._init(args[0])
-      is_visible = await applicationCommands[applicationCommand].is_visible(args[1].value, step) 
-    } catch(e) {
-      console.log(e);
-    }
-
-    step.sendData(null, {
-      "end_cb_step": "END",
-      "is_visible": is_visible
-    })
-  }
 }
 
 

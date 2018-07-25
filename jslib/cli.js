@@ -16,6 +16,7 @@ commander
   .action((pluginName) => {
 
     let currAbsPath = path.resolve('.')
+    
     pluginName = pluginName.trim()
 
     let pluginAbsPath = path.join(currAbsPath, pluginName)
@@ -41,6 +42,13 @@ commander
     
     let currAbsPath = path.resolve('.')
 
+    try {
+      fs.statSync(path.join(currAbsPath, 'package.json'))
+    } catch(e) {
+      console.log(`\npackage.json not found! Are you in the root folder of the plugin?\n`)
+      return
+    }
+
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, 'main.py'))
     fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, 'server.js'))
@@ -65,6 +73,13 @@ commander
   .action((commandName, options) => {
 
     let currAbsPath = path.resolve('.')
+
+    try {
+      fs.statSync(path.join(currAbsPath, 'package.json'))
+    } catch(e) {
+      console.log(`\npackage.json not found! Are you in the root folder of the plugin?\n`)
+      return
+    }
     
     if (!fs.existsSync(path.join(currAbsPath, 'src', 'commands'))) {
       console.log(`Error: Path ${path.join(currAbsPath, 'src', 'commands')} doesn't exists.`)

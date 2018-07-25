@@ -1,17 +1,15 @@
 // @flow
 
-const applicationCommands = require('./applicationCommandList.js')
+const applicationCommands = require('./applicationCommandList.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * [sublime_plugin.ApplicationCommand Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.ApplicationCommand).
  */
-class ApplicationCommand {
-
-  /*::
-  self: MappedVariable
-  */
+class ApplicationCommand extends SublimeObject {
 
   constructor () {
+    super(null, true)
     applicationCommands[this.constructor.name] = this
   }
 

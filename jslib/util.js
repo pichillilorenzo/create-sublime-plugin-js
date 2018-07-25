@@ -55,8 +55,8 @@ function sendCommand (command /*: string*/, args /*: Array<any>*/, callback /*: 
   })
 }
 
-function getMapToVariableName(variable /*: Object*/) /*: string | null*/ {
-  return (variable.hasOwnProperty("mapTo") && variable.mapTo) ? variable.mapTo : (variable.hasOwnProperty("self") && variable.self.mapTo) ? variable.self.mapTo : null
+function isSublimeObject(variable /*: Object*/) /*: boolean*/ {
+  return variable && variable.hasOwnProperty("value") && variable.value == 'SublimeObject'
 }
 
 function simpleCommand (command /*: string*/, args /*: Array<any>*/, callbackFilter /*: ?(any, Object) => any*/) /*: Promise<any>*/ {
@@ -126,7 +126,10 @@ async function callbackPython (code /*: string*/, save /*: boolean*/, callbacks 
     return simpleCommand('evalCode', [code, save], callbackFilter)
 }
 
-function freeMemory (mappedVars /*: Array<Object>*/, step /*: ?StepObject*/) /*: Promise<any> | void*/ {
+/**
+ * Call the python freeMemory function in order to free memory of ```mappedVars```.
+ */
+function freeMemory (mappedVars /*: Array<SublimeObject>*/, step /*: ?StepObject*/) /*: Promise<any> | void*/ {
   if (mappedVars.length > 0) {
     let mappedVarsStringified = mappedVars.map((item /*: Object*/) => {
       if (item.hasOwnProperty("self"))
@@ -144,7 +147,7 @@ module.exports = {
   convertToPythonNone,
   sendEval,
   sendCommand,
-  getMapToVariableName,
+  isSublimeObject,
   simpleEval,
   simpleCommand,
   callbackPython,

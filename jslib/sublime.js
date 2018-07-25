@@ -8,6 +8,7 @@ const jayson = require('jayson'),
       Region = require('./Region.js'),
       Window = require('./Window.js'),
       View = require('./View.js'),
+      Edit = require('./Edit.js'),
       Settings = require('./Settings.js'),
       Sheet = require('./Sheet.js'),
       Selection = require('./Selection.js'),
@@ -229,9 +230,8 @@ class sublime {
    * Encode a JSON compatible ```value``` into a string representation. If ```pretty``` is set to ```true```, the string will include newlines and indentation.
    */
   static encode_value (value /*: any*/, pretty /*: boolean*/ = false) /*: Promise<any>*/ {
-    let mappedVar = util.getMapToVariableName(value)
-    if (mappedVar) {
-      return util.simpleEval(`sublime.encode_value(${config.variableMappingName}["${mappedVar}"], ${util.convertToPythonBool(pretty)})`, false)
+    if (util.isSublimeObject(value)) {
+      return util.simpleEval(`sublime.encode_value(${value.getMapToCode()}, ${util.convertToPythonBool(pretty)})`, false)
     }
     else {
       return util.simpleCommand('encode_value', [value, pretty])
@@ -250,18 +250,17 @@ class sublime {
    */
   static expand_variables (value /*: string | Array<any> | Object*/, variables /*: Object*/) /*: Promise<any>*/ {
     let variablesParam = []
-    let foundMappedVar = false
+    let foundSublimeObject = false
 
     for (let variable in variables) {
       let codeString = ''
-      let mappedVariable = util.getMapToVariableName(variables[variable])
 
-      if (!mappedVariable)
+      if (!util.isSublimeObject(variables[variable]))
         codeString = `"${variable}": ${JSON.stringify(variables[variable])}`
       else {
-        if (!foundMappedVar)
-          foundMappedVar = true
-        codeString = `"${variable}": ${config.variableMappingName}["${mappedVariable}"]`
+        if (!foundSublimeObject)
+          foundSublimeObject = true
+        codeString = `"${variable}": ${variables[variable].getMapToCode()}`
       }
 
       variablesParam.push(codeString)
@@ -269,7 +268,7 @@ class sublime {
 
     variablesParam = "{" + variablesParam.join(",") + "}"
 
-    if (foundMappedVar) {
+    if (foundSublimeObject) {
       return util.simpleEval(`sublime.expand_variables(${ (typeof value == "string") ? '"""' + value + '"""' : 'json.dumps("""' + JSON.stringify(value) + '""", ensure_ascii=False)'}, ${variablesParam})`, false)
     }
     else {
@@ -282,7 +281,7 @@ class sublime {
    */
   static load_settings (basename /*: string*/) /*: Promise<Settings>*/ {
     return util.simpleEval(`sublime.load_settings("""${basename}""")`, true, null, (result, resultObject) => {
-      return new Settings(resultObject)
+      return new Settings(resultObject, false)
     } )
   }
 
@@ -300,7 +299,7 @@ class sublime {
     return util.simpleEval(`sublime.windows()`, false, null, (result, resultObject) => {
       let windows = []
       for (let w of resultObject.value) {
-        windows.push(new Window(w))
+        windows.push(new Window(w, false))
       }
       return windows
     } )
@@ -311,7 +310,7 @@ class sublime {
    */
   static active_window () /*: Promise<Window>*/ {
     return util.simpleEval(`sublime.active_window()`, true, null, (result, resultObject) => {
-      return new Window(resultObject)
+      return new Window(resultObject, false)
     } )
   }
 
@@ -339,7 +338,7 @@ class sublime {
   /**
    * Returns the contents of the clipboard. ```size_limit``` is there to protect against unnecessarily large data, defaults to 16,777,216 characters.
    */
-  static get_clipboard (size_limit /*: ?number*/ = 16777216) /*: Promise<string>*/ {
+  static get_clipboard (size_limit /*: number*/ = 16777216) /*: Promise<string>*/ {
     return util.simpleCommand('get_clipboard', [size_limit])
   }
 
@@ -418,7 +417,7 @@ class sublime {
    */
   static Region (a /*: number*/, b /*: number*/) /*: Promise<Region>*/ {
     return util.simpleEval(`sublime.Region(${a}, ${b})`, true, null, (result, resultObject) => {
-      return new Region(resultObject)
+      return new Region(resultObject, false)
     } )
   }
 
@@ -427,7 +426,7 @@ class sublime {
    */
   static Window (id /*: number*/) /*: Promise<Window>*/ {
     return util.simpleEval(`sublime.Window(${id})`, true, null, (result, resultObject) => {
-      return new Window(resultObject)
+      return new Window(resultObject, false)
     } )
   }
 
@@ -436,8 +435,15 @@ class sublime {
    */
   static View (id /*: number*/) /*: Promise<View>*/ {
     return util.simpleEval(`sublime.View(${id})`, true, null, (result, resultObject) => {
-      return new View(resultObject)
+      return new View(resultObject, false)
     } )
+  }
+
+  /**
+   * {@link Edit}
+   */
+  static Edit (resultObject /*: Object*/) /*: Edit*/ {
+    return new Edit(resultObject, false)
   }
 
   /**
@@ -445,7 +451,7 @@ class sublime {
    */
   static Settings (id /*: number*/) /*: Promise<Settings>*/ {
     return util.simpleEval(`sublime.Settings(${id})`, true, null, (result, resultObject) => {
-      return new Settings(resultObject)
+      return new Settings(resultObject, false)
     } )
   }
 
@@ -454,7 +460,7 @@ class sublime {
    */
   static Sheet (id /*: number*/) /*: Promise<Sheet>*/ {
     return util.simpleEval(`sublime.Sheet(${id})`, true, null, (result, resultObject) => {
-      return new Sheet(resultObject)
+      return new Sheet(resultObject, false)
     } )
   }
 
@@ -463,7 +469,7 @@ class sublime {
    */
   static Selection (id /*: number*/) /*: Promise<Selection>*/ {
     return util.simpleEval(`sublime.Selection(${id})`, true, null, (result, resultObject) => {
-      return new Selection(resultObject)
+      return new Selection(resultObject, false)
     } )
   }
 
@@ -481,22 +487,22 @@ class sublime {
    */
   static Phantom (region /*: Region*/, content /*: string*/, layout /*: number*/, on_navigate /*: ?(string) => void*/) /*: Promise<Phantom>*/ {
     if (on_navigate)
-      return util.callbackPython(`sublime.Phantom(${config.variableMappingName}["${region.self.mapTo}"], """${content}""", ${layout}, lambda href: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, href)))`, true, [async (httpTempServers, href, subStep) => {
+      return util.callbackPython(`sublime.Phantom(${region.getMapToCode()}, """${content}""", ${layout}, lambda href: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, href)))`, true, [async (httpTempServers, href, subStep) => {
         // $Ignore
         await on_navigate(href, subStep)
       }], null, (result, resultObject) => {
-        return new Phantom(resultObject)
+        return new Phantom(resultObject, false)
       } )
     else
-      return util.simpleEval(`sublime.Phantom(${config.variableMappingName}["${region.self.mapTo}"], """${content}""", ${layout})`, true)
+      return util.simpleEval(`sublime.Phantom(${region.getMapToCode()}, """${content}""", ${layout})`, true)
   }
 
   /**
    * Creates a {@link PhantomSet} attached to a ```view```. ```key``` is a string to group Phantoms together.
    */
-  static PhantomSet (view /*: View*/, key /*: ?string*/ = '') /*: Promise<PhantomSet>*/ {
-    return util.simpleEval(`sublime.PhantomSet(${config.variableMappingName}["${view.self.mapTo}"], """${key}""")`, true, null, (result, resultObject) => {
-      return new PhantomSet(resultObject)
+  static PhantomSet (view /*: View*/, key /*: string*/ = '') /*: Promise<PhantomSet>*/ {
+    return util.simpleEval(`sublime.PhantomSet(${view.getMapToCode()}, """${key}""")`, true, null, (result, resultObject) => {
+      return new PhantomSet(resultObject, false)
     })
   }
 }

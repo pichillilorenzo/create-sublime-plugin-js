@@ -5,7 +5,7 @@ class JSWindowCommand():
   def run(self, **args):
 
     payload = {
-      "method": type(self).__name__,
+      "method": "run_" + type(self).__name__,
       "params": [self, args],
       "jsonrpc": "2.0",
       "id": 0,
@@ -38,3 +38,16 @@ class JSWindowCommand():
     response = util.stepResponse(payload)
 
     return response["result"]["is_visible"] if response != None else True
+
+  def description(self, **args):
+
+    payload = {
+        "method": "description_" + type(self).__name__,
+        "params": [self, args],
+        "jsonrpc": "2.0",
+        "id": 0,
+    }
+
+    response = util.stepResponse(payload)
+
+    return response["result"]["description"] if response != None else None

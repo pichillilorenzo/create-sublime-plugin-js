@@ -1,7 +1,6 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       SublimeObject = require('./SublimeObject.js')
 
 /**
@@ -18,96 +17,225 @@ class Region extends SublimeObject {
   /**
    * The first end of the region.
    */
-  a (value /*: ?number*/) /*: Promise<?number>*/ {
-    let code = ""
+  a (step /*: ?StepObject*/, value /*: ?number*/) /*: Promise<?number>*/ {
 
-    if (value === undefined)
-      code = `${config.variableMappingName}["${this.self.mapTo}"].a`
-    else
-      code = `${config.variableMappingName}["${this.self.mapTo}"].a = ${value}`
+    this.checkStep(step)
 
-    return util.simpleEval(code, false)
+    let methodCode = (value === undefined) ? `a` : `a = ${value}`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * The second end of the region. May be less that a, in which case the region is a reversed one.
    */
-  b (value /*: ?number*/) /*: Promise<?number>*/ {
-    let code = ""
+  b (step /*: ?StepObject*/, value /*: ?number*/) /*: Promise<?number>*/ {
 
-    if (value === undefined)
-      code = `${config.variableMappingName}["${this.self.mapTo}"].b`
-    else
-      code = `${config.variableMappingName}["${this.self.mapTo}"].b = ${value}`
+    this.checkStep(step)
 
-    return util.simpleEval(code, false)
+    let methodCode = (value === undefined) ? `b` : `b = ${value}`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * The target horizontal position of the region, or ```-1``` if undefined. Effects behavior when pressing the up or down keys.
    */
-  xpos (value /*: ?number*/) /*: Promise<?number>*/ {
-    let code = ""
+  xpos (step /*: ?StepObject*/, value /*: ?number*/) /*: Promise<?number>*/ {
 
-    if (value === undefined)
-      code = `${config.variableMappingName}["${this.self.mapTo}"].xpos`
-    else
-      code = `${config.variableMappingName}["${this.self.mapTo}"].xpos = ${value}`
+    this.checkStep(step)
 
-    return util.simpleEval(code, false)
+    let methodCode = (value === undefined) ? `xpos` : `xpos = ${value}`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the minimum of a and b.
    */
-  begin () /*: Promise<number>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].begin()`, false)
+  begin (step /*: ?StepObject*/) /*: Promise<number>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `begin()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the maximum of a and b.
    */
-  end () /*: Promise<number>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].end()`, false)
+  end (step /*: ?StepObject*/) /*: Promise<number>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `end()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the number of characters spanned by the region. Always >= 0.
    */
-  size () /*: Promise<number>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].size()`, false)
+  size (step /*: ?StepObject*/) /*: Promise<number>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `size()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` iff ```begin()``` == ```end()```.
    */
-  empty () /*: Promise<boolean>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].empty()`, false)
+  empty (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `empty()`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns a Region spanning both this and the given regions.
    */
-  cover (region /*: Region*/) /*: Promise<Region>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].cover(${config.variableMappingName}["${region.self.mapTo}"])`, true, null, (result, resultObject) => {
-      return new Region(resultObject)
-    })
+  cover (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<Region> | Region*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `cover(${region.getMapToCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return new Region(null, this.stepRequired, this.codeChainString)
+    }, () => {
+      return util.simpleEval(completeCode, true, null, (result, resultObject) => {
+        return new Region(resultObject, this.stepRequired)
+      }, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns the set intersection of the two regions.
    */
-  intersection (region /*: Region*/) /*: Promise<Region>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].intersection(${config.variableMappingName}["${region.self.mapTo}"])`, true, null, (result, resultObject) => {
-      return new Region(resultObject)
-    })
+  intersection (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<Region> | Region*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `intersection(${region.getMapToCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return new Region(null, this.stepRequired, this.codeChainString)
+    }, () => {
+      return util.simpleEval(completeCode, true, null, (result, resultObject) => {
+        return new Region(resultObject, this.stepRequired)
+      }, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` iff self == ```region``` or both include one or more positions in common.
    */
-  intersects (region /*: Region*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].intersects(${config.variableMappingName}["${region.self.mapTo}"])`, false)
+  intersects (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `intersects(${region.getMapToCode()})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
@@ -117,15 +245,23 @@ class Region extends SublimeObject {
    *
    * Returns ```true``` iff ```begin()``` <= ```point``` <= ```end()```.
    */
-  contains (regionOrPoint /*: Region | number*/) /*: Promise<boolean>*/ {
-    let code = ''
+  contains (regionOrPoint /*: Region | number*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    if (regionOrPoint instanceof Region)
-      code = `${config.variableMappingName}["${this.self.mapTo}"].contains(${config.variableMappingName}["${regionOrPoint.self.mapTo}"])`
-    else
-      code = `${config.variableMappingName}["${this.self.mapTo}"].contains(${regionOrPoint})`
+    this.checkStep(step)
 
-    return util.simpleEval(code, false)
+    let methodCode = (regionOrPoint instanceof Region) ? `contains(${regionOrPoint.getMapToCode()})` : `contains(${regionOrPoint})`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
 }

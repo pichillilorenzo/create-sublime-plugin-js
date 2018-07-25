@@ -1,7 +1,6 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       SublimeObject = require('./SublimeObject.js')
 
 /**
@@ -18,62 +17,158 @@ class Settings extends SublimeObject {
   /**
    * Returns the named setting, or ```default``` if it's not defined. If not passed, ```default``` will have a value of ```null```.
    */
-  get (name /*: string*/, defaultValue /*: ?any*/) /*: Promise<any>*/ {
+  get (name /*: string*/, defaultValue /*: ?SublimeObject | any*/, step /*: ?StepObject*/) /*: Promise<any>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = ``
+
     if (defaultValue) {
-      let mappedVar = util.getMapToVariableName(defaultValue)
-      if (mappedVar) {
-        return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].get("""${name}""", ${config.variableMappingName}["${mappedVar}"])`, false)
-      }
-      else {
-        return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].get("""${name}""", json.dumps("""${JSON.stringify(defaultValue)}""", ensure_ascii=False))`, false)
-      }
+      if (util.isSublimeObject(defaultValue))
+        methodCode = `get("""${name}""", ${defaultValue.getMapToCode()})`
+      else
+        methodCode = `get("""${name}""", json.loads("""${JSON.stringify(defaultValue)}"""))`
     }
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].get("""${name}""")`, false)
+    else
+      methodCode = `get("""${name}""")`
+
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Sets the named setting. Only primitive types, lists, and dicts are accepted.
    */
-  set (name /*: string*/, value /*: any*/) /*: Promise<null>*/ {
-    let mappedVar = util.getMapToVariableName(value)
-    if (mappedVar) {
-      return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].get("""${name}""", ${config.variableMappingName}["${mappedVar}"])`, false)
-    }
-    else {
-      return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].get("""${name}""", json.dumps("""${JSON.stringify(value)}""", ensure_ascii=False))`, false)
-    }
+  set (name /*: string*/, value /*: any*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = ``
+
+    if (util.isSublimeObject(value))
+      methodCode = `set("""${name}""", ${value.getMapToCode()})`  
+    else
+      methodCode = `set("""${name}""", json.loads("""${JSON.stringify(value)}"""))`
+
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Removes the named setting. Does not remove it from any parent Settings.
    */
-  erase (name /*: string*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].erase("""${name}""")`, false)
+  erase (name /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `erase("""${name}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Returns ```true``` iff the named option exists in this set of Settings or one of its parents.
    */
-  has (name /*: string*/) /*: Promise<boolean>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].has("""${name}""")`, false)
+  has (name /*: string*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `has("""${name}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Register a callback to be run whenever a setting in this object is changed.
    */
-  add_on_change (key /*: string*/, callback /*: (?StepObject) => void*/) /*: Promise<null>*/ {
-    return util.callbackPython(`${config.variableMappingName}["${this.self.mapTo}"].add_on_change("""${key}""", lambda: sublime.set_timeout_async(lambda: callback($PORT_TOKEN)))`, false, [async (httpTempServers, subStep) => {
+  add_on_change (key /*: string*/, callback /*: (?StepObject) => void*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
+    this.checkStep(step)
+
+    let callbacks = []
+
+    callbacks.push(async (httpTempServers, subStep) => {
       await callback(subStep)
+
       for (let httpTempServer of httpTempServers) 
         httpTempServer.close()
-    }])
+    })
+
+    let methodCode = `add_on_change("""${key}""", lambda: sublime.set_timeout_async(lambda: callback($PORT_TOKEN)))`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.callbackPython(this.codeChainString, false, callbacks, step)
+    }, () => {
+      return util.callbackPython(completeCode, false, callbacks, step)
+    }, !!(step && this.self))
+
   }
 
   /**
    * Remove all callbacks registered with the given ```key```.
    */
-  clear_on_change (key /*: string*/) /*: Promise<null>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].clear_on_change("""${key}""")`, false)
+  clear_on_change (key /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `clear_on_change("""${key}""")`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return util.simpleEval(this.codeChainString, false, step)
+    }, () => {
+      return util.simpleEval(completeCode, false, step)
+    }, !!(step && this.self))
+
   }
 }
 

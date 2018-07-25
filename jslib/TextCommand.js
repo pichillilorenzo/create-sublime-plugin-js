@@ -1,22 +1,19 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       textCommands = require('./textCommandList.js'),
-      View = require('./View.js')
+      View = require('./View.js'),
+      SublimeObject = require('./SublimeObject.js')
 
 /**
  * TextCommands are instantiated once per view. The {@link View} object may be retrieved via ```this.view()```
  *
  * [sublime_plugin.TextCommand Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.TextCommand).
  */
-class TextCommand {
-
-  /*::
-  self: MappedVariable
-  */
+class TextCommand extends SublimeObject {
 
   constructor () {
+    super(null, true)
     textCommands[this.constructor.name] = this
   }
 
@@ -59,10 +56,25 @@ class TextCommand {
     return false
   }
 
-  view (step /*: StepObject*/) /*: Promise<View>*/ {
-    return util.simpleEval(`${config.variableMappingName}["${this.self.mapTo}"].view`, true, step, ((result, resultObject) => {
-      return new View(resultObject, true)
-    }) )
+  view (step /*: StepObject*/) /*: Promise<View> | View*/ {
+
+    this.checkStep(step)
+
+    let methodCode = `view`
+    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, () => {
+      return new View(null, true, this.codeChainString)
+    }, () => {
+      return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
+        return new View(resultObject, this.stepRequired)
+      }) )
+    }, !!(step && this.self))
+
   }
 
 }

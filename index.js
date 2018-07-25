@@ -1,6 +1,7 @@
 // @flow
 
 module.exports = {
+  util: require('./jslib/util.js'),
   sublime: require('./jslib/sublime.js'),
   View: require('./jslib/View.js'),
   Window: require('./jslib/Window.js'),
