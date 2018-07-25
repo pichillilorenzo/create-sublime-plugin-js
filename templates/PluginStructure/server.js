@@ -130,7 +130,7 @@ async function plugin_loaded() {
     return
   }
 
-  require('index.js')()
+  require('./index.js')()
 }
 
 process.on('unhandledRejection', (reason, p) => {
