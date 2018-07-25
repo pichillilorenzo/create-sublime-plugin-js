@@ -28,8 +28,6 @@ commander
     fs.mkdirsSync(pluginAbsPath)
 
     fs.copySync(path.join(__dirname, '..', 'templates', 'PluginStructure'), path.join(currAbsPath, pluginName))
-    fs.copySync(path.join(__dirname, '..', 'jslib'), path.join(currAbsPath, pluginName, 'jslib'))
-    fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, pluginName, 'server.js'))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, pluginName, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, pluginName, 'main.py'))
 
@@ -50,8 +48,6 @@ commander
       return
     }
     
-    fs.copySync(path.join(__dirname, '..', 'jslib'), path.join(currAbsPath, 'jslib'))
-    fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, 'server.js'))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, 'main.py'))
 

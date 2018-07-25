@@ -13,5 +13,8 @@ module.exports = {
   Sheet: require('./jslib/Sheet.js'),
   TextCommand: require('./jslib/TextCommand.js'),
   WindowCommand: require('./jslib/WindowCommand.js'),
-  ApplicationCommand: require('./jslib/ApplicationCommand.js')
+  ApplicationCommand: require('./jslib/ApplicationCommand.js'),
+  textCommands: require('./jslib/textCommandList.js'),
+  windowCommands: require('./jslib/windowCommandList.js'),
+  applicationCommands: require('./jslib/applicationCommandList.js')
 }

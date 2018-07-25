@@ -1,16 +1,14 @@
-// @flow
-
 const fs = require('fs'),
       path = require('path'),
       jayson = require('jayson'),
       getPort = require('get-port'),
       globby = require('globby'),
-      sublime = require('./jslib/sublime.js'),
-      StepObject = require('./jslib/StepObject.js')
+      sublime = require('create-sublime-plugin-js').sublime,
+      StepObject = require('create-sublime-plugin-js').StepObject
 
-let textCommands = require('./jslib/textCommandList.js')
-let windowCommands = require('./jslib/windowCommandList.js')
-let applicationCommands = require('./jslib/applicationCommandList.js')
+let textCommands = require('create-sublime-plugin-js').textCommandList
+let windowCommands = require('create-sublime-plugin-js').windowCommandList
+let applicationCommands = require('create-sublime-plugin-js').applicationCommandList
 
 const entries = globby.sync([
   path.join(__dirname, 'src', 'commands', '**', '*Command.js'),
@@ -125,69 +123,14 @@ for (let applicationCommand in applicationCommands) {
 
 }
 
-
 async function main() {
   try {
-    // let result = null
-    // result = await sublime.error_message("Error")
-    // console.log(result)
-    // result = await sublime.message_dialog("Message Dialog")
-    // console.log(result)
-    // result = await sublime.ok_cancel_dialog("Message Dialog", "OK")
-    // console.log(result)
-    // result = await sublime.yes_no_cancel_dialog("Message Dialog", "YES", "NO")
-    // console.log(result)
-    // result = await sublime.load_resource("Packages/Default/Main.sublime-menu")
-    // console.log(result)
-    // result = await sublime.load_binary_resource("Packages/Default/Main.sublime-menu")
-    // console.log(result)
-    // result = await sublime.find_resources('*')
-    // console.log(result)
-    // result = await sublime.Region(0, 34)
-    // console.log(result)
-    // console.log(await result.a())
-    // await result.a(5)
-    // await result.b(10)
-    // console.log(result)
-    // console.log(await result.size())
-    // console.log(await result.empty())
-    // result = await sublime.encode_value({ region: 0 })
-    // console.log(result)
-    // result = await sublime.decode_value('{"region": 0}')
-    // console.log(result)
-    // result = await sublime.expand_variables("Hello ${name}", {"name": 'Lorenzo'})
-    // console.log(result)
-    // let region = await sublime.Region(3, 10)
-    // console.log(await region.begin())
-    // let fixPathSettings = await sublime.load_settings("Preferences.sublime-settings")
-    // await fixPathSettings.clear_on_change('fixpath-reload')
-    // fixPathSettings.add_on_change('fixpath-reload', async () => {
-    //   console.log("asdasd")
-    //   let region2 = await sublime.Region(3, 10)
-    //   console.log(await region2.begin())
-    // })
-    // let windows = await sublime.windows()
-    // console.log(await (await windows[0].new_file()).id())
-    // console.log(await (await windows[0].open_file('/Users/lorenzo/Library/Application Support/Sublime Text 3/Packages/test1/node_port.txt', sublime.ENCODED_POSITION | sublime.TRANSIENT)).id())
-    // console.log(await (await sublime.active_window()).id())
-    // console.log(await sublime.packages_path())
-    // console.log(await sublime.installed_packages_path())
-    // console.log(await sublime.cache_path())
-    // console.log(await sublime.get_clipboard())
-    // console.log(await sublime.set_clipboard("asdasd"))
-    // console.log(await sublime.score_selector('script.js', 'script.js'))
-    // console.log(await sublime.get_macro())
-    // await sublime.run_command('show_about_window', {})
-    // await sublime.log_commands(true)
-    // await sublime.log_input(true)
-    // await sublime.log_result_regex(true)
-    // console.log(await sublime.version())
-    // console.log(await sublime.platform())
-    // console.log(await sublime.arch())
+    fs.accessSync( path.join(__dirname, 'index.js') )
   } catch(e) {
-    // statements
-    console.log(e);
+    return
   }
+
+  require('index.js')()
 }
 
 process.on('unhandledRejection', (reason, p) => {
