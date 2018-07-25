@@ -1,10 +1,13 @@
 // @flow
 
+require('trace')
+
 const fs = require('fs'),
       path = require('path'),
       jayson = require('jayson'),
       getPort = require('get-port'),
-      globby = require('globby')
+      globby = require('globby'),
+      StepObject = require('./jslib/StepObject.js')
 
 let textCommands = require('./jslib/textCommandList.js')
 let windowCommands = require('./jslib/windowCommandList.js')
@@ -26,9 +29,8 @@ for (let entry of entries) {
 let JsonRpcMethods = {}
 for (let textCommand in textCommands) {
   JsonRpcMethods[textCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+    
+    let step = new StepObject(cbStep)
 
     try {
       textCommands[textCommand]._init(args[0])
@@ -37,15 +39,14 @@ for (let textCommand in textCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END"
     })
   }
 
   JsonRpcMethods["is_enabled_" + textCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+    
+    let step = new StepObject(cbStep)
 
     let is_enabled = true
 
@@ -56,16 +57,15 @@ for (let textCommand in textCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END",
       "is_enabled": is_enabled
     })
   }
 
   JsonRpcMethods["is_visible_" + textCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+    
+    let step = new StepObject(cbStep)
 
     let is_visible = true
 
@@ -76,7 +76,7 @@ for (let textCommand in textCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END",
       "is_visible": is_visible
     })
@@ -85,9 +85,8 @@ for (let textCommand in textCommands) {
 
 for (let windowCommand in windowCommands) {
   JsonRpcMethods[windowCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+
+    let step = new StepObject(cbStep)
 
     try {
       windowCommands[windowCommand]._init(args[0])
@@ -96,15 +95,14 @@ for (let windowCommand in windowCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END"
     })
   }
 
   JsonRpcMethods["is_enabled_" + windowCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+
+    let step = new StepObject(cbStep)
 
     let is_enabled = true
 
@@ -115,16 +113,15 @@ for (let windowCommand in windowCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END",
       "is_enabled": is_enabled
     })
   }
 
   JsonRpcMethods["is_visible_" + windowCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+
+    let step = new StepObject(cbStep)
 
     let is_visible = true
 
@@ -135,7 +132,7 @@ for (let windowCommand in windowCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END",
       "is_visible": is_visible
     })
@@ -144,9 +141,8 @@ for (let windowCommand in windowCommands) {
 
 for (let applicationCommand in applicationCommands) {
   JsonRpcMethods[applicationCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+    
+    let step = new StepObject(cbStep)
 
     try {
       applicationCommands[applicationCommand]._init(args[0])
@@ -155,15 +151,14 @@ for (let applicationCommand in applicationCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END"
     })
   }
 
   JsonRpcMethods["is_enabled_" + applicationCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+    
+    let step = new StepObject(cbStep)
 
     let is_enabled = true
 
@@ -174,16 +169,15 @@ for (let applicationCommand in applicationCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END",
       "is_enabled": is_enabled
     })
   }
 
   JsonRpcMethods["is_visible_" + applicationCommand] = async (args, cbStep) => {
-    let step = {
-      cb: cbStep
-    }
+    
+    let step = new StepObject(cbStep)
 
     let is_visible = true
 
@@ -194,7 +188,7 @@ for (let applicationCommand in applicationCommands) {
       console.log(e);
     }
 
-    step.cb(null, {
+    step.sendData(null, {
       "end_cb_step": "END",
       "is_visible": is_visible
     })
@@ -265,6 +259,12 @@ async function main() {
     console.log(e);
   }
 }
+
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at:', p)
+  console.log('reason:', reason)
+  process.exit(1)
+})
 
 let server = jayson.server(JsonRpcMethods)
 getPort().then(port => {

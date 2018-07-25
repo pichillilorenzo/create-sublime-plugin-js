@@ -12,7 +12,8 @@ const jayson = require('jayson'),
       Sheet = require('./Sheet.js'),
       Selection = require('./Selection.js'),
       Phantom = require('./Phantom.js'),
-      PhantomSet = require('./PhantomSet.js')
+      PhantomSet = require('./PhantomSet.js'),
+      StepObject = require('./StepObject.js')
 
 /**
  * Represents the [sublime Module](https://www.sublimetext.com/docs/3/api_reference.html#sublime).
@@ -108,9 +109,8 @@ class sublime {
 
       let tempServer = jayson.server({
         callback: async (result, cbStep) => {
-          let step = {
-            cb: cbStep
-          }
+          
+          let step = new StepObject(cbStep)
 
           try {
             await callback(step)
@@ -119,7 +119,7 @@ class sublime {
           }
 
           httpTempServer.close()
-          step.cb(null, {
+          step.sendData(null, {
             'end_cb_step': 'END'
           })
         }
@@ -148,9 +148,8 @@ class sublime {
 
       let tempServer = jayson.server({
         callback: async (result, cbStep) => {
-          let step = {
-            cb: cbStep
-          }
+          
+          let step = new StepObject(cbStep)
 
           try {
             await callback(step)
@@ -159,7 +158,7 @@ class sublime {
           }
 
           httpTempServer.close()
-          step.cb(null, {
+          step.sendData(null, {
             'end_cb_step': 'END'
           })
         }

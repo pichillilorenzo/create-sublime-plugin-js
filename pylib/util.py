@@ -35,7 +35,12 @@ def stepResponse (payload, urlNodeServer = '') :
       "id": 0,
     }
 
-    response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=global_vars.HEADERS_NODE_SERVER).json()
+    try:
+      response = requests.post("http://localhost:" + str(response["result"]["port"]) + "/jsonrpc", data=json.dumps(payload, cls=ObjectEncoder), headers=global_vars.HEADERS_NODE_SERVER).json()
+    except Exception as e:
+      print(e)
+      return response
+    
   
   if "error" in response:
     print(response)

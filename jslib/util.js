@@ -6,7 +6,8 @@ const fs = require('fs'),
       getPort = require('get-port'),
       sublimePort = fs.readFileSync( path.join(path.dirname(__dirname), 'sublime_port.txt') ).toString('utf8'),
       client = jayson.client.http('http://localhost:' + sublimePort),
-      PythonError = require('./PythonError.js')
+      PythonError = require('./PythonError.js'),
+      StepObject = require('./StepObject.js')
 
 function convertToPythonBool (bool /*: any*/) /*: string*/ {
   bool = !!bool
@@ -25,7 +26,7 @@ function sendEval (code /*: string*/, save /*: boolean*/, callback /*: (any, (an
 
       let s = jayson.server({
         step: (result, cbStep) => {
-          step.cb = cbStep
+          step.appendCbStep(cbStep)
           if (callback)
             callback(result, resolve, reject)
           httpTempServer.close() 
@@ -35,7 +36,7 @@ function sendEval (code /*: string*/, save /*: boolean*/, callback /*: (any, (an
       httpTempServer = s.http()
       httpTempServer.listen(port)
 
-      step.cb(null, {
+      step.sendData(null, {
         "eval": code,
         "save": save,
         "port": port
@@ -68,7 +69,7 @@ function simpleCommand (command /*: string*/, args /*: Array<any>*/, callbackFil
       })
 }
 
-function simpleEval (code /*: string*/, save /*: ?boolean*/ = true, step /*: ?StepObject*/ = null, callbackFilter /*: ?(any, Object) => any*/ = null) /*: Promise<any>*/ {
+function simpleEval (code /*: string*/, save /*: boolean*/ = true, step /*: ?StepObject*/ = null, callbackFilter /*: ?(any, Object) => any*/ = null) /*: Promise<any>*/ {
   if (step) 
     return sendEval(code, save, (result, resolve, reject) => {
         let err = (result[0].error) ? new PythonError(result[0].error) : null
@@ -89,9 +90,8 @@ async function callbackPython (code /*: string*/, save /*: boolean*/, callbacks 
     let callback = callbacks[i]
     let tempServer = jayson.server({
       callback: async (args, cbStep) => {
-        let step = {
-          cb: cbStep
-        }
+
+        let step = new StepObject(cbStep)
 
         try {
           await callback(httpTempServers, ...args, step)
@@ -99,7 +99,7 @@ async function callbackPython (code /*: string*/, save /*: boolean*/, callbacks 
           console.log(e);
         }
 
-        step.cb(null, {
+        step.sendData(null, {
           'end_cb_step': 'END'
         })
       }
