@@ -123,7 +123,7 @@ for (let applicationCommand in applicationCommands) {
 
 }
 
-async function main() {
+async function plugin_loaded() {
   try {
     fs.accessSync( path.join(__dirname, 'index.js') )
   } catch(e) {
@@ -151,5 +151,5 @@ getPort().then(port => {
   server.http().listen(port)
   // Send to Sublime the port used by this server
   process.stdout.write(port + '\n')
-  main()
+  plugin_loaded()
 })

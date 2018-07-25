@@ -14,7 +14,7 @@ module.exports = {
   TextCommand: require('./jslib/TextCommand.js'),
   WindowCommand: require('./jslib/WindowCommand.js'),
   ApplicationCommand: require('./jslib/ApplicationCommand.js'),
-  textCommands: require('./jslib/textCommandList.js'),
-  windowCommands: require('./jslib/windowCommandList.js'),
-  applicationCommands: require('./jslib/applicationCommandList.js')
+  textCommandList: require('./jslib/textCommandList.js'),
+  windowCommandList: require('./jslib/windowCommandList.js'),
+  applicationCommandList: require('./jslib/applicationCommandList.js')
 }
