@@ -58,8 +58,6 @@ class TextCommand extends SublimeObject {
 
   view (step /*: StepObject*/) /*: Promise<View> | View*/ {
 
-    this.checkStep(step)
-
     let methodCode = `view`
     let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
 
@@ -70,6 +68,8 @@ class TextCommand extends SublimeObject {
     }, () => {
       return new View(null, true, this.codeChainString)
     }, () => {
+      this.checkStep(step)
+
       return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       }) )

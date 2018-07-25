@@ -51,8 +51,6 @@ class WindowCommand extends SublimeObject {
 
   window (step /*: StepObject*/) /*: Promise<Window> | Window*/ {
 
-    this.checkStep(step)
-
     let methodCode = `window`
     let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
 
@@ -63,6 +61,8 @@ class WindowCommand extends SublimeObject {
     }, () => {
       return new Window(null, true, this.codeChainString)
     }, () => {
+      this.checkStep(step)
+      
       return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
         return new Window(resultObject, this.stepRequired)
       }) )
