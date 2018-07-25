@@ -4,10 +4,39 @@ const fs = require('fs'),
       path = require('path'),
       jayson = require('jayson'),
       getPort = require('get-port'),
-      sublimePort = fs.readFileSync( path.join(path.dirname(__dirname), 'sublime_port.txt') ).toString('utf8'),
-      client = jayson.client.http('http://localhost:' + sublimePort),
       PythonError = require('./PythonError.js'),
       StepObject = require('./StepObject.js')
+
+function findUp (filename/*: string*/) /*: string | null*/ {
+  try {
+    fs.accessSync( path.join(__dirname, filename) )
+    return path.join(__dirname, filename)
+  } catch(e) {}
+
+  let parent = __dirname
+  let oldParent = parent
+
+  while (true) {
+    parent = path.dirname(parent)
+    try {
+      fs.accessSync( path.join(parent, filename) )
+      return path.join(parent, filename)
+    } catch(e) {}
+    if (parent == oldParent)
+      return null
+    oldParent = parent
+  }
+}
+
+const sublimePortPath = findUp('sublime_port.txt')
+
+if (sublimePortPath) {
+  const sublimePort = fs.readFileSync(sublimePortPath).toString('utf8')
+  const client = jayson.client.http('http://localhost:' + sublimePort)
+}
+else {
+  throw new Error('No sublime_port.txt file found!')
+}
 
 function convertToPythonBool (bool /*: any*/) /*: string*/ {
   bool = !!bool

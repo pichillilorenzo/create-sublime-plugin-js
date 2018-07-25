@@ -28,9 +28,10 @@ commander
     fs.mkdirsSync(pluginAbsPath)
 
     fs.copySync(path.join(__dirname, '..', 'templates', 'PluginStructure'), path.join(currAbsPath, pluginName))
+    fs.copySync(path.join(__dirname, '..', 'jslib'), path.join(currAbsPath, pluginName, 'jslib'))
+    fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, pluginName, 'server.js'))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, pluginName, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, pluginName, 'main.py'))
-    fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, pluginName, 'server.js'))
 
     fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.sublime-settings'), '{}')
 
@@ -43,15 +44,16 @@ commander
     let currAbsPath = path.resolve('.')
 
     try {
-      fs.statSync(path.join(currAbsPath, 'package.json'))
+      fs.accessSync(path.join(currAbsPath, 'package.json'))
     } catch(e) {
       console.log(`\npackage.json not found! Are you in the root folder of the plugin?\n`)
       return
     }
-
+    
+    fs.copySync(path.join(__dirname, '..', 'jslib'), path.join(currAbsPath, 'jslib'))
+    fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, 'server.js'))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, 'main.py'))
-    fs.copySync(path.join(__dirname, '..', 'server.js'), path.join(currAbsPath, 'server.js'))
 
     const dirs = fs.readdirSync(path.join(currAbsPath, 'src', 'commands'))
     let importFromPython = []
@@ -75,7 +77,7 @@ commander
     let currAbsPath = path.resolve('.')
 
     try {
-      fs.statSync(path.join(currAbsPath, 'package.json'))
+      fs.accessSync(path.join(currAbsPath, 'package.json'))
     } catch(e) {
       console.log(`\npackage.json not found! Are you in the root folder of the plugin?\n`)
       return
@@ -98,8 +100,8 @@ commander
 
     fs.mkdirsSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command'))
 
-    fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command', commandName + 'Command' + 'Command.js'), jsCode)
-    fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command', commandName + 'Command' + 'Command.py'), pyCode)
+    fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command', commandName + 'Command.js'), jsCode)
+    fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command', commandName + 'Command.py'), pyCode)
     fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command', '__init__.py'), '')
 
     const dirs = fs.readdirSync(path.join(currAbsPath, 'src', 'commands'))

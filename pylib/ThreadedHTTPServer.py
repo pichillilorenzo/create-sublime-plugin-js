@@ -23,7 +23,10 @@ class ThreadedHTTPServer(object):
 
   def stop(self):
     if self.nodeServer and not self.nodeServer.poll():
-      self.nodeServer.terminate()
+      try:
+        self.nodeServer.terminate()
+      except Exception as e:
+        pass    
     self.nodeServer = None
     
     if self.server:

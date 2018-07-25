@@ -179,7 +179,7 @@ def downloadNodeJS():
     else:
       shutil.rmtree(nodeModules)
 
-  print('create' + nodeDirPath)
+  print('create ' + nodeDirPath)
   os.mkdir(nodeDirPath)
 
   nodeUrl = 'https://nodejs.org/dist/' + global_vars.NODE_VERSION + '/node-' + global_vars.NODE_VERSION + '-'
