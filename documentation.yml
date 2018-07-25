@@ -3,5 +3,15 @@ toc:
   - View
   - Window
   - Region
+  - Edit
   - Phantom
   - PhantomSet
+  - Selection
+  - Settings
+  - Sheet
+  - ApplicationCommand
+  - WindowCommand
+  - TextCommand
+  - name: util
+    children:
+      - freeMemory
