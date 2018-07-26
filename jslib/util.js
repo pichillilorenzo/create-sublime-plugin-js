@@ -84,7 +84,7 @@ function sendCommand (command /*: string*/, args /*: Array<any>*/, callback /*: 
   })
 }
 
-function isSublimeObject(variable /*: Object*/) /*: boolean*/ {
+function isSublimeObject(variable /*: any*/) /*: boolean*/ {
   return variable && variable.hasOwnProperty("value") && variable.value == 'SublimeObject'
 }
 
