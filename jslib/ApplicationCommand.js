@@ -9,7 +9,7 @@ const applicationCommands = require('./applicationCommandList.js'),
 class ApplicationCommand extends SublimeObject {
 
   constructor () {
-    super(null, true)
+    super(null, null, true)
     applicationCommands[this.constructor.name] = this
   }
 

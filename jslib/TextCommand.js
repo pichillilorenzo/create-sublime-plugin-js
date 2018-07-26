@@ -13,12 +13,13 @@ const util = require('./util.js'),
 class TextCommand extends SublimeObject {
 
   constructor () {
-    super(null, true)
+    super(null, null, true)
     textCommands[this.constructor.name] = this
   }
 
-  _init (s /*: MappedVariable*/) /*: void*/ {
+  _init (s /*: MappedVariable*/, stepObject /*: StepObject*/) /*: void*/ {
     this.self = s
+    this.stepObject = stepObject
   }
 
   /**
@@ -66,12 +67,12 @@ class TextCommand extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new View(null, true, this.codeChainString)
+      return new View(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
-        return new View(resultObject, this.stepRequired)
+        return new View(resultObject, this.stepObject, this.stepRequired)
       }) )
     }, !!step)
 

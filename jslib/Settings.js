@@ -10,8 +10,8 @@ const util = require('./util.js'),
  */
 class Settings extends SublimeObject {
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
-    super(self, stepRequired, codeChainString)
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
+    super(self, stepObject, stepRequired, codeChainString)
   }
 
   /**
@@ -19,7 +19,7 @@ class Settings extends SublimeObject {
    */
   get (name /*: string*/, defaultValue /*: ?SublimeObject | any*/, step /*: ?StepObject*/) /*: Promise<any>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = ``
 
@@ -51,7 +51,7 @@ class Settings extends SublimeObject {
    */
   set (name /*: string*/, value /*: any*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = ``
 
@@ -79,7 +79,7 @@ class Settings extends SublimeObject {
    */
   erase (name /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `erase("""${name}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -101,7 +101,7 @@ class Settings extends SublimeObject {
    */
   has (name /*: string*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `has("""${name}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -123,7 +123,7 @@ class Settings extends SublimeObject {
    */
   add_on_change (key /*: string*/, callback /*: (?StepObject) => void*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let callbacks = []
 
@@ -154,7 +154,7 @@ class Settings extends SublimeObject {
    */
   clear_on_change (key /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `clear_on_change("""${key}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`

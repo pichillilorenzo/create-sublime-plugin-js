@@ -10,8 +10,8 @@ const util = require('./util.js'),
  */
 class PhantomSet extends SublimeObject {
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
-    super(self, stepRequired, codeChainString)
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
+    super(self, stepObject, stepRequired, codeChainString)
   }
 
   /**
@@ -21,7 +21,7 @@ class PhantomSet extends SublimeObject {
    */
   update (phantoms /*: Array<Phantom>*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let phantomsVariableArray = []
 

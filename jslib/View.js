@@ -14,8 +14,8 @@ const util = require('./util.js'),
  */
 class View extends SublimeObject {
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
-    super(self, stepRequired, codeChainString)
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
+    super(self, stepObject, stepRequired, codeChainString)
   }
 
   /**
@@ -23,7 +23,7 @@ class View extends SublimeObject {
    */
   id (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `id()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -45,7 +45,7 @@ class View extends SublimeObject {
    */
   buffer_id (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `buffer_id()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -67,7 +67,7 @@ class View extends SublimeObject {
    */
   is_primary (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_primary()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -89,7 +89,7 @@ class View extends SublimeObject {
    */
   file_name (step /*: ?StepObject*/) /*: Promise<string | null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `file_name()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -111,7 +111,7 @@ class View extends SublimeObject {
    */
   name (step /*: ?StepObject*/) /*: Promise<string>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `name()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -133,7 +133,7 @@ class View extends SublimeObject {
    */
   set_name (name /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_name("""${name}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -155,7 +155,7 @@ class View extends SublimeObject {
    */
   is_loading (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_loading()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -177,7 +177,7 @@ class View extends SublimeObject {
    */
   is_dirty (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_dirty()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -199,7 +199,7 @@ class View extends SublimeObject {
    */
   is_read_only (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_read_only()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -223,7 +223,7 @@ class View extends SublimeObject {
 
     let readOnly = util.convertToPythonBool(value)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_read_only(${readOnly})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -245,7 +245,7 @@ class View extends SublimeObject {
    */
   is_scratch (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_scratch()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -269,7 +269,7 @@ class View extends SublimeObject {
 
     value = util.convertToPythonBool(value)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_scratch(${value})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -299,12 +299,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Settings(null, this.stepRequired, this.codeChainString)
+      return new Settings(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Settings(resultObject, this.stepRequired)
+        return new Settings(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -323,12 +323,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Window(null, this.stepRequired, this.codeChainString)
+      return new Window(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Window(resultObject, this.stepRequired)
+        return new Window(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -339,7 +339,7 @@ class View extends SublimeObject {
    */
   run_command (string /*: string*/, args /*: Object | null*/ = null, step /*: ?StepObject*/) /*: Promise<null>*/ {
     
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `run_command("""${string}""", json.loads("""${JSON.stringify(args)}"""))`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -361,7 +361,7 @@ class View extends SublimeObject {
    */
   size (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `size()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -387,7 +387,7 @@ class View extends SublimeObject {
    */
   substr (regionOrPoint /*: Region | number*/, step /*: ?StepObject*/) /*: Promise<string>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (regionOrPoint instanceof Region) ? `substr(${regionOrPoint.getPythonCode()})` : `substr(${regionOrPoint})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -409,7 +409,7 @@ class View extends SublimeObject {
    */
   insert (edit /*: Edit*/, pos /*: number*/, text /*: string*/, step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `insert(${edit.getPythonCode()}, ${pos}, """${text}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -431,7 +431,7 @@ class View extends SublimeObject {
    */
   erase (edit /*: Edit*/, region /*: Region*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `erase(${edit.getPythonCode()}, ${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -453,7 +453,7 @@ class View extends SublimeObject {
    */
   replace (edit /*: Edit*/, region /*: Region*/, string /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `replace(${edit.getPythonCode()}, ${region.getPythonCode()}, """${string}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -483,12 +483,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Selection(null, this.stepRequired, this.codeChainString)
+      return new Selection(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Selection(resultObject, this.stepRequired)
+        return new Selection(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -511,12 +511,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -535,12 +535,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -551,7 +551,7 @@ class View extends SublimeObject {
    */
   lines (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<Array<Region>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `lines(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -564,7 +564,7 @@ class View extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       })
@@ -572,7 +572,7 @@ class View extends SublimeObject {
       return util.simpleEval(completeCode, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       })
@@ -585,7 +585,7 @@ class View extends SublimeObject {
    */
   split_by_newlines (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<Array<Region>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `split_by_newlines(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -598,7 +598,7 @@ class View extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       })
@@ -606,7 +606,7 @@ class View extends SublimeObject {
       return util.simpleEval(completeCode, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       })
@@ -631,12 +631,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -656,7 +656,7 @@ class View extends SublimeObject {
    */
   classify (point /*: number*/, step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `classify(${point})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -680,7 +680,7 @@ class View extends SublimeObject {
 
     let forwardPythonBool = util.convertToPythonBool(forward)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `find_by_class(${point}, ${forwardPythonBool}, ${classes}, """${separators}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -714,12 +714,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -740,12 +740,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -758,7 +758,7 @@ class View extends SublimeObject {
    */
   find_all (pattern /*: string*/, flags /*: number*/ = 0, formatAndExtractions /*: ?{format: string, extractions: Array<string>}*/, step /*: ?StepObject*/) /*: Promise<Array<Region>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `find_all(${pattern}, ${flags})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -771,7 +771,7 @@ class View extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
           if (formatAndExtractions)
             formatAndExtractions.extractions.push(formatAndExtractions.format)
         }
@@ -781,7 +781,7 @@ class View extends SublimeObject {
       return util.simpleEval(completeCode, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
           if (formatAndExtractions)
             formatAndExtractions.extractions.push(formatAndExtractions.format)
         }
@@ -796,7 +796,7 @@ class View extends SublimeObject {
    */
   rowcol (point /*: number*/, step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `rowcol(${point})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -818,7 +818,7 @@ class View extends SublimeObject {
    */
   text_point (row /*: number*/, col /*: number*/, step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `text_point(${row}, ${col})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -840,7 +840,7 @@ class View extends SublimeObject {
    */
   set_syntax_file (syntax_file /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_syntax_file(${syntax_file})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -870,13 +870,13 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         if (result == "SublimeObject")
-          return new Region(resultObject, this.stepRequired)
+          return new Region(resultObject, this.stepObject, this.stepRequired)
         else
           return null
       })
@@ -889,7 +889,7 @@ class View extends SublimeObject {
    */
   scope_name (point /*: number*/, step /*: ?StepObject*/) /*: Promise<string>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `scope_name(${point})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -911,7 +911,7 @@ class View extends SublimeObject {
    */
   match_selector (point /*: number*/, selector /*: string*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `match_selector(${point}, """${selector}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -933,7 +933,7 @@ class View extends SublimeObject {
    */
   score_selector (point /*: number*/, selector /*: string*/, step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `score_selector(${point}, """${selector}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -955,7 +955,7 @@ class View extends SublimeObject {
    */
   find_by_selector (selector /*: string*/, step /*: ?StepObject*/) /*: Promise<Array<Region>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `find_by_selector(${selector})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -968,7 +968,7 @@ class View extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       } )
@@ -976,7 +976,7 @@ class View extends SublimeObject {
       return util.simpleEval(completeCode, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       } )
@@ -991,7 +991,7 @@ class View extends SublimeObject {
 
     let showSurrounds = util.convertToPythonBool(show_surrounds)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (location instanceof Region || location instanceof Selection) ? `show(${location.getPythonCode()}, ${showSurrounds})` : `show(${location}, ${showSurrounds})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1013,7 +1013,7 @@ class View extends SublimeObject {
    */
   show_at_center (location /*: number | Region*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (location instanceof Region) ? `show_at_center(${location.getPythonCode()})` : `show_at_center(${location})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1043,12 +1043,12 @@ class View extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -1059,7 +1059,7 @@ class View extends SublimeObject {
    */
   viewport_position (step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `viewport_position()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1083,7 +1083,7 @@ class View extends SublimeObject {
 
     let animateBool = util.convertToPythonBool(animate)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_viewport_position((${vector[0]}, ${vector[1]}), ${animateBool})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1105,7 +1105,7 @@ class View extends SublimeObject {
    */
   viewport_extent (step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `viewport_extent()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1127,7 +1127,7 @@ class View extends SublimeObject {
    */
   layout_extent (step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `layout_extent()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1149,7 +1149,7 @@ class View extends SublimeObject {
    */
   text_to_layout (point /*: number*/, step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `text_to_layout(${point})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1171,7 +1171,7 @@ class View extends SublimeObject {
    */
   text_to_window (point /*: number*/, step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `text_to_window(${point})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1193,7 +1193,7 @@ class View extends SublimeObject {
    */
   layout_to_text (vector /*: [number, number]*/, step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `layout_to_text((${vector[0]}, ${vector[1]}))`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1215,7 +1215,7 @@ class View extends SublimeObject {
    */
   layout_to_window (vector /*: [number, number]*/, step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `layout_to_window((${vector[0]}, ${vector[1]}))`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1237,7 +1237,7 @@ class View extends SublimeObject {
    */
   window_to_layout (vector /*: [number, number]*/, step /*: ?StepObject*/) /*: Promise<[number, number]>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `window_to_layout((${vector[0]}, ${vector[1]}))`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1259,7 +1259,7 @@ class View extends SublimeObject {
    */
   window_to_text (vector /*: [number, number]*/, step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `window_to_text((${vector[0]}, ${vector[1]}))`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1281,7 +1281,7 @@ class View extends SublimeObject {
    */
   line_height (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `line_height()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1303,7 +1303,7 @@ class View extends SublimeObject {
    */
   em_width (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `em_width()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1340,7 +1340,7 @@ class View extends SublimeObject {
    */
   add_regions (key /*: string*/, regions /*: Array<Region>*/, scope /*: string*/ = '', icon /*: string*/ = '', flags /*: number*/ = 0, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let regionsVariableArray = []
     for (let region of regions)
@@ -1368,7 +1368,7 @@ class View extends SublimeObject {
    */
   get_regions (key /*: string*/, step /*: ?StepObject*/) /*: Promise<Array<Region>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `get_regions("""${key}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1381,7 +1381,7 @@ class View extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       } )
@@ -1389,7 +1389,7 @@ class View extends SublimeObject {
       return util.simpleEval(completeCode, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       } )
@@ -1402,7 +1402,7 @@ class View extends SublimeObject {
    */
   erase_regions (key /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `erase_regions("""${key}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1424,7 +1424,7 @@ class View extends SublimeObject {
    */
   set_status (key /*: string*/, value /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_status("""${key}""", """${value}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1446,7 +1446,7 @@ class View extends SublimeObject {
    */
   get_status (key /*: string*/, step /*: ?StepObject*/) /*: Promise<string>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `get_status("""${key}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1468,7 +1468,7 @@ class View extends SublimeObject {
    */
   erase_status (key /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `erase_status("""${key}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1496,7 +1496,7 @@ class View extends SublimeObject {
 
     let modifyingOnly = util.convertToPythonBool(modifying_only)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `command_history(${index}, ${modifyingOnly})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1518,7 +1518,7 @@ class View extends SublimeObject {
    */
   change_count (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `change_count()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1544,7 +1544,7 @@ class View extends SublimeObject {
    */
   fold (regions /*: Region | Array<Region>*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let regionsVariableArray = []
 
@@ -1580,7 +1580,7 @@ class View extends SublimeObject {
    */
   unfold (regions /*: Region | Array<Region>*/, step /*: ?StepObject*/) /*: Promise<Array<Region>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let regionsVariableArray = []
 
@@ -1603,7 +1603,7 @@ class View extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       } )
@@ -1611,7 +1611,7 @@ class View extends SublimeObject {
       return util.simpleEval(completeCode, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
-          regions.push(new Region(region, this.stepRequired))
+          regions.push(new Region(region, this.stepObject, this.stepRequired))
         }
         return regions
       } )
@@ -1624,7 +1624,7 @@ class View extends SublimeObject {
    */
   encoding (step /*: ?StepObject*/) /*: Promise<string>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `encoding()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1646,7 +1646,7 @@ class View extends SublimeObject {
    */
   set_encoding (encoding /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_encoding("""${encoding}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1668,7 +1668,7 @@ class View extends SublimeObject {
    */
   line_endings (step /*: ?StepObject*/) /*: Promise<string>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `line_endings()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1690,7 +1690,7 @@ class View extends SublimeObject {
    */
   set_line_endings (line_endings /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_line_endings("""${line_endings}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1712,7 +1712,7 @@ class View extends SublimeObject {
    */
   overwrite_status (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `overwrite_status()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1736,7 +1736,7 @@ class View extends SublimeObject {
 
     let enabledBool = util.convertToPythonBool(enabled)
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `set_overwrite_status(${enabledBool})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1758,7 +1758,7 @@ class View extends SublimeObject {
    */
   symbols (step /*: ?StepObject*/) /*: Promise<Array<[Region, string]>>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `symbols()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1796,7 +1796,7 @@ class View extends SublimeObject {
    */
   show_popup_menu (items /*: Array<string>*/, on_done /*: (number, ?StepObject) => void*/, flags /*: number*/ = 0, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let callbacks = []
 
@@ -1838,7 +1838,7 @@ class View extends SublimeObject {
    */
   show_popup (content /*: string*/, flags /*: number*/ = 0, location /*: number*/ = -1, max_width /*: number*/ = 320, max_height /*: number*/ = 240, on_navigate /*: ?(string, ?StepObject) => void*/, on_hide /*: ?(?StepObject) => void*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let callbacks = []
 
@@ -1876,7 +1876,7 @@ class View extends SublimeObject {
    */
   update_popup (content /*: string*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `update_popup("""${content}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1898,7 +1898,7 @@ class View extends SublimeObject {
    */
   is_popup_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_popup_visible()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1920,7 +1920,7 @@ class View extends SublimeObject {
    */
   hide_popup (step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `hide_popup()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1942,7 +1942,7 @@ class View extends SublimeObject {
    */
   is_auto_complete_visible (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `is_auto_complete_visible()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1964,7 +1964,7 @@ class View extends SublimeObject {
    */
   style (step /*: ?StepObject*/) /*: Promise<Object>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `style()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -1986,7 +1986,7 @@ class View extends SublimeObject {
    */
   style_for_scope (scope_name /*: string*/, step /*: ?StepObject*/) /*: Promise<Object>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `style_for_scope("""${scope_name}""")`
     let completeCode = `${this.getPythonCode()}.${methodCode}`

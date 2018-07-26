@@ -13,7 +13,7 @@ const util = require('./util.js'),
 class WindowCommand extends SublimeObject {
 
   constructor () {
-    super(null, true)
+    super(null, null, true)
     windowCommands[this.constructor.name] = this
   }
 
@@ -59,12 +59,12 @@ class WindowCommand extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Window(null, true, this.codeChainString)
+      return new Window(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
       this.checkStep(step)
       
       return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
-        return new Window(resultObject, this.stepRequired)
+        return new Window(resultObject, this.stepObject, this.stepRequired)
       }) )
     }, !!step)
 

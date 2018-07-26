@@ -10,8 +10,8 @@ const util = require('./util.js'),
  */
 class Region extends SublimeObject {
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
-    super(self, stepRequired, codeChainString)
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
+    super(self, stepObject, stepRequired, codeChainString)
   }
 
   /**
@@ -19,7 +19,7 @@ class Region extends SublimeObject {
    */
   a (step /*: ?StepObject*/, value /*: ?number*/) /*: Promise<?number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (value === undefined) ? `a` : `a = ${value}`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -41,7 +41,7 @@ class Region extends SublimeObject {
    */
   b (step /*: ?StepObject*/, value /*: ?number*/) /*: Promise<?number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (value === undefined) ? `b` : `b = ${value}`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -63,7 +63,7 @@ class Region extends SublimeObject {
    */
   xpos (step /*: ?StepObject*/, value /*: ?number*/) /*: Promise<?number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (value === undefined) ? `xpos` : `xpos = ${value}`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -85,7 +85,7 @@ class Region extends SublimeObject {
    */
   begin (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `begin()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -107,7 +107,7 @@ class Region extends SublimeObject {
    */
   end (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `end()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -129,7 +129,7 @@ class Region extends SublimeObject {
    */
   size (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `size()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -151,7 +151,7 @@ class Region extends SublimeObject {
    */
   empty (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `empty()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -173,8 +173,6 @@ class Region extends SublimeObject {
    */
   cover (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<Region> | Region*/ {
 
-    this.checkStep(step)
-
     let methodCode = `cover(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
 
@@ -183,10 +181,12 @@ class Region extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
+      step = this.checkStep(step)
+
       return util.simpleEval(completeCode, true, null, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       }, step)
     }, !!step)
 
@@ -197,8 +197,6 @@ class Region extends SublimeObject {
    */
   intersection (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<Region> | Region*/ {
 
-    this.checkStep(step)
-
     let methodCode = `intersection(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
 
@@ -207,10 +205,12 @@ class Region extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
+      step = this.checkStep(step)
+
       return util.simpleEval(completeCode, true, null, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       }, step)
     }, !!step)
 
@@ -221,7 +221,7 @@ class Region extends SublimeObject {
    */
   intersects (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `intersects(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -247,7 +247,7 @@ class Region extends SublimeObject {
    */
   contains (regionOrPoint /*: Region | number*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = (regionOrPoint instanceof Region) ? `contains(${regionOrPoint.getPythonCode()})` : `contains(${regionOrPoint})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`

@@ -11,8 +11,8 @@ const util = require('./util.js'),
  */
 class Selection extends SublimeObject {
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
-    super(self, stepRequired, codeChainString)
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
+    super(self, stepObject, stepRequired, codeChainString)
   }
 
   /**
@@ -28,12 +28,12 @@ class Selection extends SublimeObject {
       pre: ``,
       after: `${methodCode}`
     }, () => {
-      return new Region(null, this.stepRequired, this.codeChainString)
+      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
-      this.checkStep(step)
+      step = this.checkStep(step)
 
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
-        return new Region(resultObject, this.stepRequired)
+        return new Region(resultObject, this.stepObject, this.stepRequired)
       })
     }, !!step)
 
@@ -44,7 +44,7 @@ class Selection extends SublimeObject {
    */
   length (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let completeCode = `len(${this.getPythonCode()})`
 
@@ -65,7 +65,7 @@ class Selection extends SublimeObject {
    */
   clear (step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `clear()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -87,7 +87,7 @@ class Selection extends SublimeObject {
    */
   add (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `add(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -109,7 +109,7 @@ class Selection extends SublimeObject {
    */
   add_all (regions /*: Array<Region>*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let regionsVariableArray = []
 
@@ -138,7 +138,7 @@ class Selection extends SublimeObject {
    */
   subtract (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<null>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `subtract(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -160,7 +160,7 @@ class Selection extends SublimeObject {
    */
   contains (region /*: Region*/, step /*: ?StepObject*/) /*: Promise<boolean>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `contains(${region.getPythonCode()})`
     let completeCode = `${this.getPythonCode()}.${methodCode}`

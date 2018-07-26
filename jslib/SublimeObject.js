@@ -9,12 +9,14 @@ class SublimeObject {
   self: MappedVariable | null
   codeChainString: string
   stepRequired: boolean
+  stepObject: StepObject | null
   */
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
     this.self = self
     this.stepRequired = stepRequired
     this.codeChainString = codeChainString
+    this.stepObject = stepObject
   }
 
   wrapMethod (code /*: {complete: string, pre: string, after: string}*/, chainCallback /*: Function*/, callback /*: Function*/, execCallback /*: boolean*/) /*: Promise<any> | any*/ {
@@ -33,7 +35,7 @@ class SublimeObject {
   }
 
   isNull (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let code = this.getPythonCode()
     return util.simpleEval(code, false, step, (result, resultObject) => {
@@ -41,9 +43,14 @@ class SublimeObject {
     })
   }
 
-  checkStep (step /*: ?StepObject*/) /*: void*/ {
-    if (this.stepRequired && !step)
+  checkStep (step /*: ?StepObject*/) /*: StepObject | null*/ {
+    if (this.stepRequired && !step && !this.stepObject)
       throw new Error(`"step" parameter required!`)
+    else if (this.stepRequired && step)
+      return step
+    else if (this.stepRequired && this.stepObject)
+      return this.stepObject
+    return null
   }
 
   getMapToCode () /*: string*/ {

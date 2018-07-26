@@ -12,8 +12,8 @@ const util = require('./util.js'),
  */
 class Sheet extends SublimeObject {
 
-  constructor (self /*: MappedVariable | null*/, stepRequired /*: boolean*/, codeChainString /*: string*/ = '') {
-    super(self, stepRequired, codeChainString)
+  constructor (self /*: MappedVariable | null*/, stepObject /*: StepObject | null*/ = null, stepRequired /*: boolean*/ = false, codeChainString /*: string*/ = '') {
+    super(self, stepObject, stepRequired, codeChainString)
   }
 
   /**
@@ -21,7 +21,7 @@ class Sheet extends SublimeObject {
    */
   id (step /*: ?StepObject*/) /*: Promise<number>*/ {
 
-    this.checkStep(step)
+    step = this.checkStep(step)
 
     let methodCode = `id()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
@@ -43,8 +43,6 @@ class Sheet extends SublimeObject {
    */
   window (step /*: ?StepObject*/) /*: Promise<Window | null> | Window*/ {
 
-    this.checkStep(step)
-
     let methodCode = `window()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
 
@@ -53,11 +51,13 @@ class Sheet extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new Window(null, this.stepRequired, this.codeChainString)
+      return new Window(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
+      step = this.checkStep(step)
+
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         if (result)
-          return new Window(resultObject, this.stepRequired)
+          return new Window(resultObject, this.stepObject, this.stepRequired)
         else
           return null
       })
@@ -70,8 +70,6 @@ class Sheet extends SublimeObject {
    */
   view (step /*: ?StepObject*/) /*: Promise<View | null> | View*/ {
 
-    this.checkStep(step)
-
     let methodCode = `view()`
     let completeCode = `${this.getPythonCode()}.${methodCode}`
 
@@ -80,11 +78,13 @@ class Sheet extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, () => {
-      return new View(null, this.stepRequired, this.codeChainString)
+      return new View(null, this.stepObject, this.stepRequired, this.codeChainString)
     }, () => {
+      step = this.checkStep(step)
+      
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         if (result)
-          return new View(resultObject, this.stepRequired)
+          return new View(resultObject, this.stepObject, this.stepRequired)
         else
           return null
       })
