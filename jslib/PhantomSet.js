@@ -37,8 +37,8 @@ class PhantomSet extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)

@@ -66,8 +66,8 @@ class TextCommand extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new View(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new View(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 

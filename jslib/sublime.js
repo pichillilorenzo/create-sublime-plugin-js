@@ -280,7 +280,7 @@ class sublime {
    */
   static load_settings (basename /*: string*/) /*: Promise<Settings>*/ {
     return util.simpleEval(`sublime.load_settings("""${basename}""")`, true, null, (result, resultObject) => {
-      return new Settings(resultObject, false)
+      return new Settings(resultObject, null, false)
     } )
   }
 
@@ -298,7 +298,7 @@ class sublime {
     return util.simpleEval(`sublime.windows()`, false, null, (result, resultObject) => {
       let windows = []
       for (let w of resultObject.value) {
-        windows.push(new Window(w, false))
+        windows.push(new Window(w, null, false))
       }
       return windows
     } )
@@ -309,7 +309,7 @@ class sublime {
    */
   static active_window () /*: Promise<Window>*/ {
     return util.simpleEval(`sublime.active_window()`, true, null, (result, resultObject) => {
-      return new Window(resultObject, false)
+      return new Window(resultObject, null, false)
     } )
   }
 
@@ -414,9 +414,9 @@ class sublime {
   /**
    * Creates a {@link Region} with initial values a and b.
    */
-  static Region (a /*: number*/, b /*: number*/) /*: Promise<Region>*/ {
-    return util.simpleEval(`sublime.Region(${a}, ${b})`, true, null, (result, resultObject) => {
-      return new Region(resultObject, false)
+  static Region (a /*: number*/, b /*: ?number*/) /*: Promise<Region>*/ {
+    return util.simpleEval(`sublime.Region(${a}, ${(b) ? b : a})`, true, null, (result, resultObject) => {
+      return new Region(resultObject, null, false)
     } )
   }
 
@@ -425,7 +425,7 @@ class sublime {
    */
   static Window (id /*: number*/) /*: Promise<Window>*/ {
     return util.simpleEval(`sublime.Window(${id})`, true, null, (result, resultObject) => {
-      return new Window(resultObject, false)
+      return new Window(resultObject, null, false)
     } )
   }
 
@@ -434,7 +434,7 @@ class sublime {
    */
   static View (id /*: number*/) /*: Promise<View>*/ {
     return util.simpleEval(`sublime.View(${id})`, true, null, (result, resultObject) => {
-      return new View(resultObject, false)
+      return new View(resultObject, null, false)
     } )
   }
 
@@ -442,7 +442,7 @@ class sublime {
    * {@link Edit}
    */
   static Edit (resultObject /*: Object*/) /*: Edit*/ {
-    return new Edit(resultObject, false)
+    return new Edit(resultObject, null, false)
   }
 
   /**
@@ -450,7 +450,7 @@ class sublime {
    */
   static Settings (id /*: number*/) /*: Promise<Settings>*/ {
     return util.simpleEval(`sublime.Settings(${id})`, true, null, (result, resultObject) => {
-      return new Settings(resultObject, false)
+      return new Settings(resultObject, null, false)
     } )
   }
 
@@ -459,7 +459,7 @@ class sublime {
    */
   static Sheet (id /*: number*/) /*: Promise<Sheet>*/ {
     return util.simpleEval(`sublime.Sheet(${id})`, true, null, (result, resultObject) => {
-      return new Sheet(resultObject, false)
+      return new Sheet(resultObject, null, false)
     } )
   }
 
@@ -468,7 +468,7 @@ class sublime {
    */
   static Selection (id /*: number*/) /*: Promise<Selection>*/ {
     return util.simpleEval(`sublime.Selection(${id})`, true, null, (result, resultObject) => {
-      return new Selection(resultObject, false)
+      return new Selection(resultObject, null, false)
     } )
   }
 
@@ -490,7 +490,7 @@ class sublime {
         // $Ignore
         await on_navigate(href, subStep)
       }], null, (result, resultObject) => {
-        return new Phantom(resultObject, false)
+        return new Phantom(resultObject, null, false)
       } )
     else
       return util.simpleEval(`sublime.Phantom(${region.getMapToCode()}, """${content}""", ${layout})`, true)
@@ -501,7 +501,7 @@ class sublime {
    */
   static PhantomSet (view /*: View*/, key /*: string*/ = '') /*: Promise<PhantomSet>*/ {
     return util.simpleEval(`sublime.PhantomSet(${view.getMapToCode()}, """${key}""")`, true, null, (result, resultObject) => {
-      return new PhantomSet(resultObject, false)
+      return new PhantomSet(resultObject, null, false)
     })
   }
 }

@@ -30,8 +30,8 @@ class Sheet extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -50,8 +50,8 @@ class Sheet extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Window(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Window(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -77,8 +77,8 @@ class Sheet extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new View(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new View(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
       

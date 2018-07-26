@@ -29,10 +29,12 @@ function findUp (filename/*: string*/) /*: string | null*/ {
 }
 
 const sublimePortPath = findUp('sublime_port.txt')
+let sublimePort = ''
+let client = null
 
 if (sublimePortPath) {
-  const sublimePort = fs.readFileSync(sublimePortPath).toString('utf8')
-  const client = jayson.client.http('http://localhost:' + sublimePort)
+  sublimePort = fs.readFileSync(sublimePortPath).toString('utf8')
+  client = jayson.client.http('http://localhost:' + sublimePort)
 }
 else {
   throw new Error('No sublime_port.txt file found!')

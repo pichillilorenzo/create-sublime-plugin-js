@@ -19,18 +19,19 @@ class SublimeObject {
     this.stepObject = stepObject
   }
 
-  wrapMethod (code /*: {complete: string, pre: string, after: string}*/, chainCallback /*: Function*/, callback /*: Function*/, execCallback /*: boolean*/) /*: Promise<any> | any*/ {
+  wrapMethod (code /*: {complete: string, pre: string, after: string}*/, chainCallback /*: (string) => any*/, callback /*: () => any*/, execCallback /*: boolean*/) /*: Promise<any> | any*/ {
     if (execCallback) {
-      this.codeChainString = ''
       return callback()
     }
-    if (this.codeChainString == '')
-      this.codeChainString = code.complete
-    else
-      this.codeChainString = code.pre + this.codeChainString + code.after
 
-    let result = chainCallback()
-    this.codeChainString = ''
+    let codeString = ''
+
+    if (this.codeChainString == '')
+      codeString = code.complete
+    else
+      codeString = code.pre + this.codeChainString + code.after
+
+    let result = chainCallback(codeString)
     return result
   }
 

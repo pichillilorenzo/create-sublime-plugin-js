@@ -58,8 +58,8 @@ class WindowCommand extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Window(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Window(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       this.checkStep(step)
       

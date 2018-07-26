@@ -32,8 +32,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -54,8 +54,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -76,8 +76,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -98,8 +98,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -120,8 +120,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -142,8 +142,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -164,8 +164,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -186,8 +186,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -208,8 +208,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -232,8 +232,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -254,8 +254,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -278,8 +278,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -298,8 +298,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Settings(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Settings(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -322,8 +322,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Window(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Window(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -348,8 +348,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -370,8 +370,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -396,8 +396,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -418,8 +418,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -440,8 +440,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -462,8 +462,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -482,8 +482,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Selection(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Selection(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -510,8 +510,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -534,8 +534,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -560,8 +560,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
           regions.push(new Region(region, this.stepObject, this.stepRequired))
@@ -594,8 +594,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
           regions.push(new Region(region, this.stepObject, this.stepRequired))
@@ -630,8 +630,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -665,8 +665,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -689,8 +689,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -713,8 +713,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -739,8 +739,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -767,8 +767,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
           regions.push(new Region(region, this.stepObject, this.stepRequired))
@@ -805,8 +805,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -827,8 +827,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -849,8 +849,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -869,8 +869,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -898,8 +898,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -920,8 +920,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -942,8 +942,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -964,8 +964,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
           regions.push(new Region(region, this.stepObject, this.stepRequired))
@@ -1000,8 +1000,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1022,8 +1022,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1042,8 +1042,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -1068,8 +1068,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1092,8 +1092,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1114,8 +1114,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1136,8 +1136,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1158,8 +1158,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1180,8 +1180,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1202,8 +1202,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1224,8 +1224,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1246,8 +1246,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1268,8 +1268,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1290,8 +1290,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1312,8 +1312,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1355,8 +1355,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1377,8 +1377,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
           regions.push(new Region(region, this.stepObject, this.stepRequired))
@@ -1411,8 +1411,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1433,8 +1433,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1455,8 +1455,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1477,8 +1477,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1505,8 +1505,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1527,8 +1527,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1563,8 +1563,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1599,8 +1599,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let regions = []
         for (let region of resultObject.value) {
           regions.push(new Region(region, this.stepObject, this.stepRequired))
@@ -1633,8 +1633,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1655,8 +1655,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1677,8 +1677,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1699,8 +1699,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1721,8 +1721,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1745,8 +1745,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1767,8 +1767,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step, (result, resultObject) => {
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step, (result, resultObject) => {
         let symbols = []
         for (let symbol of resultObject.value) {
           symbols.push([new Region(symbol[0], this.stepRequired), symbol[1]])
@@ -1812,8 +1812,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.callbackPython(this.codeChainString, false, callbacks, step)
+    }, (codeString) => {
+      return util.callbackPython(codeString, false, callbacks, step)
     }, () => {
       return util.callbackPython(completeCode, false, callbacks, step)
     }, !!step)
@@ -1863,8 +1863,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.callbackPython(this.codeChainString, false, callbacks, step)
+    }, (codeString) => {
+      return util.callbackPython(codeString, false, callbacks, step)
     }, () => {
       return util.callbackPython(completeCode, false, callbacks, step)
     }, !!step)
@@ -1885,8 +1885,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1907,8 +1907,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1929,8 +1929,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1951,8 +1951,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1973,8 +1973,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -1995,8 +1995,8 @@ class View extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)

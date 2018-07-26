@@ -27,8 +27,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `${methodCode}`
-    }, () => {
-      return new Region(null, this.stepObject, this.stepRequired, this.codeChainString)
+    }, (codeString) => {
+      return new Region(null, this.stepObject, this.stepRequired, codeString)
     }, () => {
       step = this.checkStep(step)
 
@@ -52,8 +52,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: `len(`,
       after: `)`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -74,8 +74,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -96,8 +96,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -125,8 +125,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -147,8 +147,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
@@ -169,8 +169,8 @@ class Selection extends SublimeObject {
       complete: completeCode,
       pre: ``,
       after: `.${methodCode}`
-    }, () => {
-      return util.simpleEval(this.codeChainString, false, step)
+    }, (codeString) => {
+      return util.simpleEval(codeString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
     }, !!step)
