@@ -1,7 +1,7 @@
 {
   "name": "create-sublime-plugin-js",
   "description": "Create Sublime text 3 plugin with JavaScript",
-  "version": "0.1.55",
+  "version": "0.1.56",
   "scripts": {},
   "keywords": [
     "sublime-text",
