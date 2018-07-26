@@ -40,7 +40,7 @@ for (let textCommand in textCommands) {
       let result = methodDefaultValue
 
       try {
-        textCommands[textCommand]._init(args[0])
+        textCommands[textCommand]._init(args[0], step)
         result = await ( (method == 'run') ? 
           textCommands[textCommand].run(sublime.Edit(args[1]), args[2].value, step) : 
           textCommands[textCommand][method](args[1].value, step) )
@@ -74,7 +74,7 @@ for (let windowCommand in windowCommands) {
       let result = methodDefaultValue
 
       try {
-        windowCommands[windowCommand]._init(args[0])
+        windowCommands[windowCommand]._init(args[0], step)
         result = await windowCommands[windowCommand][method](args[1].value, step)
       } catch(e) {
         console.log(e);
@@ -106,7 +106,7 @@ for (let applicationCommand in applicationCommands) {
       let result = methodDefaultValue
 
       try {
-        applicationCommands[applicationCommand]._init(args[0])
+        applicationCommands[applicationCommand]._init(args[0], step)
         result = await applicationCommands[applicationCommand][method](args[1].value, step)
       } catch(e) {
         console.log(e);
