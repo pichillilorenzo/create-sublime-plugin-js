@@ -25,7 +25,7 @@ class WindowCommand extends SublimeObject {
   /**
    * Called when the command is run.
    */
-  async run(args /*: Object*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async run (args /*: Object*/, step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 

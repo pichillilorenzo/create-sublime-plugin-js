@@ -44,14 +44,14 @@ class SublimeObject {
     })
   }
 
-  checkStep (step /*: ?StepObject*/) /*: StepObject | null*/ {
+  checkStep (step /*: StepObject | null*/ = null) /*: StepObject | null*/ {
     if (this.stepRequired && !step && !this.stepObject)
       throw new Error(`"step" parameter required!`)
     else if (this.stepRequired && step)
       return step
     else if (this.stepRequired && this.stepObject)
       return this.stepObject
-    return null
+    return step
   }
 
   getMapToCode () /*: string*/ {

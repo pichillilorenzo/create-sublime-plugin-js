@@ -4,11 +4,13 @@ const fs = require('fs'),
       getPort = require('get-port'),
       globby = require('globby'),
       sublime = require('create-sublime-plugin-js').sublime,
-      StepObject = require('create-sublime-plugin-js').StepObject
+      StepObject = require('create-sublime-plugin-js').StepObject,
+      View = require('create-sublime-plugin-js').View
 
 let textCommands = require('create-sublime-plugin-js').textCommandList
 let windowCommands = require('create-sublime-plugin-js').windowCommandList
 let applicationCommands = require('create-sublime-plugin-js').applicationCommandList
+let eventListeners = require('create-sublime-plugin-js').eventListenerList
 
 const entries = globby.sync([
   path.join(__dirname, 'src', 'commands', '**', '*Command.js'),
@@ -121,6 +123,34 @@ for (let applicationCommand in applicationCommands) {
         "end_cb_step": "END"
       }
       data[method] = result
+
+      step.sendData(null, data)
+    }
+  }
+
+}
+
+for (let eventListener in eventListeners) {
+
+  let methods = ['on_new']
+
+  for(let i = 0, length1 = methods.length; i < length1; i++){
+    let method = methods[i]
+
+    JsonRpcMethods[method + '_' + eventListener] = async (args, cbStep) => {
+      
+      let step = new StepObject(cbStep)
+
+      try {
+        eventListeners[eventListener]._init(args[0])
+        await eventListeners[eventListener][method](new View(args[1], step, true), step)
+      } catch(e) {
+        console.log(e);
+      }
+
+      let data = {
+        "end_cb_step": "END"
+      }
 
       step.sendData(null, data)
     }

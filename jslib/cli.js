@@ -69,8 +69,44 @@ commander
 
     let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.js')).toString().replace(/\$commandName/g, commandName)
 
-    fs.mkdirsSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command'))
     fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command.js'), jsCode)
+
+  })
+
+commander
+  .command('listener <listenerName>')
+  .option('-t, --type [type]', 'Type of listener: EventListener or ViewEventListener', 'EventListener')
+  .action((listenerName, options) => {
+
+    if (!(/^\w+$/ig.test(listenerName))) {
+      console.log(`\nError: Invalid listener name "${listenerName}"\n`)
+      return
+    }
+
+    let currAbsPath = path.resolve('.')
+
+    try {
+      fs.accessSync(path.join(currAbsPath, 'package.json'))
+    } catch(e) {
+      console.log(`\nError: package.json not found! Are you in the root folder of the plugin?\n`)
+      return
+    }
+    
+    if (!fs.existsSync(path.join(currAbsPath, 'src', 'listeners'))) {
+      console.log(`\nError: Path ${path.join(currAbsPath, 'src', 'listeners')} doesn't exists.\n`)
+      return
+    }
+
+    listenerName = listenerName.trim().replace(/\s+/g, '_')
+    let listenerType = options.type
+    if (listenerType != 'EventListener' && listenerType != 'ViewEventListener') {
+      console.log(`\nError: Wrong listener type "${listenerType}"\n`)
+      return
+    }
+
+    let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', listenerType, listenerType + '.js')).toString().replace(/\$listenerName/g, listenerName)
+
+    fs.writeFileSync(path.join(currAbsPath, 'src', 'listeners', listenerName + 'Listener.js'), jsCode)
 
   })
 

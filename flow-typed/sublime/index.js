@@ -59,6 +59,4 @@ type Phantom = SublimeObject & {
 type PhantomSet = SublimeObject & {
 }
 
-type StepObject = {
-  cb: (any, any) => void
-}
+type StepObject = {}

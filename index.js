@@ -19,5 +19,6 @@ module.exports = {
   textCommandList: require('./jslib/textCommandList.js'),
   windowCommandList: require('./jslib/windowCommandList.js'),
   applicationCommandList: require('./jslib/applicationCommandList.js'),
-  StepObject: require('./jslib/StepObject.js')
+  StepObject: require('./jslib/StepObject.js'),
+  eventListeners: require('./jslib/eventListenerList.js')
 }
