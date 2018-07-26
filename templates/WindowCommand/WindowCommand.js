@@ -19,4 +19,4 @@ class $commandNameCommand extends WindowCommand {
 
 }
 
-module.exports = new $commandNameCommand()
+module.exports = $commandNameCommand

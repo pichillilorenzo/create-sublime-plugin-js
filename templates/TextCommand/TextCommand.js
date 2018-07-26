@@ -19,4 +19,4 @@ class $commandNameCommand extends TextCommand {
 
 }
 
-module.exports = new $commandNameCommand()
+module.exports = $commandNameCommand
