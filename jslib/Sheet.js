@@ -1,7 +1,6 @@
 // @flow
 
 const util = require('./util.js'),
-      config = require('./config.js'),
       Window = require('./Window.js'),
       View = require('./View.js'),
       SublimeObject = require('./SublimeObject.js')
@@ -25,7 +24,7 @@ class Sheet extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `id()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -35,7 +34,7 @@ class Sheet extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -47,7 +46,7 @@ class Sheet extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `window()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -62,7 +61,7 @@ class Sheet extends SublimeObject {
         else
           return null
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -74,7 +73,7 @@ class Sheet extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `view()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -89,7 +88,7 @@ class Sheet extends SublimeObject {
         else
           return null
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 

@@ -26,12 +26,12 @@ class PhantomSet extends SublimeObject {
     let phantomsVariableArray = []
 
     for (let phantom of phantoms)
-      phantomsVariableArray.push(`${phantom.getMapToCode()}`)
+      phantomsVariableArray.push(`${phantom.getPythonCode()}`)
     
     let phantomsArray = '[' + phantomsVariableArray.join(',') + ']'
 
     let methodCode = `update(${phantomsArray})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -41,7 +41,7 @@ class PhantomSet extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 }

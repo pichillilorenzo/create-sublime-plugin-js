@@ -3,7 +3,6 @@
 const jayson = require('jayson'),
       getPort = require('get-port'),
       util = require('./util.js'),
-      config = require('./config.js'),
       PythonError = require('./PythonError.js'),
       Region = require('./Region.js'),
       Window = require('./Window.js'),

@@ -49,10 +49,10 @@ class WindowCommand extends SublimeObject {
     return null
   }
 
-  window (step /*: StepObject*/) /*: Promise<Window> | Window*/ {
+  window (step /*: ?StepObject*/) /*: Promise<Window> | Window*/ {
 
     let methodCode = `window`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -66,7 +66,7 @@ class WindowCommand extends SublimeObject {
       return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
         return new Window(resultObject, this.stepRequired)
       }) )
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 

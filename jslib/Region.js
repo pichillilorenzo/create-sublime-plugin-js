@@ -22,7 +22,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = (value === undefined) ? `a` : `a = ${value}`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -32,7 +32,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -44,7 +44,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = (value === undefined) ? `b` : `b = ${value}`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -54,7 +54,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -66,7 +66,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = (value === undefined) ? `xpos` : `xpos = ${value}`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -76,7 +76,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -88,7 +88,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `begin()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -98,7 +98,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -110,7 +110,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `end()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -120,7 +120,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -132,7 +132,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `size()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -142,7 +142,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -154,7 +154,7 @@ class Region extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `empty()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -164,7 +164,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -175,8 +175,8 @@ class Region extends SublimeObject {
 
     this.checkStep(step)
 
-    let methodCode = `cover(${region.getMapToCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let methodCode = `cover(${region.getPythonCode()})`
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -188,7 +188,7 @@ class Region extends SublimeObject {
       return util.simpleEval(completeCode, true, null, (result, resultObject) => {
         return new Region(resultObject, this.stepRequired)
       }, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -199,8 +199,8 @@ class Region extends SublimeObject {
 
     this.checkStep(step)
 
-    let methodCode = `intersection(${region.getMapToCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let methodCode = `intersection(${region.getPythonCode()})`
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -212,7 +212,7 @@ class Region extends SublimeObject {
       return util.simpleEval(completeCode, true, null, (result, resultObject) => {
         return new Region(resultObject, this.stepRequired)
       }, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -223,8 +223,8 @@ class Region extends SublimeObject {
 
     this.checkStep(step)
 
-    let methodCode = `intersects(${region.getMapToCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let methodCode = `intersects(${region.getPythonCode()})`
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -234,7 +234,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -249,8 +249,8 @@ class Region extends SublimeObject {
 
     this.checkStep(step)
 
-    let methodCode = (regionOrPoint instanceof Region) ? `contains(${regionOrPoint.getMapToCode()})` : `contains(${regionOrPoint})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let methodCode = (regionOrPoint instanceof Region) ? `contains(${regionOrPoint.getPythonCode()})` : `contains(${regionOrPoint})`
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -260,7 +260,7 @@ class Region extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 

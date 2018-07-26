@@ -24,7 +24,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `id()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -34,7 +34,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -44,7 +44,7 @@ class Window extends SublimeObject {
   new_file (step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
     let methodCode = `new_file()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -58,7 +58,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -72,7 +72,7 @@ class Window extends SublimeObject {
   open_file (file_name /*: string*/, flags /*: number*/ = 0, step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
     let methodCode = `open_file("""${file_name}""", ${flags})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -86,7 +86,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -96,7 +96,7 @@ class Window extends SublimeObject {
   find_open_file (file_name /*: string*/, step /*: ?StepObject*/) /*: Promise<View | null> | View*/ {
 
     let methodCode = `find_open_file("""${file_name}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -113,7 +113,7 @@ class Window extends SublimeObject {
         else
           return null
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -123,7 +123,7 @@ class Window extends SublimeObject {
   active_sheet (step /*: ?StepObject*/) /*: Promise<Sheet> | Sheet*/ {
 
     let methodCode = `active_sheet()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -137,7 +137,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new Sheet(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -147,7 +147,7 @@ class Window extends SublimeObject {
   active_view (step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
     let methodCode = `active_view()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -161,7 +161,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -171,7 +171,7 @@ class Window extends SublimeObject {
   active_sheet_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<Sheet> | Sheet*/ {
 
     let methodCode = `active_sheet_in_group(${group})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -185,7 +185,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new Sheet(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -195,7 +195,7 @@ class Window extends SublimeObject {
   active_view_in_group (group /*: number*/, step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
     let methodCode = `active_view_in_group(${group})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -209,7 +209,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -221,7 +221,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `sheets()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
     
     return this.wrapMethod({
       complete: completeCode,
@@ -243,7 +243,7 @@ class Window extends SublimeObject {
         }
         return sheets
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -255,7 +255,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `sheets_in_group(${group})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
     
     return this.wrapMethod({
       complete: completeCode,
@@ -277,7 +277,7 @@ class Window extends SublimeObject {
         }
         return sheets
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -289,7 +289,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `views()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
     
     return this.wrapMethod({
       complete: completeCode,
@@ -311,7 +311,7 @@ class Window extends SublimeObject {
         }
         return views
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -323,7 +323,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `views_in_group(${group})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
     
     return this.wrapMethod({
       complete: completeCode,
@@ -345,7 +345,7 @@ class Window extends SublimeObject {
         }
         return views
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -357,7 +357,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `num_groups()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -367,7 +367,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -379,7 +379,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `active_group()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -389,7 +389,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -401,7 +401,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `focus_group(${group})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -411,7 +411,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -423,7 +423,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `focus_sheet(${sheet.getPythonCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -433,7 +433,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -445,7 +445,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `focus_view(${view.getPythonCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -455,7 +455,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -467,7 +467,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `get_sheet_index(${sheet.getPythonCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -477,7 +477,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -489,7 +489,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_sheet_index(${sheet.getPythonCode()}, ${group}, ${index})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -499,7 +499,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -511,7 +511,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `get_view_index(${view.getPythonCode()})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -521,7 +521,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -533,7 +533,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_view_index(${view.getPythonCode()}, ${group}, ${index})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -543,7 +543,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -555,7 +555,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `status_message("""${string}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -565,7 +565,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -577,7 +577,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `is_menu_visible()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -587,7 +587,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -601,7 +601,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_menu_visible(${flagBool})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -611,7 +611,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -623,7 +623,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `is_sidebar_visible()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -633,7 +633,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -647,7 +647,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_sidebar_visible(${flagBool})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -657,7 +657,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -669,7 +669,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `get_tabs_visible()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -679,7 +679,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -693,7 +693,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_tabs_visible(${flagBool})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -703,7 +703,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -715,7 +715,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `is_minimap_visible()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -725,7 +725,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -739,7 +739,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_minimap_visible(${flagBool})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -749,7 +749,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -761,7 +761,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `is_status_bar_visible()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -771,7 +771,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -785,7 +785,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_status_bar_visible(${flagBool})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -795,7 +795,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -807,7 +807,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `folders()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -817,7 +817,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -829,7 +829,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `project_file_name()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -839,7 +839,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -851,7 +851,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `project_data()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -861,7 +861,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -873,7 +873,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `set_project_data(json.loads("""${JSON.stringify(data)}"""))`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -883,7 +883,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -895,7 +895,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `run_command("""${string}""", json.loads("""${JSON.stringify(args)}"""))`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -905,7 +905,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -937,7 +937,7 @@ class Window extends SublimeObject {
     })
 
     let methodCode = `show_quick_panel(json.loads("""${JSON.stringify(items)}"""), lambda index: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, index)), ${flags}, ${selected_index}, lambda index: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, index)))`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -947,7 +947,7 @@ class Window extends SublimeObject {
       return util.callbackPython(this.codeChainString, false, callbacks, step)
     }, () => {
       return util.callbackPython(completeCode, false, callbacks, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -982,7 +982,7 @@ class Window extends SublimeObject {
     })
 
     let methodCode = `show_input_panel("""${caption}""", """${initial_text}""", lambda userInput: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, userInput)), lambda userInput: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, userInput)), lambda: sublime.set_timeout_async(lambda: callback($PORT_TOKEN)))`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -992,7 +992,7 @@ class Window extends SublimeObject {
       return util.callbackPython(this.codeChainString, true, callbacks, step)
     }, () => {
       return util.callbackPython(completeCode, true, callbacks, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1006,7 +1006,7 @@ class Window extends SublimeObject {
     let unlistedBool = util.convertToPythonBool(unlisted)
 
     let methodCode = `create_output_panel("""${name}""", ${unlistedBool})`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1020,7 +1020,7 @@ class Window extends SublimeObject {
       return util.simpleEval(completeCode, true, step, (result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       })
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1030,7 +1030,7 @@ class Window extends SublimeObject {
   find_output_panel (name /*: string*/, step /*: ?StepObject*/) /*: Promise<View | null> | View*/ {
 
     let methodCode = `find_output_panel("""${name}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1047,7 +1047,7 @@ class Window extends SublimeObject {
         else
           return null
       })
-    }, !!(step && this.self))
+    }, !!step)
         
   }
 
@@ -1059,7 +1059,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `destroy_output_panel("""${name}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1069,7 +1069,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1081,7 +1081,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `active_panel()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1091,7 +1091,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1103,7 +1103,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `panels()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1113,7 +1113,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1125,7 +1125,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `lookup_symbol_in_index("""${symbol}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1135,7 +1135,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1147,7 +1147,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `lookup_symbol_in_open_files("""${symbol}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1157,7 +1157,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -1171,7 +1171,7 @@ class Window extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `extract_variables()`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -1181,7 +1181,7 @@ class Window extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 

@@ -56,10 +56,10 @@ class TextCommand extends SublimeObject {
     return false
   }
 
-  view (step /*: StepObject*/) /*: Promise<View> | View*/ {
+  view (step /*: ?StepObject*/) /*: Promise<View> | View*/ {
 
     let methodCode = `view`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -73,7 +73,7 @@ class TextCommand extends SublimeObject {
       return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
         return new View(resultObject, this.stepRequired)
       }) )
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 

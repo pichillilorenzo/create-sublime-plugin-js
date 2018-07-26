@@ -25,14 +25,14 @@ class Settings extends SublimeObject {
 
     if (defaultValue) {
       if (util.isSublimeObject(defaultValue))
-        methodCode = `get("""${name}""", ${defaultValue.getMapToCode()})`
+        methodCode = `get("""${name}""", ${defaultValue.getPythonCode()})`
       else
         methodCode = `get("""${name}""", json.loads("""${JSON.stringify(defaultValue)}"""))`
     }
     else
       methodCode = `get("""${name}""")`
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -42,7 +42,7 @@ class Settings extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -56,11 +56,11 @@ class Settings extends SublimeObject {
     let methodCode = ``
 
     if (util.isSublimeObject(value))
-      methodCode = `set("""${name}""", ${value.getMapToCode()})`  
+      methodCode = `set("""${name}""", ${value.getPythonCode()})`  
     else
       methodCode = `set("""${name}""", json.loads("""${JSON.stringify(value)}"""))`
 
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -70,7 +70,7 @@ class Settings extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -82,7 +82,7 @@ class Settings extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `erase("""${name}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -92,7 +92,7 @@ class Settings extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -104,7 +104,7 @@ class Settings extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `has("""${name}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -114,7 +114,7 @@ class Settings extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -135,7 +135,7 @@ class Settings extends SublimeObject {
     })
 
     let methodCode = `add_on_change("""${key}""", lambda: sublime.set_timeout_async(lambda: callback($PORT_TOKEN)))`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -145,7 +145,7 @@ class Settings extends SublimeObject {
       return util.callbackPython(this.codeChainString, false, callbacks, step)
     }, () => {
       return util.callbackPython(completeCode, false, callbacks, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 
@@ -157,7 +157,7 @@ class Settings extends SublimeObject {
     this.checkStep(step)
 
     let methodCode = `clear_on_change("""${key}""")`
-    let completeCode = (this.self) ? `${this.getMapToCode()}.${methodCode}` : ''
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
 
     return this.wrapMethod({
       complete: completeCode,
@@ -167,7 +167,7 @@ class Settings extends SublimeObject {
       return util.simpleEval(this.codeChainString, false, step)
     }, () => {
       return util.simpleEval(completeCode, false, step)
-    }, !!(step && this.self))
+    }, !!step)
 
   }
 }
