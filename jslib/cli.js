@@ -7,7 +7,8 @@ const commander = require('commander'),
   version = packageJson.version,
   fs = require('fs-extra'),
   path = require('path'),
-  globby = require('globby')
+  globby = require('globby'),
+  mustache = require('mustache');
 
 commander
   .version(version)
@@ -157,18 +158,27 @@ commander
     for (let c of classes) {
       let instance = new c()
       let extendsClassName = Object.getPrototypeOf(Object.getPrototypeOf(instance)).constructor.name
+      let methodsImplemented = Object.getOwnPropertyNames(Object.getPrototypeOf(instance))
       if (extendsClassName.endsWith('Command'))
-        commands.push([instance.constructor.name, extendsClassName])
+        commands.push([instance.constructor.name, extendsClassName, methodsImplemented])
       else if (extendsClassName.endsWith('Listener'))
-        listeners.push([instance.constructor.name, extendsClassName])
+        listeners.push([instance.constructor.name, extendsClassName, methodsImplemented])
     }
 
     let importCommandsFromPython = []
     let exportAllCommandsPython = []
     for (let command of commands) {
-      let [commandName, commandType] = command
+      let [commandName, commandType, methodsImplemented] = command
       commandName = commandName.replace(/Command$/, '')
-      let pyCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.py')).toString().replace(/\$commandName/g, commandName)
+      let pyCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.py')).toString()
+
+      let dataToRender = {
+        commandName
+      }
+      for (let methodImplemented of methodsImplemented)
+        dataToRender[methodImplemented] = true
+      pyCode = mustache.render(pyCode, dataToRender)
+
       fs.writeFileSync(path.join(currAbsPath, 'pysrc', 'commands', commandName + 'Command.py'), pyCode)
 
       importCommandsFromPython.push(`from .${commandName}Command import ${commandName}Command`)
@@ -181,9 +191,17 @@ commander
     let importListenersFromPython = []
     let exportAllListenersPython = []
     for (let listener of listeners) {
-      let [listenerName, listenerType] = listener
+      let [listenerName, listenerType, methodsImplemented] = listener
       listenerName = listenerName.replace(/Listener$/, '')
-      let pyCode = fs.readFileSync(path.join(__dirname, '..', 'templates', listenerType, listenerType + '.py')).toString().replace(/\$listenerName/g, listenerName)
+      let pyCode = fs.readFileSync(path.join(__dirname, '..', 'templates', listenerType, listenerType + '.py')).toString()
+
+      let dataToRender = {
+        listenerName
+      }
+      for (let methodImplemented of methodsImplemented)
+        dataToRender[methodImplemented] = true
+      pyCode = mustache.render(pyCode, dataToRender)
+      
       fs.writeFileSync(path.join(currAbsPath, 'pysrc', 'listeners', listenerName + 'Listener.py'), pyCode)
 
       importListenersFromPython.push(`from .${listenerName}Listener import ${listenerName}Listener`)
