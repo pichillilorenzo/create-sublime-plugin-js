@@ -48,6 +48,7 @@ commander
       return
     }
     
+    fs.copySync(path.join(__dirname, '..', 'templates', 'PluginStructure', 'server.js'), path.join(currAbsPath, 'server.js'))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, 'main.py'))
 

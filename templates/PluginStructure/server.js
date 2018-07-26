@@ -20,7 +20,8 @@ for (let entry of entries) {
   Load commands and listeners
    */
   // $Ignore
-  require(entry)
+  let entryClass = require(entry)
+  new entryClass()
 }
 
 let JsonRpcMethods = {}
