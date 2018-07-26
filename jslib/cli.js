@@ -28,12 +28,6 @@ commander
 
     fs.mkdirsSync(pluginAbsPath)
 
-    fs.mkdirsSync(path.join(currAbsPath, 'pysrc', 'commands'))
-    fs.writeFileSync(path.join(currAbsPath, 'pysrc', 'commands', '__init__.py'), '')
-    fs.mkdirsSync(path.join(currAbsPath, 'pysrc', 'listeners'))
-    fs.writeFileSync(path.join(currAbsPath, 'pysrc', 'listeners', '__init__.py'), '')
-    fs.writeFileSync(path.join(currAbsPath, 'pysrc', '__init__.py'), '')
-
     fs.copySync(path.join(__dirname, '..', 'templates', 'PluginStructure'), path.join(currAbsPath, pluginName))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, pluginName, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, pluginName, 'main.py'))
