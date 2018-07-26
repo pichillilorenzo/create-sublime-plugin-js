@@ -9,8 +9,8 @@ from .pylib import util
 from .pylib.JSONRPCRequestHandler import JSONRPCRequestHandler
 from .pylib.ThreadedHTTPServer import ThreadedHTTPServer
 
-from .src.commands import *
-from .src.listeners import *
+from .pysrc.commands import *
+from .pysrc.listeners import *
 
 server = None
 

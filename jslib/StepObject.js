@@ -26,7 +26,7 @@ class StepObject {
       }
     }
     if (!found) 
-      throw new Error(`required "await" not found when using "step" parameter! Check your code.`)
+      throw new Error(`required "await" not found when using "step" parameter or wrong "step" object! Check your code, also for subSteps like set_timeout and set_timeout_async.`)
   }
 
 }

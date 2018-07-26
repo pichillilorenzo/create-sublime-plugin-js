@@ -1,6 +1,7 @@
 // @flow
 
-const util = require('./util.js'),
+const fs = require('fs-extra'),
+      util = require('./util.js'),
       windowCommands = require('./windowCommandList.js'),
       Window = require('./Window.js'),
       SublimeObject = require('./SublimeObject.js')

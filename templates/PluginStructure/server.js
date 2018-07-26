@@ -20,8 +20,12 @@ for (let entry of entries) {
   Load commands and listeners
    */
   // $Ignore
-  let entryClass = require(entry)
-  new entryClass()
+  let classOrClasses /*: Array | any*/ = require(entry)
+  if (classOrClasses instanceof Array)
+    for (let c of classOrClasses)
+      new c()
+  else
+    new classOrClasses()
 }
 
 let JsonRpcMethods = {}

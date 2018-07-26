@@ -61,6 +61,10 @@ class SublimeObject {
   getPythonCode () /*: string*/ {
     return (this.self) ? this.getMapToCode() : this.codeChainString
   }
+
+  updateStepObject (step /*: StepObject*/) /*: SublimeObject*/ {
+    
+  }
   
 }
 

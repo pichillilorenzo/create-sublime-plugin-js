@@ -69,6 +69,7 @@ sublime_port.txt
 
 # only for test
 src/
+pysrc/
 Context.sublime-menu
 dependencies.json
 server.js
