@@ -4,4 +4,11 @@ function plugin_loaded () {
 
 }
 
-module.exports = plugin_loaded
+function plugin_unloaded () {
+
+}
+
+module.exports = {
+  plugin_loaded,
+  plugin_unloaded
+}

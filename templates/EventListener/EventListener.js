@@ -3,18 +3,22 @@ const EventListener = require('create-sublime-plugin-js').EventListener,
 
 class {{listenerName}}Listener extends EventListener {
 
-  async run (args, step) {
+  async on_modified (view, step) {
     
     
 
   }
 
-  async is_enabled (args, step) {
-    return true
+  async on_modified_async (view, step) {
+    
+
+
   }
 
-  async is_visible (args, step) {
-    return true
+  async on_query_completions (view, prefix, locations, step) {
+
+    
+
   }
 
 }

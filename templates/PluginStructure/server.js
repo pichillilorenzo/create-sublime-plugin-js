@@ -229,6 +229,26 @@ for (let viewEventListener in viewEventListeners) {
 
 }
 
+JsonRpcMethods['plugin_unloaded'] = async (args, cbStep) => {
+      
+  let step = new StepObject(cbStep)
+  let result = null
+
+  try {
+    fs.accessSync( path.join(__dirname, 'index.js') )
+    let plugin_unloaded = require('./index.js').plugin_unloaded
+    if (plugin_unloaded)
+      result = await plugin_unloaded()
+  } catch(e) {}
+
+  let data = {
+    "end_cb_step": "END",
+    "plugin_unloaded": (result === undefined) ? null : result
+  }
+
+  step.sendData(null, data)
+}
+
 async function plugin_loaded() {
   try {
     fs.accessSync( path.join(__dirname, 'index.js') )
@@ -236,7 +256,9 @@ async function plugin_loaded() {
     return
   }
 
-  require('./index.js')()
+  let plugin_loaded = require('./index.js').plugin_loaded
+  if (plugin_loaded)
+    plugin_loaded()
 }
 
 process.on('unhandledRejection', (reason, p) => {

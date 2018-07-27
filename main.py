@@ -54,6 +54,15 @@ def start():
   server.start()
 
 def plugin_unloaded():
+
+  payload = {
+    "method": "plugin_unloaded",
+    "params": [],
+    "jsonrpc": "2.0",
+    "id": 0,
+  }
+  util.stepResponse(payload)
+
   global server
   if server:
     server.stop()
