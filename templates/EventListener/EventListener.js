@@ -1,7 +1,7 @@
-const ApplicationCommand = require('create-sublime-plugin-js').ApplicationCommand,
+const EventListener = require('create-sublime-plugin-js').EventListener,
       sublime = require('create-sublime-plugin-js').sublime
 
-class $commandNameCommand extends ApplicationCommand {
+class {{listenerName}}Listener extends EventListener {
 
   async run (args, step) {
     
@@ -19,4 +19,4 @@ class $commandNameCommand extends ApplicationCommand {
 
 }
 
-module.exports = $commandNameCommand
+module.exports = {{listenerName}}Listener

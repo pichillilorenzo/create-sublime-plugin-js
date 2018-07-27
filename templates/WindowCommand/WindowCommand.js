@@ -1,7 +1,7 @@
 const WindowCommand = require('create-sublime-plugin-js').WindowCommand,
       sublime = require('create-sublime-plugin-js').sublime
 
-class $commandNameCommand extends WindowCommand {
+class {{commandName}}Command extends WindowCommand {
 
   async run (args, step) {
     
@@ -19,4 +19,4 @@ class $commandNameCommand extends WindowCommand {
 
 }
 
-module.exports = $commandNameCommand
+module.exports = {{commandName}}Command

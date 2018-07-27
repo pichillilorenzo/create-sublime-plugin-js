@@ -1,18 +1,22 @@
 // @flow
 
-const eventListenerList = require('./eventListenerList.js'),
-      SublimeObject = require('./SublimeObject.js')
+const viewEventListenerList = require('./viewEventListenerList.js'),
+      SublimeObject = require('./SublimeObject.js'),
+      util = require('./util.js'),
+      View = require('./View.js')
 
 /**
- * Note that many of these events are triggered by the buffer underlying the view, and thus the method is only called once, with the first view as the parameter.
+ * A class that provides similar event handling to {@link EventListener}, but bound to a specific view. Provides class method-based filtering to control what views objects are created for.
  * 
- * [sublime_plugin.EventListener Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.EventListener).
+ * The view is passed as a single parameter to the constructor. The default implementation makes the view available via ```self.view```.
+ * 
+ * [sublime_plugin.ViewEventListener Class](https://www.sublimetext.com/docs/3/api_reference.html#sublime_plugin.ViewEventListener).
  */
-class EventListener extends SublimeObject {
+class ViewEventListener extends SublimeObject {
 
   constructor () {
     super(null, null, true)
-    eventListenerList[this.constructor.name] = this
+    viewEventListenerList[this.constructor.name] = this
   }
 
   _init (s /*: MappedVariable*/) /*: void*/ {
@@ -20,142 +24,114 @@ class EventListener extends SublimeObject {
   }
 
   /**
-   * Called when a new buffer is created.
-   */
-  async on_new (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
-
-  }
-
-  /**
-   * Called when a new buffer is created. Runs in a separate thread, and does not block the application.
-   */
-  async on_new_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
-
-  }
-
-  /**
-   * Called when a view is cloned from an existing one.
-   */
-  async on_clone (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
-
-  }
-
-  /**
-   * Called when a view is cloned from an existing one. Runs in a separate thread, and does not block the application.
-   */
-  async on_clone_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
-
-  }
-
-  /**
    * Called when the file is finished loading.
    */
-  async on_load (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_load (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when the file is finished loading. Runs in a separate thread, and does not block the application.
    */
-  async on_load_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_load_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when a view is about to be closed. The view will still be in the window at this point.
    */
-  async on_pre_close (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_pre_close (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when a view is closed (note, there may still be other views into the same buffer).
    */
-  async on_close (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_close (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called just before a view is saved.
    */
-  async on_pre_save (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_pre_save (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called just before a view is saved. Runs in a separate thread, and does not block the application.
    */
-  async on_pre_save_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_pre_save_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called after a view has been saved.
    */
-  async on_post_save (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_post_save (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called after a view has been saved. Runs in a separate thread, and does not block the application.
    */
-  async on_post_save_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_post_save_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called after changes have been made to a view.
    */
-  async on_modified (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_modified (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called after changes have been made to a view. Runs in a separate thread, and does not block the application.
    */
-  async on_modified_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_modified_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called after the selection has been modified in a view.
    */
-  async on_selection_modified (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_selection_modified (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called after the selection has been modified in a view. Runs in a separate thread, and does not block the application.
    */
-  async on_selection_modified_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_selection_modified_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when a view gains input focus.
    */
-  async on_activated (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_activated (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when a view gains input focus. Runs in a separate thread, and does not block the application.
    */
-  async on_activated_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_activated_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when a view loses input focus.
    */
-  async on_deactivated (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_deactivated (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
   /**
    * Called when a view loses input focus. Runs in a separate thread, and does not block the application.
    */
-  async on_deactivated_async (view /*: View*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_deactivated_async (step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
@@ -167,7 +143,7 @@ class EventListener extends SublimeObject {
    * - ```sublime.HOVER_GUTTER```: When the mouse is hovered over the gutter.
    * - ```sublime.HOVER_MARGIN```: When the mouse is hovered in whitespace to the right of a line.
    */
-  async on_hover (view /*: View*/, point /*: number*/, hover_zone /*: number*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_hover (point /*: number*/, hover_zone /*: number*/, step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
@@ -184,7 +160,7 @@ class EventListener extends SublimeObject {
    * 
    * ```match_all``` should be used if the context relates to the selections: does every selection have to match (```match_all == true```), or is at least one matching enough (```match_all == false```)?
    */
-  async on_query_context (view /*: View*/, key /*: string*/, operator /*: number*/, operand /*: boolean*/, match_all /*: boolean*/, step /*: StepObject*/) /*: Promise<boolean | void>*/ {
+  async on_query_context (key /*: string*/, operator /*: number*/, operand /*: boolean*/, match_all /*: boolean*/, step /*: StepObject*/) /*: Promise<boolean | void>*/ {
 
   }
 
@@ -238,38 +214,45 @@ class EventListener extends SublimeObject {
    *   ]
    *   ```
    */
-  async on_query_completions (view /*: View*/, prefix /*: string*/, locations /*: Array<number>*/, step /*: StepObject*/) /*: Promise<Array<[Array<[string, string]>, number]> | Array<[string, string]> | void>*/ {
+  async on_query_completions (prefix /*: string*/, locations /*: Array<number>*/, step /*: StepObject*/) /*: Promise<Array<[Array<[string, string]>, number]> | Array<[string, string]> | void>*/ {
 
   }
 
   /**
    * Called when a text command is issued. The listener may return a ```(command, arguments)``` tuple to rewrite the command, or ```null``` to run the command unmodified.
    */
-  async on_text_command (view /*: View*/, command_name /*: string*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<[string, Object] | void>*/ {
-
-  }
-
-  /**
-   * Called when a window command is issued. The listener may return a ```(command, arguments)``` tuple to rewrite the command, or ```null``` to run the command unmodified.
-   */
-  async on_window_command (view /*: View*/, command_name /*: string*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<[string, Object] | void>*/ {
+  async on_text_command (command_name /*: string*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<[string, Object] | void>*/ {
 
   }
 
   /**
    * Called after a text command has been executed.
    */
-  async on_post_text_command (view /*: View*/, command_name /*: string*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  async on_post_text_command (command_name /*: string*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<void>*/ {
 
   }
 
-  /**
-   * Called after a window command has been executed.
-   */
-  async on_post_window_command (view /*: View*/, command_name /*: string*/, args /*: Object*/, step /*: StepObject*/) /*: Promise<void>*/ {
+  view (step /*: ?StepObject*/) /*: Promise<View> | View*/ {
+
+    let methodCode = `view`
+    let completeCode = `${this.getPythonCode()}.${methodCode}`
+
+    return this.wrapMethod({
+      complete: completeCode,
+      pre: ``,
+      after: `.${methodCode}`
+    }, (codeString) => {
+      return new View(null, this.stepObject, this.stepRequired, codeString)
+    }, () => {
+      step = this.checkStep(step)
+
+      return util.simpleEval(completeCode, true, step, ((result, resultObject) => {
+        return new View(resultObject, this.stepObject, this.stepRequired)
+      }) )
+    }, !!step)
 
   }
 
 }
 
-module.exports = EventListener
+module.exports = ViewEventListener

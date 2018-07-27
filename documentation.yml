@@ -12,6 +12,8 @@ toc:
   - ApplicationCommand
   - WindowCommand
   - TextCommand
+  - EventListener
+  - ViewEventListener
   - name: util
     children:
       - freeMemory

@@ -1,7 +1,7 @@
 const TextCommand = require('create-sublime-plugin-js').TextCommand,
       sublime = require('create-sublime-plugin-js').sublime
 
-class $commandNameCommand extends TextCommand {
+class {{commandName}}Command extends TextCommand {
 
   async run (edit, args, step) {
     
@@ -19,4 +19,4 @@ class $commandNameCommand extends TextCommand {
 
 }
 
-module.exports = $commandNameCommand
+module.exports = {{commandName}}Command

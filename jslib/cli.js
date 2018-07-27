@@ -8,7 +8,56 @@ const commander = require('commander'),
   fs = require('fs-extra'),
   path = require('path'),
   globby = require('globby'),
-  mustache = require('mustache');
+  mustache = require('mustache'),
+  // imported for eval() function
+  TextCommand = require('./TextCommand.js'),
+  WindowCommand = require('./WindowCommand.js'),
+  ApplicationCommand = require('./ApplicationCommand.js'),
+  EventListener = require('./EventListener.js'),
+  ViewEventListener = require('./ViewEventListener.js')
+
+const getAllMethods = (obj) => {
+  let props = []
+
+  do {
+    const l = Object.getOwnPropertyNames(obj)
+      .concat(Object.getOwnPropertySymbols(obj).map(s => s.toString()))
+      .sort()
+      .filter((p, i, arr) =>
+        typeof obj[p] === 'function' &&  //only the methods
+        p !== 'constructor' &&           //not the constructor
+        (i == 0 || p !== arr[i - 1]) &&  //not overriding in this prototype
+        props.indexOf(p) === -1          //not overridden in a child
+      )
+    props = props.concat(l)
+  }
+  while (
+    (obj = Object.getPrototypeOf(obj)) &&   //walk-up the prototype chain
+    Object.getPrototypeOf(obj)              //not the the Object prototype methods (hasOwnProperty, etc...)
+  )
+
+  return props
+}
+
+const isCommandParentClass = (obj) => {
+  let parentClass = Object.getPrototypeOf(obj)
+  while (parentClass.constructor.name != "TextCommand" && parentClass.constructor.name != "WindowCommand" && parentClass.constructor.name != "ApplicationCommand") {
+    parentClass = Object.getPrototypeOf(parentClass)
+    if (!parentClass)
+      return false
+  }
+  return parentClass.constructor.name
+}
+
+const isListenerParentClass = (obj) => {
+  let parentClass = Object.getPrototypeOf(obj)
+  while (parentClass.constructor.name != "EventListener" && parentClass.constructor.name != "ViewEventListener") {
+    parentClass = Object.getPrototypeOf(parentClass)
+    if (!parentClass)
+      return false
+  }
+  return parentClass.constructor.name
+}
 
 commander
   .version(version)
@@ -68,7 +117,11 @@ commander
       return
     }
 
-    let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.js')).toString().replace(/\$commandName/g, commandName)
+    let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', commandType, commandType + '.js')).toString()
+    let dataToRender = {
+      commandName
+    }
+    jsCode = mustache.render(jsCode, dataToRender)
 
     fs.writeFileSync(path.join(currAbsPath, 'src', 'commands', commandName + 'Command.js'), jsCode)
 
@@ -105,7 +158,11 @@ commander
       return
     }
 
-    let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', listenerType, listenerType + '.js')).toString().replace(/\$listenerName/g, listenerName)
+    let jsCode = fs.readFileSync(path.join(__dirname, '..', 'templates', listenerType, listenerType + '.js')).toString()
+    let dataToRender = {
+      listenerName
+    }
+    jsCode = mustache.render(jsCode, dataToRender)
 
     fs.writeFileSync(path.join(currAbsPath, 'src', 'listeners', listenerName + 'Listener.js'), jsCode)
 
@@ -157,12 +214,26 @@ commander
 
     for (let c of classes) {
       let instance = new c()
-      let extendsClassName = Object.getPrototypeOf(Object.getPrototypeOf(instance)).constructor.name
-      let methodsImplemented = Object.getOwnPropertyNames(Object.getPrototypeOf(instance))
-      if (extendsClassName.endsWith('Command'))
-        commands.push([instance.constructor.name, extendsClassName, methodsImplemented])
-      else if (extendsClassName.endsWith('Listener'))
-        listeners.push([instance.constructor.name, extendsClassName, methodsImplemented])
+      let methodsImplemented = []
+      let parentClass = ''
+      if (parentClass = isCommandParentClass(instance)) {
+        let parentClassInstance = eval(`new ${parentClass}(null)`)
+        let methods = getAllMethods(instance)
+        for (let method of methods) {
+          if (parentClassInstance[method] && instance[method].toString() != parentClassInstance[method].toString())
+            methodsImplemented.push(method)
+        }
+        commands.push([instance.constructor.name, parentClass, methodsImplemented])
+      }
+      else if (parentClass = isListenerParentClass(instance)) {
+        let parentClassInstance = eval(`new ${parentClass}(null)`)
+        let methods = getAllMethods(instance)
+        for (let method of methods) {
+          if (parentClassInstance[method] && instance[method].toString() != parentClassInstance[method].toString())
+            methodsImplemented.push(method)
+        }
+        listeners.push([instance.constructor.name, parentClass, methodsImplemented])
+      }
     }
 
     let importCommandsFromPython = []
@@ -201,7 +272,7 @@ commander
       for (let methodImplemented of methodsImplemented)
         dataToRender[methodImplemented] = true
       pyCode = mustache.render(pyCode, dataToRender)
-      
+
       fs.writeFileSync(path.join(currAbsPath, 'pysrc', 'listeners', listenerName + 'Listener.py'), pyCode)
 
       importListenersFromPython.push(`from .${listenerName}Listener import ${listenerName}Listener`)

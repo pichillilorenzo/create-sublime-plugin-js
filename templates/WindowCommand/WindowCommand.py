@@ -6,7 +6,7 @@ class {{commandName}}Command(JSWindowCommand, sublime_plugin.WindowCommand):
 
   {{#run}}
   def run(self, **args):
-    super({{commandName}}Command, self).run(**args)
+    return super({{commandName}}Command, self).run(**args)
   {{/run}}
   {{^run}}
   def run(self, **args):
@@ -15,7 +15,7 @@ class {{commandName}}Command(JSWindowCommand, sublime_plugin.WindowCommand):
 
   {{#is_enabled}}
   def is_enabled(self, **args):
-    super({{commandName}}Command, self).is_enabled(**args)
+    return super({{commandName}}Command, self).is_enabled(**args)
   {{/is_enabled}}
   {{^is_enabled}}
   def is_enabled(self, **args):
@@ -24,7 +24,7 @@ class {{commandName}}Command(JSWindowCommand, sublime_plugin.WindowCommand):
 
   {{#is_visible}}
   def is_visible(self, **args):
-    super({{commandName}}Command, self).is_visible(**args)
+    return super({{commandName}}Command, self).is_visible(**args)
   {{/is_visible}}
   {{^is_visible}}
   def is_visible(self, **args):
@@ -33,7 +33,7 @@ class {{commandName}}Command(JSWindowCommand, sublime_plugin.WindowCommand):
 
   {{#description}}
   def description(self, **args):
-    super({{commandName}}Command, self).description(**args)
+    return super({{commandName}}Command, self).description(**args)
   {{/description}}
   {{^description}}
   def description(self, **args):

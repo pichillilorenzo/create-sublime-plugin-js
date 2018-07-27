@@ -6,7 +6,7 @@ class {{commandName}}Command(JSTextCommand, sublime_plugin.TextCommand):
 
   {{#run}}
   def run(self, edit, **args):
-    super({{commandName}}Command, self).run(edit, **args)
+    return super({{commandName}}Command, self).run(edit, **args)
   {{/run}}
   {{^run}}
   def run(self, edit, **args):
@@ -15,7 +15,7 @@ class {{commandName}}Command(JSTextCommand, sublime_plugin.TextCommand):
 
   {{#is_enabled}}
   def is_enabled(self, **args):
-    super({{commandName}}Command, self).is_enabled(**args)
+    return super({{commandName}}Command, self).is_enabled(**args)
   {{/is_enabled}}
   {{^is_enabled}}
   def is_enabled(self, **args):
@@ -24,7 +24,7 @@ class {{commandName}}Command(JSTextCommand, sublime_plugin.TextCommand):
 
   {{#is_visible}}
   def is_visible(self, **args):
-    super({{commandName}}Command, self).is_visible(**args)
+    return super({{commandName}}Command, self).is_visible(**args)
   {{/is_visible}}
   {{^is_visible}}
   def is_visible(self, **args):
@@ -33,7 +33,7 @@ class {{commandName}}Command(JSTextCommand, sublime_plugin.TextCommand):
 
   {{#description}}
   def description(self, **args):
-    super({{commandName}}Command, self).description(**args)
+    return super({{commandName}}Command, self).description(**args)
   {{/description}}
   {{^description}}
   def description(self, **args):
@@ -42,7 +42,7 @@ class {{commandName}}Command(JSTextCommand, sublime_plugin.TextCommand):
 
   {{#want_event}}
   def want_event(self, **args):
-    super({{commandName}}Command, self).want_event(**args)
+    return super({{commandName}}Command, self).want_event(**args)
   {{/want_event}}
   {{^want_event}}
   def want_event(self, **args):
