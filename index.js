@@ -21,7 +21,7 @@ module.exports = {
   applicationCommandList: require('./jslib/applicationCommandList.js'),
   StepObject: require('./jslib/StepObject.js'),
   EventListener: require('./jslib/EventListener.js'),
-  eventListeners: require('./jslib/eventListenerList.js'),
+  eventListenerList: require('./jslib/eventListenerList.js'),
   ViewEventListener: require('./jslib/ViewEventListener.js'),
-  viewEventListeners: require('./jslib/viewEventListenerList.js')
+  viewEventListenerList: require('./jslib/viewEventListenerList.js')
 }

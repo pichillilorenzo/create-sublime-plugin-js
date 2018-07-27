@@ -16,10 +16,12 @@ class {{listenerName}}Listener(JSViewEventListener, sublime_plugin.ViewEventList
   {{/is_applicable}}
 
   {{#applies_to_primary_view_only}}
+  @classmethod
   def applies_to_primary_view_only(self):
     return super({{listenerName}}Listener, self).applies_to_primary_view_only()
   {{/applies_to_primary_view_only}}
   {{^applies_to_primary_view_only}}
+  @classmethod
   def applies_to_primary_view_only(self):
     pass
   {{/applies_to_primary_view_only}}
