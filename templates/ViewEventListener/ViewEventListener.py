@@ -12,7 +12,7 @@ class {{listenerName}}Listener(JSViewEventListener, sublime_plugin.ViewEventList
   {{^is_applicable}}
   @classmethod
   def is_applicable(self, settings):
-    pass
+    return True
   {{/is_applicable}}
 
   {{#applies_to_primary_view_only}}
@@ -23,7 +23,7 @@ class {{listenerName}}Listener(JSViewEventListener, sublime_plugin.ViewEventList
   {{^applies_to_primary_view_only}}
   @classmethod
   def applies_to_primary_view_only(self):
-    pass
+    return False
   {{/applies_to_primary_view_only}}
 
   {{#on_activated}}

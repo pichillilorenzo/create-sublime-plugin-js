@@ -182,7 +182,7 @@ for (let eventListener in eventListeners) {
 for (let viewEventListener in viewEventListeners) {
 
   let methods = ["is_applicable", "applies_to_primary_view_only", "on_activated", "on_activated_async", "on_close", "on_deactivated", "on_deactivated_async", "on_hover", "on_load", "on_load_async", "on_modified", "on_modified_async", "on_post_save", "on_post_save_async", "on_post_text_command", "on_pre_close", "on_pre_save", "on_pre_save_async", "on_query_completions", "on_query_context", "on_selection_modified", "on_selection_modified_async", "on_text_command"]
-  let methodsDefaultValue = [false, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
+  let methodsDefaultValue = [true, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
 
   for(let i = 0, length1 = methods.length; i < length1; i++){
     let method = methods[i]
