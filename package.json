@@ -43,7 +43,6 @@
     "create-sublime-plugin-js": "jslib/cli.js"
   },
   "main": "index.js",
-  "files": ["*"],
   "ava": {
     "files": [
       "./tests/**/*.js"

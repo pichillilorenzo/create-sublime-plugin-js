@@ -9,6 +9,7 @@ const commander = require('commander'),
   path = require('path'),
   globby = require('globby'),
   mustache = require('mustache'),
+  updateNotifier = require('update-notifier'),
   // imported for eval() function
   TextCommand = require('./TextCommand.js'),
   WindowCommand = require('./WindowCommand.js'),
@@ -285,5 +286,7 @@ commander
       fs.writeFileSync(path.join(currAbsPath, 'pysrc', 'listeners', '__init__.py'), `${importListenersFromPython.join("\n")}\n\n__all__ = [${exportAllListenersPython.join(",")}]`)
 
   })
+
+updateNotifier({pkg: packageJson}).notify()
 
 commander.parse(process.argv)
