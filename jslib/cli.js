@@ -81,14 +81,15 @@ commander
     fs.copySync(path.join(__dirname, '..', 'templates', 'PluginStructure'), path.join(currAbsPath, pluginName))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, pluginName, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, pluginName, 'main.py'))
-    fs.mkdirsSync(path.join(currAbsPath, 'src', 'commands'))
-    fs.mkdirsSync(path.join(currAbsPath, 'src', 'listeners'))
+    fs.mkdirsSync(path.join(currAbsPath, pluginName, 'src', 'commands'))
+    fs.mkdirsSync(path.join(currAbsPath, pluginName, 'src', 'listeners'))
 
     let pkg = JSON.parse(fs.readFileSync(path.join(currAbsPath, pluginName, 'package.json')).toString())
     pkg.dependencies["create-sublime-plugin-js"] = version
     fs.writeFileSync(path.join(currAbsPath, pluginName, 'package.json'), JSON.stringify(pkg, null, '\t'))
 
     fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.sublime-settings'), '{}')
+    fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.gitignore'), '')
 
   })
 
