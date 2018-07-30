@@ -89,7 +89,7 @@ commander
     fs.writeFileSync(path.join(currAbsPath, pluginName, 'package.json'), JSON.stringify(pkg, null, '\t'))
 
     fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.sublime-settings'), '{}')
-    fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.gitignore'), '')
+    fs.writeFileSync(path.join(currAbsPath, pluginName, '.gitignore'), '')
 
   })
 
