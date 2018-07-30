@@ -5,7 +5,7 @@
   "scripts": {},
   "keywords": [],
   "dependencies": {
-    "create-sublime-plugin-js": "latest"
+    "create-sublime-plugin-js": ""
   },
   "devDependencies": {
 

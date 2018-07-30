@@ -85,6 +85,10 @@ commander
     fs.mkdirsSync(path.join(currAbsPath, 'src', 'commands'))
     fs.mkdirsSync(path.join(currAbsPath, 'src', 'listeners'))
 
+    let pkg = JSON.parse(fs.readFileSync(path.join(currAbsPath, pluginName, 'package.json')).toString())
+    pkg.dependencies["create-sublime-plugin-js"] = version
+    fs.writeFileSync(path.join(currAbsPath, pluginName, 'package.json'), JSON.stringify(pkg, null, '\t'))
+
     fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.sublime-settings'), '{}')
 
   })
@@ -105,6 +109,12 @@ commander
       fs.accessSync(path.join(currAbsPath, 'package.json'))
     } catch(e) {
       console.log(`\nError: package.json not found! Are you in the root folder of the plugin?\n`)
+      return
+    }
+
+    let pkg = JSON.parse(fs.readFileSync(path.join(currAbsPath, 'package.json')).toString())
+    if (version != pkg.dependencies["create-sublime-plugin-js"]) {
+      console.log(`\nError: the version of "create-sublime-plugin-js" (${version}) is different from the one in the package.json file (${pkg.dependencies["create-sublime-plugin-js"]}).\n`)
       return
     }
     
@@ -148,6 +158,12 @@ commander
       console.log(`\nError: package.json not found! Are you in the root folder of the plugin?\n`)
       return
     }
+
+    let pkg = JSON.parse(fs.readFileSync(path.join(currAbsPath, 'package.json')).toString())
+    if (version != pkg.dependencies["create-sublime-plugin-js"]) {
+      console.log(`\nError: the version of "create-sublime-plugin-js" (${version}) is different from the one in the package.json file (${pkg.dependencies["create-sublime-plugin-js"]}).\n`)
+      return
+    }
     
     if (!fs.existsSync(path.join(currAbsPath, 'src', 'listeners'))) {
       console.log(`\nError: Path ${path.join(currAbsPath, 'src', 'listeners')} doesn't exists.\n`)
@@ -181,6 +197,12 @@ commander
       fs.accessSync(path.join(currAbsPath, 'package.json'))
     } catch(e) {
       console.log(`\nError: package.json not found! Are you in the root folder of the plugin?\n`)
+      return
+    }
+
+    let pkg = JSON.parse(fs.readFileSync(path.join(currAbsPath, 'package.json')).toString())
+    if (version != pkg.dependencies["create-sublime-plugin-js"]) {
+      console.log(`\nError: the version of "create-sublime-plugin-js" (${version}) is different from the one in the package.json file (${pkg.dependencies["create-sublime-plugin-js"]}).\n`)
       return
     }
 
