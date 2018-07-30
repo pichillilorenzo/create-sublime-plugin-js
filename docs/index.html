@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>create-sublime-plugin-js 0.2.2 | Documentation</title>
+  <title>create-sublime-plugin-js 0.2.32 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>create-sublime-plugin-js</h3>
-          <div class='mb1'><code>0.2.2</code></div>
+          <div class='mb1'><code>0.2.32</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -2242,6 +2242,16 @@
                   
                   
                 </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#freeallscopememory'
+                  class="">
+                  freeAllScopeMemory
+                  
+                </a>
                 
                 </li>
               
@@ -25399,7 +25409,7 @@ The optional <code>icon</code> name, if given, will draw the named icons in the 
 
   
 
-  <p>Free memory of the current object</p>
+  <p>Free memory of the current object on the Python server side.</p>
 
  
   
@@ -25517,7 +25527,7 @@ The optional <code>icon</code> name, if given, will draw the named icons in the 
 
   
 
-  <p>Call the python freeMemory function in order to free memory of <code>mappedVars</code>.</p>
+  <p>Free memory of <code>mappedVars</code> on the Python server side.</p>
 
  
   
@@ -25580,6 +25590,72 @@ The optional <code>icon</code> name, if given, will draw the named icons in the 
     </div>
   
 </div>
+
+  
+
+  
+
+  
+</section>
+
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='freeallscopememory'>
+      freeAllScopeMemory
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Free memory of all variables created in the current scope on the Python server side. To cover variables in the callbacks, such as in a set_timeout or set_timeout_async callback, you need to call it also in there.</p>
+
+ 
+  
+    <div class='pre p1 fill-light mt0'>freeAllScopeMemory(step: StepObject): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any> | void)</div>
+   
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>step</span> <code class='quiet'>(StepObject)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any> | void)</code>
+    
+  
+
+  
+
+  
 
   
 
