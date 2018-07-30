@@ -3,6 +3,9 @@
 const util = require('./util.js'),
       config = require('./config.js')
 
+/**
+ * General Sublime Object such as a TextCommand, a View, etc.
+ */
 class SublimeObject {
 
   /*::
@@ -40,6 +43,9 @@ class SublimeObject {
     return result
   }
 
+  /**
+   * Check if the object is ```null``` on the Python server. Useful when you chain code and you want know if the code will result in a ```null``` object.
+   */
   isNull (step /*: ?StepObject*/) /*: Promise<boolean>*/ {
     step = this.checkStep(step)
 
@@ -67,6 +73,9 @@ class SublimeObject {
     return (this.self) ? this.getMapToCode() : this.codeChainString
   }
 
+  /**
+   * Free memory of the current object on the Python server side.
+   */
   free (step /*: ?StepObject*/) /*: Promise<any> | void*/ {
     step = this.checkStep(step)
     return util.freeMemory([this], step)

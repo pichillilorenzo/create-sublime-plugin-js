@@ -7,7 +7,7 @@ const fs = require('fs'),
       PythonError = require('./PythonError.js'),
       StepObject = require('./StepObject.js')
 
-function findUp (filename/*: string*/) /*: string | null*/ {
+function findFileUp (filename/*: string*/) /*: string | null*/ {
   try {
     fs.accessSync( path.join(__dirname, filename) )
     return path.join(__dirname, filename)
@@ -28,7 +28,7 @@ function findUp (filename/*: string*/) /*: string | null*/ {
   }
 }
 
-const sublimePortPath = findUp('sublime_port.txt')
+const sublimePortPath = findFileUp('sublime_port.txt')
 let sublimePort = ''
 let client = null
 
@@ -158,7 +158,7 @@ async function callbackPython (code /*: string*/, save /*: boolean*/, callbacks 
 }
 
 /**
- * Call the python freeMemory function in order to free memory of ```mappedVars```.
+ * Free memory of ```mappedVars``` on the Python server side.
  */
 function freeMemory (mappedVars /*: Array<SublimeObject>*/, step /*: ?StepObject*/) /*: Promise<any> | void*/ {
   if (mappedVars.length > 0) {
@@ -173,6 +173,9 @@ function freeMemory (mappedVars /*: Array<SublimeObject>*/, step /*: ?StepObject
   }
 }
 
+/**
+ * Free memory of all variables created in the current scope on the Python server side. To cover variables in the callbacks, such as in a set_timeout or set_timeout_async callback, you need to call it also in there.
+ */
 function freeAllScopeMemory (step /*: StepObject*/) /*: Promise<any> | void*/ {
   if (!step)
     throw new Error(`"step" parameter required!`)

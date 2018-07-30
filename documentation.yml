@@ -14,6 +14,7 @@ toc:
   - TextCommand
   - EventListener
   - ViewEventListener
+  - SublimeObject
   - name: util
     children:
       - freeMemory
