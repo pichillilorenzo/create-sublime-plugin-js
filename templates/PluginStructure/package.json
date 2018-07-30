@@ -18,5 +18,8 @@
     "email": "",
     "url": ""
   },
-  "main": "index.js"
+  "main": "index.js",
+  "create-sublime-plugin-js": {
+    "node": "10.7.0"
+  }
 }

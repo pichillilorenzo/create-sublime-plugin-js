@@ -201,7 +201,11 @@ def installPackageJsonDependencies():
   owd = os.getcwd()
   os.chdir(global_vars.PACKAGE_PATH)
   print(global_vars.PACKAGE_NAME + ': installing package.json dependencies')
-  output = subprocess.check_output([global_vars.NODE_PATH, global_vars.NPM_PATH, 'install'], stderr=subprocess.STDOUT)
+  output = ""
+  if sublime.platform() == "windows":
+    output = subprocess.check_output([global_vars.NPM_PATH, 'install'], shell=True, stderr=subprocess.STDOUT)
+  else:
+    output = subprocess.check_output([global_vars.NODE_PATH, global_vars.NPM_PATH, 'install'], stderr=subprocess.STDOUT)
   print(codecs.decode(output, "utf-8", "ignore").strip())
   os.chdir(owd)
 
@@ -214,14 +218,14 @@ def downloadNodeJS():
   if os.path.exists(nodeDirPath):
     print(global_vars.PACKAGE_NAME + ': removing ' + nodeDirPath)
     if sublime.platform() == "windows":
-      os.system('rmdir /S /Q \"{}\"'.format(nodeDirPath))
+      subprocess.check_call('del /f /s /q \"{0}\" && rmdir /S /Q \"{0}\"'.format("\\\\?\\" + nodeDirPath), shell=True, stderr=subprocess.STDOUT)
     else:
       shutil.rmtree(nodeDirPath)
 
   if os.path.exists(nodeModules):
     print(global_vars.PACKAGE_NAME + ': removing ' + nodeModules)
     if sublime.platform() == "windows":
-      os.system('rmdir /S /Q \"{}\"'.format(nodeModules))
+      subprocess.check_call('del /f /s /q \"{0}\" && rmdir /S /Q \"{0}\"'.format("\\\\?\\" + nodeModules), shell=True, stderr=subprocess.STDOUT)
     else:
       shutil.rmtree(nodeModules)
 
@@ -252,15 +256,10 @@ def downloadNodeJS():
   print(global_vars.PACKAGE_NAME + ': unzipping nodejs and npm')
   if sublime.platform() == 'windows':
     # windows
-    with zipfile.ZipFile(nodeZippedFile) as zf:
-      for info in zf.infolist():
-        bufsiz = 16 * 2048
-        with zf.open(info) as fin, open(nodeDirPath, 'w') as fout:
-          while True:
-            buf = fin.read(bufsiz)
-            if not buf:
-              break
-            fout.write(buf)
+    # "\\\\?\\" taken from here: https://stackoverflow.com/questions/14075465/copy-a-file-with-a-too-long-path-to-another-directory-in-python
+     with open("\\\\?\\" + nodeZippedFile, 'rb') as f:
+      zf = zipfile.ZipFile(f)
+      zf.extractall("\\\\?\\" + nodeDirPath)
   else:
     with tarfile.open(nodeZippedFile, "r:gz") as tar :
       for member in tar.getmembers() :

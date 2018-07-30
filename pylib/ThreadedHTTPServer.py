@@ -1,3 +1,4 @@
+import sublime
 import socketserver
 import subprocess
 import threading
@@ -36,7 +37,10 @@ class ThreadedHTTPServer(object):
 
   def startNodeServer(self):
 
-    self.nodeServer = subprocess.Popen([global_vars.NODE_PATH, global_vars.NODE_SERVER_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if sublime.platform() == "windows":
+      self.nodeServer = subprocess.Popen([global_vars.NODE_PATH, global_vars.NODE_SERVER_PATH], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    else:
+      self.nodeServer = subprocess.Popen([global_vars.NODE_PATH, global_vars.NODE_SERVER_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     nodePort = codecs.decode(self.nodeServer.stdout.readline(), "utf-8", "ignore").strip()
     if not nodePort.isdigit():
       print('ERROR: Wrong Node Server port')
