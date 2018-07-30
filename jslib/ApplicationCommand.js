@@ -13,10 +13,6 @@ class ApplicationCommand extends SublimeObject {
     applicationCommands[this.constructor.name] = this
   }
 
-  _init (s /*: MappedVariable*/) /*: void*/ {
-    this.self = s
-  }
-
   /**
    * Called when the command is run.
    */

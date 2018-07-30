@@ -11,7 +11,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_new_async(self, view):
 
@@ -22,7 +22,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_clone(self, view):
 
@@ -33,7 +33,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_clone_async(self, view):
 
@@ -44,7 +44,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_load(self, view):
 
@@ -55,7 +55,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_load_async(self, view):
 
@@ -66,7 +66,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_pre_close(self, view):
 
@@ -77,7 +77,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_close(self, view):
 
@@ -88,7 +88,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_pre_save(self, view):
 
@@ -99,7 +99,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_pre_save_async(self, view):
 
@@ -110,7 +110,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_post_save(self, view):
 
@@ -121,7 +121,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_post_save_async(self, view):
 
@@ -132,7 +132,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_modified(self, view):
 
@@ -143,7 +143,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_modified_async(self, view):
 
@@ -154,7 +154,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_selection_modified(self, view):
 
@@ -165,7 +165,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_selection_modified_async(self, view):
 
@@ -176,7 +176,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_activated(self, view):
 
@@ -187,7 +187,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_activated_async(self, view):
 
@@ -198,7 +198,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_deactivated(self, view):
 
@@ -209,7 +209,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_deactivated_async(self, view):
 
@@ -220,7 +220,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_hover(self, view, point, hover_zone):
 
@@ -231,7 +231,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_query_context(self, view, key, operator, operand, match_all):
 
@@ -242,7 +242,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    response = util.stepResponse(payload)
+    response = util.stepResponse(payload, saveSublimeInstanceParams=True)
 
     return response["result"]["on_query_context"] if response != None else None
 
@@ -255,7 +255,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    response = util.stepResponse(payload)
+    response = util.stepResponse(payload, saveSublimeInstanceParams=True)
 
     if response != None:
       if response["result"]["on_query_completions"] and len(response["result"]["on_query_completions"]) == 2 and isinstance(response["result"]["on_query_completions"][1], int):
@@ -273,7 +273,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    response = util.stepResponse(payload)
+    response = util.stepResponse(payload, saveSublimeInstanceParams=True)
 
     return response["result"]["on_text_command"] if response != None else True
 
@@ -286,7 +286,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    response = util.stepResponse(payload)
+    response = util.stepResponse(payload, saveSublimeInstanceParams=True)
 
     return response["result"]["on_window_command"] if response != None else True
 
@@ -299,7 +299,7 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def on_post_window_command(self, view, command_name, args):
 
@@ -310,4 +310,4 @@ class JSEventListener():
       "id": 0,
     }
 
-    util.stepResponse(payload)
+    util.stepResponse(payload, saveSublimeInstanceParams=True)

@@ -48,10 +48,11 @@ class ThreadedHTTPServer(object):
       self.stop()
       return
     global_vars.URL_NODE_SERVER = "http://localhost:" + nodePort + "/jsonrpc"
+    print(global_vars.PACKAGE_NAME + ": Node server started at " + global_vars.URL_NODE_SERVER)
 
     while self.nodeServer and not self.nodeServer.poll():
       line = self.nodeServer.stdout.readline()
-      line = "Node server: " + codecs.decode(line, "utf-8", "ignore").replace("\n", "")
+      line = global_vars.PACKAGE_NAME + " Node server: " + codecs.decode(line, "utf-8", "ignore").replace("\n", "")
       print(line)
     
     

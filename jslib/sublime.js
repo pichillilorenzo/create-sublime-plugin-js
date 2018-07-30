@@ -414,8 +414,10 @@ class sublime {
   /**
    * Creates a {@link Region} with initial values a and b.
    */
-  static Region (a /*: number*/, b /*: ?number*/) /*: Promise<Region>*/ {
-    return util.simpleEval(`sublime.Region(${a}, ${(b) ? b : a})`, true, null, (result, resultObject) => {
+  static Region (a /*: number*/, b /*: ?number*/, step /*: StepObject*/) /*: Promise<Region>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.Region(${a}, ${(b) ? b : a})`, true, step, (result, resultObject) => {
       return new Region(resultObject, null, false)
     } )
   }
@@ -423,8 +425,10 @@ class sublime {
   /**
    * {@link Window}
    */
-  static Window (id /*: number*/) /*: Promise<Window>*/ {
-    return util.simpleEval(`sublime.Window(${id})`, true, null, (result, resultObject) => {
+  static Window (id /*: number*/, step /*: StepObject*/) /*: Promise<Window>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.Window(${id})`, true, step, (result, resultObject) => {
       return new Window(resultObject, null, false)
     } )
   }
@@ -432,8 +436,10 @@ class sublime {
   /**
    * {@link View}
    */
-  static View (id /*: number*/) /*: Promise<View>*/ {
-    return util.simpleEval(`sublime.View(${id})`, true, null, (result, resultObject) => {
+  static View (id /*: number*/, step /*: StepObject*/) /*: Promise<View>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.View(${id})`, true, step, (result, resultObject) => {
       return new View(resultObject, null, false)
     } )
   }
@@ -448,8 +454,10 @@ class sublime {
   /**
    * {@link Settings}
    */
-  static Settings (id /*: number*/) /*: Promise<Settings>*/ {
-    return util.simpleEval(`sublime.Settings(${id})`, true, null, (result, resultObject) => {
+  static Settings (id /*: number*/, step /*: StepObject*/) /*: Promise<Settings>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.Settings(${id})`, true, step, (result, resultObject) => {
       return new Settings(resultObject, null, false)
     } )
   }
@@ -457,8 +465,10 @@ class sublime {
   /**
    * {@link Sheet}
    */
-  static Sheet (id /*: number*/) /*: Promise<Sheet>*/ {
-    return util.simpleEval(`sublime.Sheet(${id})`, true, null, (result, resultObject) => {
+  static Sheet (id /*: number*/, step /*: StepObject*/) /*: Promise<Sheet>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.Sheet(${id})`, true, step, (result, resultObject) => {
       return new Sheet(resultObject, null, false)
     } )
   }
@@ -466,8 +476,10 @@ class sublime {
   /**
    * {@link Selection}
    */
-  static Selection (id /*: number*/) /*: Promise<Selection>*/ {
-    return util.simpleEval(`sublime.Selection(${id})`, true, null, (result, resultObject) => {
+  static Selection (id /*: number*/, step /*: StepObject*/) /*: Promise<Selection>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.Selection(${id})`, true, step, (result, resultObject) => {
       return new Selection(resultObject, null, false)
     } )
   }
@@ -484,23 +496,27 @@ class sublime {
    * 
    * ```on_navigate``` is an optional callback that should accept a single string parameter, that is the href attribute of the link clicked.
    */
-  static Phantom (region /*: Region*/, content /*: string*/, layout /*: number*/, on_navigate /*: ?(string) => void*/) /*: Promise<Phantom>*/ {
+  static Phantom (region /*: Region*/, content /*: string*/, layout /*: number*/, on_navigate /*: ?(string) => void*/, step /*: StepObject*/) /*: Promise<Phantom>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
     if (on_navigate)
       return util.callbackPython(`sublime.Phantom(${region.getMapToCode()}, """${content}""", ${layout}, lambda href: sublime.set_timeout_async(lambda: callback($PORT_TOKEN, href)))`, true, [async (httpTempServers, href, subStep) => {
         // $Ignore
         await on_navigate(href, subStep)
-      }], null, (result, resultObject) => {
+      }], step, (result, resultObject) => {
         return new Phantom(resultObject, null, false)
       } )
     else
-      return util.simpleEval(`sublime.Phantom(${region.getMapToCode()}, """${content}""", ${layout})`, true)
+      return util.simpleEval(`sublime.Phantom(${region.getMapToCode()}, """${content}""", ${layout})`, true, step)
   }
 
   /**
    * Creates a {@link PhantomSet} attached to a ```view```. ```key``` is a string to group Phantoms together.
    */
-  static PhantomSet (view /*: View*/, key /*: string*/ = '') /*: Promise<PhantomSet>*/ {
-    return util.simpleEval(`sublime.PhantomSet(${view.getMapToCode()}, """${key}""")`, true, null, (result, resultObject) => {
+  static PhantomSet (view /*: View*/, key /*: string*/ = '', step /*: StepObject*/) /*: Promise<PhantomSet>*/ {
+    if (step === undefined)
+      throw new Error(`"step" parameter undefined!`)
+    return util.simpleEval(`sublime.PhantomSet(${view.getMapToCode()}, """${key}""")`, true, step, (result, resultObject) => {
       return new PhantomSet(resultObject, null, false)
     })
   }

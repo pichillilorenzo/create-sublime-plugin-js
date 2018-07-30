@@ -989,9 +989,13 @@ class Window extends SublimeObject {
       pre: ``,
       after: `.${methodCode}`
     }, (codeString) => {
-      return util.callbackPython(codeString, true, callbacks, step)
+      return util.callbackPython(codeString, true, callbacks, step, (result, resultObject) => {
+        return new View(resultObject, this.stepObject, this.stepRequired)
+      })
     }, () => {
-      return util.callbackPython(completeCode, true, callbacks, step)
+      return util.callbackPython(completeCode, true, callbacks, step, (result, resultObject) => {
+        return new View(resultObject, this.stepObject, this.stepRequired)
+      })
     }, !!step)
 
   }

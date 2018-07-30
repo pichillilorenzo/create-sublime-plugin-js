@@ -162,15 +162,21 @@ async function callbackPython (code /*: string*/, save /*: boolean*/, callbacks 
  */
 function freeMemory (mappedVars /*: Array<SublimeObject>*/, step /*: ?StepObject*/) /*: Promise<any> | void*/ {
   if (mappedVars.length > 0) {
-    let mappedVarsStringified = mappedVars.map((item /*: Object*/) => {
-      if (item.hasOwnProperty("self"))
-        delete item.self.code
-      else if (item.hasOwnProperty("code"))
-        delete item.code
-      return JSON.stringify(item)
-    })
-    return simpleEval(`freeMemory(json.loads("""[${mappedVarsStringified.join(',')}]"""))`, false, step)
+    let mappedVarsStringify = []
+    for (let mappedVar /*: Object*/ of mappedVars) {
+      if (mappedVar.hasOwnProperty("self") && mappedVar.self) {
+        delete mappedVar.self.code
+        mappedVarsStringify.push(JSON.stringify(mappedVar.self))
+      }
+    }
+    return simpleEval(`freeMemory(json.loads("""[${mappedVarsStringify.join(',')}]"""))`, false, step)
   }
+}
+
+function freeAllScopeMemory (step /*: StepObject*/) /*: Promise<any> | void*/ {
+  if (!step)
+    throw new Error(`"step" parameter required!`)
+  return simpleEval(`freeMemory(variable_created)`, false, step)
 }
 
 module.exports = {
@@ -182,5 +188,6 @@ module.exports = {
   simpleEval,
   simpleCommand,
   callbackPython,
-  freeMemory
+  freeMemory,
+  freeAllScopeMemory
 }

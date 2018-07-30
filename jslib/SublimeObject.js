@@ -19,6 +19,11 @@ class SublimeObject {
     this.stepObject = stepObject
   }
 
+  _init (self /*: MappedVariable*/, step /*: StepObject*/) /*: void*/ {
+    this.self = self
+    this.stepObject = step
+  }
+
   wrapMethod (code /*: {complete: string, pre: string, after: string}*/, chainCallback /*: (string) => any*/, callback /*: () => any*/, execCallback /*: boolean*/) /*: Promise<any> | any*/ {
     if (execCallback) {
       return callback()
@@ -62,8 +67,9 @@ class SublimeObject {
     return (this.self) ? this.getMapToCode() : this.codeChainString
   }
 
-  updateStepObject (step /*: StepObject*/) /*: SublimeObject*/ {
-    
+  free (step /*: ?StepObject*/) /*: Promise<any> | void*/ {
+    step = this.checkStep(step)
+    return util.freeMemory([this], step)
   }
   
 }

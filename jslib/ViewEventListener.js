@@ -19,10 +19,6 @@ class ViewEventListener extends SublimeObject {
     viewEventListenerList[this.constructor.name] = this
   }
 
-  _init (s /*: MappedVariable*/) /*: void*/ {
-    this.self = s
-  }
-
   /**
    * Called when the file is finished loading.
    */

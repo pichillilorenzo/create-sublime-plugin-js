@@ -10,8 +10,8 @@ class JSTextCommand():
       "jsonrpc": "2.0",
       "id": 0,
     }
-
-    util.stepResponse(payload)
+    
+    util.stepResponse(payload, saveSublimeInstanceParams=True)
 
   def is_enabled(self, **args):
 

@@ -147,7 +147,7 @@ for (let eventListener in eventListeners) {
       let result = methodDefaultValue
 
       try {
-        eventListeners[eventListener]._init(args[0])
+        eventListeners[eventListener]._init(args[0], step)
         switch (method) {
           case "on_hover":
           case "on_query_completions":
@@ -194,7 +194,7 @@ for (let viewEventListener in viewEventListeners) {
       let result = methodDefaultValue
 
       try {
-        viewEventListeners[viewEventListener]._init(args[0])
+        viewEventListeners[viewEventListener]._init(args[0], step)
         switch (method) {
           case "is_applicable":
             result = await viewEventListeners[viewEventListener][method](new Settings(args[1], step, true), step)

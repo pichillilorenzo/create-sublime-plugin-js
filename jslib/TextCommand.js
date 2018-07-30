@@ -17,11 +17,6 @@ class TextCommand extends SublimeObject {
     textCommands[this.constructor.name] = this
   }
 
-  _init (s /*: MappedVariable*/, stepObject /*: StepObject*/) /*: void*/ {
-    this.self = s
-    this.stepObject = stepObject
-  }
-
   /**
    * Called when the command is run.
    */

@@ -15,10 +15,6 @@ class EventListener extends SublimeObject {
     eventListenerList[this.constructor.name] = this
   }
 
-  _init (s /*: MappedVariable*/) /*: void*/ {
-    this.self = s
-  }
-
   /**
    * Called when a new buffer is created.
    */
