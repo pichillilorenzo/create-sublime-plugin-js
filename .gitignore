@@ -61,17 +61,18 @@ typings/
 .next
 
 .DS_Store
-node/
+/node/
 .je-project-settings/
 .history/
-node_port.txt
-sublime_port.txt
+/node_port.txt
+/sublime_port.txt
 
 # only for test
-src/
-pysrc/
-Context.sublime-menu
-dependencies.json
-server.js
-.no-sublime-package
-create-sublime-plugin-js.*
+# only for test
+/src/
+/pysrc/
+/Context.sublime-menu
+/dependencies.json
+/server.js
+/.no-sublime-package
+/create-sublime-plugin-js.*

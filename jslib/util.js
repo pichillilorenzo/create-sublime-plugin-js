@@ -36,9 +36,6 @@ if (sublimePortPath) {
   sublimePort = fs.readFileSync(sublimePortPath).toString('utf8')
   client = jayson.client.http('http://localhost:' + sublimePort)
 }
-else {
-  throw new Error('No sublime_port.txt file found!')
-}
 
 function convertToPythonBool (bool /*: any*/) /*: string*/ {
   bool = !!bool
@@ -77,6 +74,8 @@ function sendEval (code /*: string*/, save /*: boolean*/, callback /*: (any, (an
 }
 
 function sendCommand (command /*: string*/, args /*: Array<any>*/, callback /*: ?(any, (any) => void, (any) => void) => void*/) /*: Promise<any>*/ {
+  if (!sublimePortPath)
+    throw new Error('No sublime_port.txt file found!')
   return new Promise((resolve, reject) => {
     client.request(command, args, function(err, error, result) {
       if(err) throw err;
