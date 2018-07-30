@@ -81,6 +81,8 @@ commander
     fs.copySync(path.join(__dirname, '..', 'templates', 'PluginStructure'), path.join(currAbsPath, pluginName))
     fs.copySync(path.join(__dirname, '..', 'pylib'), path.join(currAbsPath, pluginName, 'pylib'))
     fs.copySync(path.join(__dirname, '..', 'main.py'), path.join(currAbsPath, pluginName, 'main.py'))
+    fs.mkdirsSync(path.join(currAbsPath, 'src', 'commands'))
+    fs.mkdirsSync(path.join(currAbsPath, 'src', 'listeners'))
 
     fs.writeFileSync(path.join(currAbsPath, pluginName, pluginName + '.sublime-settings'), '{}')
 

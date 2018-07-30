@@ -73,3 +73,5 @@ pysrc/
 Context.sublime-menu
 dependencies.json
 server.js
+.no-sublime-package
+create-sublime-plugin-js.*
